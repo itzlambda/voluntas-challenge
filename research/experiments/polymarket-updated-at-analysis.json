@@ -1,0 +1,628 @@
+[
+  {
+    "result": "polymarket-updated-at-results.json",
+    "requests": 77,
+    "http_errors": [],
+    "unique_observed": 2359,
+    "repeated_observations": 4577,
+    "all_raw_flag_changes": 0,
+    "changed_unique_markets": 0,
+    "flag_changes_with_later_updatedAt": 0,
+    "nonclosure_flag_changes": 0,
+    "changes": [],
+    "updatedAt_regressions": 56,
+    "regression_examples": [
+      {
+        "id": "6103510",
+        "old_updatedAt": "2026-10-25T02:26:32.824802Z",
+        "new_updatedAt": "2026-10-25T02:26:17.834296Z"
+      },
+      {
+        "id": "6103509",
+        "old_updatedAt": "2026-10-25T02:26:32.824802Z",
+        "new_updatedAt": "2026-10-25T02:26:17.834296Z"
+      },
+      {
+        "id": "6103508",
+        "old_updatedAt": "2026-10-25T02:26:32.824802Z",
+        "new_updatedAt": "2026-10-25T02:26:17.834296Z"
+      }
+    ],
+    "timestamp_updates_without_flag_changes": 56,
+    "seed_changes": 586,
+    "seed_changes_updatedAt_advanced": 586,
+    "cached_response_ages": {
+      "None": 31,
+      "7": 2,
+      "5": 2,
+      "20": 3,
+      "27": 2,
+      "25": 2,
+      "40": 3,
+      "47": 2,
+      "45": 1,
+      "44": 1,
+      "60": 3,
+      "67": 2,
+      "65": 1,
+      "64": 1,
+      "80": 3,
+      "87": 2,
+      "85": 1,
+      "84": 1,
+      "100": 3,
+      "107": 2,
+      "105": 1,
+      "104": 1,
+      "120": 3,
+      "127": 2,
+      "125": 1,
+      "124": 1
+    },
+    "cache_hits": {
+      "None": 77
+    },
+    "timestamp_order_inversions": 0,
+    "null_timestamp_observations": 0,
+    "selectors": [
+      {
+        "kind": "ending_soon",
+        "rows": 8,
+        "all_in_requested_window": true
+      }
+    ],
+    "note": "The pinned cohort alone had no flag changes; changes above include repeated IDs across every captured listing and lookup."
+  },
+  {
+    "result": "polymarket-updated-at-fresh-results.json",
+    "requests": 77,
+    "http_errors": [],
+    "unique_observed": 3041,
+    "repeated_observations": 4631,
+    "all_raw_flag_changes": 14,
+    "changed_unique_markets": 14,
+    "flag_changes_with_later_updatedAt": 14,
+    "nonclosure_flag_changes": 0,
+    "changes": [
+      {
+        "id": "6160511",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160511",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:08:20Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:24.11547Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160511",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:30.026111Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:08:20Z",
+          "closedTime": "2026-10-25 02:29:22.11142+00",
+          "createdAt": "2026-10-24T22:07:24.11547Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160506",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160506",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:08:22Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:23.222827Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160506",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:29.922449Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:08:22Z",
+          "closedTime": "2026-10-25 02:29:22.106272+00",
+          "createdAt": "2026-10-24T22:07:23.222827Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160503",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160503",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:22.653617Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160503",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:29.799918Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": "2026-10-25 02:29:22.101339+00",
+          "createdAt": "2026-10-24T22:07:22.653617Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160480",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160480",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:08:22Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:17.748096Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160480",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:29.683563Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:08:22Z",
+          "closedTime": "2026-10-25 02:29:22.096811+00",
+          "createdAt": "2026-10-24T22:07:17.748096Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160515",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160515",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:24.832777Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160515",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:29.582889Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": "2026-10-25 02:29:22.092255+00",
+          "createdAt": "2026-10-24T22:07:24.832777Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160478",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160478",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:17.44935Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160478",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:29.474468Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": "2026-10-25 02:29:22.087755+00",
+          "createdAt": "2026-10-24T22:07:17.44935Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160477",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160477",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:17.300685Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160477",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:29.373287Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": "2026-10-25 02:29:22.083098+00",
+          "createdAt": "2026-10-24T22:07:17.300685Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160472",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160472",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:16.432516Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160472",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:29.273008Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": "2026-10-25 02:29:22.077725+00",
+          "createdAt": "2026-10-24T22:07:16.432516Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160471",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160471",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:08:22Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:16.246161Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160471",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:29.168114Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:08:22Z",
+          "closedTime": "2026-10-25 02:29:22.072483+00",
+          "createdAt": "2026-10-24T22:07:16.246161Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160468",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160468",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:15.711552Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160468",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:29.038977Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": "2026-10-25 02:29:22.067114+00",
+          "createdAt": "2026-10-24T22:07:15.711552Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160467",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160467",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:15.52536Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160467",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:28.928837Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": "2026-10-25 02:29:22.061191+00",
+          "createdAt": "2026-10-24T22:07:15.52536Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160466",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160466",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:15.328968Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160466",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:28.825559Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": "2026-10-25 02:29:22.056411+00",
+          "createdAt": "2026-10-24T22:07:15.328968Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160465",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:29:47.931643+00:00",
+        "old": {
+          "id": "6160465",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:15.138645Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160465",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:29:28.721511Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:07:43Z",
+          "closedTime": "2026-10-25 02:29:22.051812+00",
+          "createdAt": "2026-10-24T22:07:15.138645Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      },
+      {
+        "id": "6160509",
+        "fields": [
+          "closed",
+          "acceptingOrders"
+        ],
+        "observed_at": "2026-10-25T02:30:27.942784+00:00",
+        "old": {
+          "id": "6160509",
+          "version": "v1",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:28:38.341729Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:08:21Z",
+          "closedTime": null,
+          "createdAt": "2026-10-24T22:07:23.754506Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "new": {
+          "id": "6160509",
+          "version": "v1",
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:30:14.604096Z",
+          "acceptingOrdersTimestamp": "2026-10-24T22:08:21Z",
+          "closedTime": "2026-10-25 02:30:08.251477+00",
+          "createdAt": "2026-10-24T22:07:23.754506Z",
+          "endDate": "2026-10-24T22:30:00Z"
+        },
+        "updatedAt_advanced": true
+      }
+    ],
+    "updatedAt_regressions": 0,
+    "regression_examples": [],
+    "timestamp_updates_without_flag_changes": 700,
+    "seed_changes": 861,
+    "seed_changes_updatedAt_advanced": 861,
+    "cached_response_ages": {
+      "None": 77
+    },
+    "cache_hits": {
+      "Miss from cloudfront": 77
+    },
+    "timestamp_order_inversions": 0,
+    "null_timestamp_observations": 0,
+    "selectors": [
+      {
+        "kind": "ending_soon",
+        "rows": 100,
+        "all_in_requested_window": true
+      }
+    ],
+    "note": "The pinned cohort alone had no flag changes; changes above include repeated IDs across every captured listing and lookup."
+  }
+]

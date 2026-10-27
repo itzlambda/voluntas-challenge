@@ -1,0 +1,1292 @@
+{
+  "scope": {
+    "head": "404114ea783ede434be420cd4debbaef58983ead",
+    "source_sha256": {
+      "src/core/app.rs": "68ea6a68958a521c902f544ee3629b3db7315366036038fbb4f1f832b51a4f4d",
+      "src/core/book_connection.rs": "37e86b9ee7b467766a6f5e10b13594ef182f43b447818f2b01f153c0d8c15f89",
+      "src/core/capture.rs": "276f656a0f461ca5a148d55a7867b96f61979b3fe44d5da6e124f5146da5ee1f",
+      "src/core/config.rs": "25af6a96e2d10ca85dc93a96d441955a9343d865a2c1235ebd2ba0ab0792647c",
+      "src/core/connection.rs": "59b84109b879e7bc91d9df4019414e04a0cbaacd5534b2ef8192faa6d4c2a6fe",
+      "src/core/decode_log.rs": "aa6c65646543994978a4dc28685b5bf00eaa4d8d29fd4e31d453bc09bd4aa658",
+      "src/core/discovery.rs": "61ed5af56a5110a77811bbd1e48f4eb3e68bfd89dfd1d255787b15e7a071f813",
+      "src/core/fixture.rs": "d670437dd6182edad0ad4b6a6a6d3e7be29156a4ca6c9fb1647d5f73098dfd09",
+      "src/core/latency.rs": "ce7479ace70ddf6b0cc0be0efdc72fee9d365bfe8ceb1b6c0befcbf6e05e738e",
+      "src/core/lifecycle.rs": "6fb6c13d84ec930285f75c497a64696bdd97b57539e6a735a2f1c41cc28dce76",
+      "src/core/mod.rs": "32ff087780c4e9b8346ab090f390cf0a005f294ee78b63444968ac9b436fdafd",
+      "src/core/order_book.rs": "77486d64f12591a261e77524ddb7ea2c8cdc8c72cfc458ee42e656f6fc5ec819",
+      "src/core/pipeline.rs": "244fb44204fec7db26092c08b954db1a4131829ed726920648374399472dcc09",
+      "src/core/rate_limit.rs": "e9c08650324acb6feab537ee1555c527b6746acac526efd8efd15edae0abed2d",
+      "src/core/reconnect_backoff.rs": "19f5251d3edd414544269ca5ad4e4e45cb8c5ab12d293d1234801dd2e70b7a45",
+      "src/core/registry.rs": "c27999c1f6f41feed15e7189e27d5a84c779fbdf4593aed70e2d7430e9c0b4fb",
+      "src/core/routing.rs": "9cac0edbcf8faede47077ad1707bdde48b52b6ff23de77f7b9166157488328fb",
+      "src/core/subscriptions.rs": "256479270b792f4758a4010e64dcf4e86e68b309648000f4fcddf5bf978e1200",
+      "src/core/telemetry.rs": "7155fcee92aecbf596f4edae999c988328e2444e4b9d077940d3e1dffba99362",
+      "src/core/worker.rs": "042788af8fef95607a25465d2fd984bb2d7417030fb4aa973dd921ee3b5298dc",
+      "src/core/writer.rs": "89bf65bb8dc18300125fe87b7adbba7dfd1f46b6587ce54b9567553a13801d0c",
+      "src/exchange/mod.rs": "d99e4da4b00cf277a0308adf448e732aa63d0c186a3a46b28fb23cde235ab69a",
+      "src/exchange/polymarket/decode.rs": "546b98262a0c0e6e13c3ac881f743f6e3d260e5ae6a3828f1a41cd9257a7d2f4",
+      "src/exchange/polymarket/gamma.rs": "0998096f33c13a946af309143bff937775af81b40eef596d7b5434d898b67d1c",
+      "src/exchange/polymarket/mod.rs": "a91e600e6b3f4d6def0f2450c291f1b9cdb0660f022b491c5d0ee4cec12bbee1",
+      "src/exchange/polymarket/number.rs": "3f56ef470ccfd12033ca7acf60f798280c03bb2d64ca0ad220f134603e9645d1",
+      "src/exchange/polymarket/ws.rs": "177af3ae401050cebb52041ca7b4760c54892217a399a80a9ec1c6f05fca82c6",
+      "src/lib.rs": "2bf3a827e879533dfa63b38d11b654b621cb51f77c8d50e845c30524db90aaff",
+      "src/main.rs": "1330cffdfd6fb19bc7e86bbcb9ab4f7a34efb8134e5a85904e73418b3d92687c",
+      "src/model.rs": "1a0c5a3c1df007a2fa23698e0aab81436403a550c46317ab7c129ef5a0ecdf80",
+      "src/side.rs": "83dca6f9e4db06dd1d486aa21f07d1ddec2cab1cc430b0f2c4fdbb857e6ae667",
+      "src/util/aligned_sbe_reader.rs": "7ae471368523d1d4b0240a5375d42d483caf9ba33c233c63c0b74f6509045e87",
+      "src/util/aligned_sbe_writer.rs": "b66bd32394cb5a26e891b152d523d155260040ab2e8746131f26ae7f265d4cf4",
+      "src/util/build.rs": "2c860b5b575b2399704a2d4ed9e9df51b27bf7c38a6167cdc6945a543bec7310",
+      "src/util/dtos.rs": "3e4edb85ae4a308943c33847a7601ba40a1edebc31dec23361e36ebf8c60bad9",
+      "src/util/mod.rs": "685716aecbe602ecbb9c0689d2741f7e75671437e4a51e09aa168b10c604b853",
+      "src/util/orderbook_schema.rs": "9462a5167cf1627cbb82e068ab87f7022121e5a15b243c6d3e3a740b8932a7cd",
+      "src/util/sbe_yaml.rs": "af749044c88dc6e9c959b29ac7dbf18be5eb7e542c0b46d8be11bc34b3545442"
+    },
+    "scope": "Diagnostic copy; one in 67 input messages sampled; actual decode entry is receipt proxy; no network/TLS/capture; unchanged independent M5 output oracle.",
+    "instrumented_source_sha256": {
+      "src/core/app.rs": "68ea6a68958a521c902f544ee3629b3db7315366036038fbb4f1f832b51a4f4d",
+      "src/core/book_connection.rs": "37e86b9ee7b467766a6f5e10b13594ef182f43b447818f2b01f153c0d8c15f89",
+      "src/core/capture.rs": "276f656a0f461ca5a148d55a7867b96f61979b3fe44d5da6e124f5146da5ee1f",
+      "src/core/config.rs": "25af6a96e2d10ca85dc93a96d441955a9343d865a2c1235ebd2ba0ab0792647c",
+      "src/core/connection.rs": "59b84109b879e7bc91d9df4019414e04a0cbaacd5534b2ef8192faa6d4c2a6fe",
+      "src/core/decode_log.rs": "aa6c65646543994978a4dc28685b5bf00eaa4d8d29fd4e31d453bc09bd4aa658",
+      "src/core/discovery.rs": "61ed5af56a5110a77811bbd1e48f4eb3e68bfd89dfd1d255787b15e7a071f813",
+      "src/core/fixture.rs": "d670437dd6182edad0ad4b6a6a6d3e7be29156a4ca6c9fb1647d5f73098dfd09",
+      "src/core/latency.rs": "ce7479ace70ddf6b0cc0be0efdc72fee9d365bfe8ceb1b6c0befcbf6e05e738e",
+      "src/core/lifecycle.rs": "6fb6c13d84ec930285f75c497a64696bdd97b57539e6a735a2f1c41cc28dce76",
+      "src/core/mod.rs": "32ff087780c4e9b8346ab090f390cf0a005f294ee78b63444968ac9b436fdafd",
+      "src/core/order_book.rs": "77486d64f12591a261e77524ddb7ea2c8cdc8c72cfc458ee42e656f6fc5ec819",
+      "src/core/pipeline.rs": "244fb44204fec7db26092c08b954db1a4131829ed726920648374399472dcc09",
+      "src/core/rate_limit.rs": "e9c08650324acb6feab537ee1555c527b6746acac526efd8efd15edae0abed2d",
+      "src/core/reconnect_backoff.rs": "19f5251d3edd414544269ca5ad4e4e45cb8c5ab12d293d1234801dd2e70b7a45",
+      "src/core/registry.rs": "c27999c1f6f41feed15e7189e27d5a84c779fbdf4593aed70e2d7430e9c0b4fb",
+      "src/core/routing.rs": "9cac0edbcf8faede47077ad1707bdde48b52b6ff23de77f7b9166157488328fb",
+      "src/core/subscriptions.rs": "256479270b792f4758a4010e64dcf4e86e68b309648000f4fcddf5bf978e1200",
+      "src/core/telemetry.rs": "7155fcee92aecbf596f4edae999c988328e2444e4b9d077940d3e1dffba99362",
+      "src/core/worker.rs": "3e2996dfcec24f2bb1665015900fb6c22fcaafb0ecb6fdee7f0197e8392fbcc2",
+      "src/core/writer.rs": "8d23084cf5ed256872f3fdf2edaae2a1a3a4e15626a0c153941c9a37fda57e15",
+      "src/exchange/mod.rs": "d99e4da4b00cf277a0308adf448e732aa63d0c186a3a46b28fb23cde235ab69a",
+      "src/exchange/polymarket/decode.rs": "30eadd87242194c7f0757dd7b1825c52db7741f8fe6106a5d92bb6fc772e94eb",
+      "src/exchange/polymarket/gamma.rs": "0998096f33c13a946af309143bff937775af81b40eef596d7b5434d898b67d1c",
+      "src/exchange/polymarket/mod.rs": "a91e600e6b3f4d6def0f2450c291f1b9cdb0660f022b491c5d0ee4cec12bbee1",
+      "src/exchange/polymarket/number.rs": "3f56ef470ccfd12033ca7acf60f798280c03bb2d64ca0ad220f134603e9645d1",
+      "src/exchange/polymarket/ws.rs": "177af3ae401050cebb52041ca7b4760c54892217a399a80a9ec1c6f05fca82c6",
+      "src/lib.rs": "2bf3a827e879533dfa63b38d11b654b621cb51f77c8d50e845c30524db90aaff",
+      "src/main.rs": "1330cffdfd6fb19bc7e86bbcb9ab4f7a34efb8134e5a85904e73418b3d92687c",
+      "src/model.rs": "8a7765c76dd41c357c47de87d4a2752b2bb09070e28cd0d57370fa942da02fce",
+      "src/side.rs": "83dca6f9e4db06dd1d486aa21f07d1ddec2cab1cc430b0f2c4fdbb857e6ae667",
+      "src/util/aligned_sbe_reader.rs": "7ae471368523d1d4b0240a5375d42d483caf9ba33c233c63c0b74f6509045e87",
+      "src/util/aligned_sbe_writer.rs": "038612bcea8775edd7e323f14b0212e2383ad613afb771e74c78da214d2124f4",
+      "src/util/build.rs": "2c860b5b575b2399704a2d4ed9e9df51b27bf7c38a6167cdc6945a543bec7310",
+      "src/util/dtos.rs": "3e4edb85ae4a308943c33847a7601ba40a1edebc31dec23361e36ebf8c60bad9",
+      "src/util/mod.rs": "685716aecbe602ecbb9c0689d2741f7e75671437e4a51e09aa168b10c604b853",
+      "src/util/orderbook_schema.rs": "9462a5167cf1627cbb82e068ab87f7022121e5a15b243c6d3e3a740b8932a7cd",
+      "src/util/sbe_yaml.rs": "af749044c88dc6e9c959b29ac7dbf18be5eb7e542c0b46d8be11bc34b3545442"
+    }
+  },
+  "binary_sha256": "72f106b8a227b36ada95fa9d3f49dda838a4af0541b42a456e62f4f3423f4ba9",
+  "runs": [
+    {
+      "case": "mean",
+      "exit_code": 0,
+      "elapsed_s": 14.525304574985057,
+      "cpu_s": 13.63115,
+      "load_before": [
+        6.787109375,
+        5.8154296875,
+        5.75537109375
+      ],
+      "load_after": [
+        6.41259765625,
+        5.771484375,
+        5.74169921875
+      ],
+      "benchmark": {
+        "achieved_messages_per_s": 15995.02501138812,
+        "books": 10000,
+        "corrections_by_outcome_side": [
+          167,
+          159,
+          184,
+          134
+        ],
+        "correctness_pass": true,
+        "decode_wall_s": 4.521048223,
+        "deliberate_corrections": 644,
+        "depth_per_side": 25,
+        "duration_pass": false,
+        "effective_hot_markets": 64,
+        "events": 160000,
+        "explicit_changes_per_price_change": 2,
+        "feed_s": 10.003110335,
+        "file_bytes": 67108864,
+        "finish_drain_and_flush_s": 0.443783446,
+        "full_book_every": 32,
+        "full_book_messages": 5056,
+        "generation_wall_s": 0.944849973,
+        "generator_valid": false,
+        "hot_fraction_percent": 1,
+        "hot_selection_percent": 80,
+        "independent_record_oracle_s": 0.038884388,
+        "initial_array_bytes": 18875000,
+        "initial_levels": 500000,
+        "latency_pass": false,
+        "live_max_messages_per_s": 41687,
+        "markets": 5000,
+        "offered_events_per_s": 16000,
+        "offered_messages_per_s": 16000,
+        "offered_rate_pass": false,
+        "pacing_slot_ms": 1,
+        "periodic_snapshots": 0,
+        "price_change_messages": 154944,
+        "producer_lateness": {
+          "max_ms": 286.866,
+          "mean_ms": 11.3277716875,
+          "negative_samples": 0,
+          "overflow_samples": 8,
+          "p50_upper_ms": 3.0,
+          "p99_upper_ms": 149.0,
+          "samples": 160000
+        },
+        "producers": 64,
+        "rate_tolerance_fraction": 0.01,
+        "readback_and_final_oracle_s": 0.470529103,
+        "receive_to_encode": {
+          "max_ms": 386.612,
+          "mean_ms": 23.622945928277925,
+          "negative_samples": 0,
+          "overflow_samples": 5434,
+          "p50_upper_ms": 5.0,
+          "p99_upper_ms": 386.612,
+          "samples": 310532
+        },
+        "reinserted_by_outcome_side": [
+          37488,
+          37682,
+          37535,
+          37329
+        ],
+        "removed_by_outcome_side": [
+          39947,
+          40153,
+          40000,
+          39792
+        ],
+        "runtime_threads": 6,
+        "scheduled_arrival_age_includes_generator_lag": true,
+        "seconds": 10,
+        "sustained_rate_pass": false,
+        "target_messages_per_s": 125061,
+        "target_pass": false,
+        "template_pool_bytes": 86240000,
+        "template_pool_bytes_are_raw_json_lengths": true,
+        "template_pool_generation_in_timed_region": false,
+        "total_s": 14.269654034,
+        "validated_books": 10000,
+        "validated_periodic_snapshots": 0,
+        "validated_scheduled_records": 310532,
+        "validated_updates": 310532,
+        "warmup_settle_s": 2,
+        "worker_apply_s": [
+          0.702090599,
+          0.455951041,
+          0.548868097,
+          0.719409798
+        ],
+        "worker_input_peaks": [
+          2726,
+          2890,
+          3138,
+          3220
+        ],
+        "worker_messages": [
+          43661,
+          43695,
+          43868,
+          43776
+        ],
+        "worker_queue_bound": 65536,
+        "worker_writer_blocked_s": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "workers": 4,
+        "workload_limits": "two mutable best prices per outcome; quantities 0/100; fixed exchange timestamp; ignored hash/best bid/ask metadata included; no socket/TLS/discovery; M1 separately covers wide prices/quantities/depth",
+        "workload_seed": 7324878290347098112,
+        "writer_bytes": 47014904,
+        "writer_encode_and_chunk_write_s": 1.058996992,
+        "writer_final_flush_s": 0.284276993,
+        "writer_queue_bound": 65536,
+        "writer_queue_peak": 8191
+      },
+      "stages": {
+        "decode": {
+          "samples": 4627,
+          "mean_ms": 0.01806872141776529,
+          "p50_ms": 0.00435,
+          "p99_ms": 0.028281,
+          "max_ms": 24.16403
+        },
+        "decoded_to_worker": {
+          "samples": 4627,
+          "mean_ms": 2.7405567400043225,
+          "p50_ms": 0.00458,
+          "p99_ms": 41.115613,
+          "max_ms": 178.073614
+        },
+        "worker_apply": {
+          "samples": 4627,
+          "mean_ms": 0.05028184784957856,
+          "p50_ms": 0.00202,
+          "p99_ms": 0.00919,
+          "max_ms": 116.388106
+        },
+        "apply_to_submit": {
+          "samples": 4627,
+          "mean_ms": 0.0006229468338015993,
+          "p50_ms": 0.00021,
+          "p99_ms": 0.011221,
+          "max_ms": 0.147324
+        },
+        "submit_to_writer": {
+          "samples": 4627,
+          "mean_ms": 13.157608676680354,
+          "p50_ms": 1.449993,
+          "p99_ms": 337.396854,
+          "max_ms": 337.951301
+        },
+        "encode_and_chunk_write": {
+          "samples": 4627,
+          "mean_ms": 0.0012258547655068079,
+          "p50_ms": 0.00019,
+          "p99_ms": 0.01151,
+          "max_ms": 1.108682
+        },
+        "receive_to_encode": {
+          "samples": 4627,
+          "mean_ms": 15.968364787551328,
+          "p50_ms": 2.105351,
+          "p99_ms": 337.478326,
+          "max_ms": 337.998172
+        }
+      },
+      "record_writes": {
+        "samples": 320532,
+        "mean_ms": 0.003548698750826751,
+        "p50_ms": 0.000191,
+        "p99_ms": 0.01685,
+        "max_ms": 321.066408
+      },
+      "flushes": {
+        "samples": 1,
+        "mean_ms": 264.996574,
+        "p50_ms": 264.996574,
+        "p99_ms": 264.996574,
+        "max_ms": 264.996574
+      },
+      "writes_over_10ms": 13,
+      "writes_over_100ms": 1
+    },
+    {
+      "case": "peak",
+      "exit_code": 0,
+      "elapsed_s": 14.861893830995541,
+      "cpu_s": 20.533023,
+      "load_before": [
+        6.41259765625,
+        5.771484375,
+        5.74169921875
+      ],
+      "load_after": [
+        5.7353515625,
+        5.65185546875,
+        5.703125
+      ],
+      "benchmark": {
+        "achieved_messages_per_s": 41955.51300462057,
+        "books": 10000,
+        "corrections_by_outcome_side": [
+          433,
+          430,
+          418,
+          368
+        ],
+        "correctness_pass": true,
+        "decode_wall_s": 8.748068253,
+        "deliberate_corrections": 1649,
+        "depth_per_side": 25,
+        "duration_pass": false,
+        "effective_hot_markets": 64,
+        "events": 420000,
+        "explicit_changes_per_price_change": 2,
+        "feed_s": 10.010603373,
+        "file_bytes": 134217728,
+        "finish_drain_and_flush_s": 0.491794101,
+        "full_book_every": 32,
+        "full_book_messages": 13136,
+        "generation_wall_s": 0.381638245,
+        "generator_valid": false,
+        "hot_fraction_percent": 1,
+        "hot_selection_percent": 80,
+        "independent_record_oracle_s": 0.061272966,
+        "initial_array_bytes": 18875000,
+        "initial_levels": 500000,
+        "latency_pass": false,
+        "live_max_messages_per_s": 41687,
+        "markets": 5000,
+        "offered_events_per_s": 42000,
+        "offered_messages_per_s": 42000,
+        "offered_rate_pass": false,
+        "pacing_slot_ms": 1,
+        "periodic_snapshots": 0,
+        "price_change_messages": 406864,
+        "producer_lateness": {
+          "max_ms": 245.592,
+          "mean_ms": 12.646144185714286,
+          "negative_samples": 0,
+          "overflow_samples": 0,
+          "p50_upper_ms": 3.0,
+          "p99_upper_ms": 148.0,
+          "samples": 420000
+        },
+        "producers": 64,
+        "rate_tolerance_fraction": 0.01,
+        "readback_and_final_oracle_s": 1.117208835,
+        "receive_to_encode": {
+          "max_ms": 426.069,
+          "mean_ms": 35.66847729700495,
+          "negative_samples": 0,
+          "overflow_samples": 17398,
+          "p50_upper_ms": 7.0,
+          "p99_upper_ms": 426.069,
+          "samples": 815377
+        },
+        "reinserted_by_outcome_side": [
+          100613,
+          100747,
+          100324,
+          100186
+        ],
+        "removed_by_outcome_side": [
+          103078,
+          103289,
+          102870,
+          102657
+        ],
+        "runtime_threads": 6,
+        "scheduled_arrival_age_includes_generator_lag": true,
+        "seconds": 10,
+        "sustained_rate_pass": false,
+        "target_messages_per_s": 125061,
+        "target_pass": false,
+        "template_pool_bytes": 86240000,
+        "template_pool_bytes_are_raw_json_lengths": true,
+        "template_pool_generation_in_timed_region": false,
+        "total_s": 14.293003075,
+        "validated_books": 10000,
+        "validated_periodic_snapshots": 0,
+        "validated_scheduled_records": 815377,
+        "validated_updates": 815377,
+        "warmup_settle_s": 2,
+        "worker_apply_s": [
+          0.809288316,
+          1.16491924,
+          0.743562158,
+          0.715699677
+        ],
+        "worker_input_peaks": [
+          2372,
+          3520,
+          2962,
+          2908
+        ],
+        "worker_messages": [
+          108458,
+          108683,
+          108881,
+          108978
+        ],
+        "worker_queue_bound": 65536,
+        "worker_writer_blocked_s": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "workers": 4,
+        "workload_limits": "two mutable best prices per outcome; quantities 0/100; fixed exchange timestamp; ignored hash/best bid/ask metadata included; no socket/TLS/discovery; M1 separately covers wide prices/quantities/depth",
+        "workload_seed": 7324878290347098112,
+        "writer_bytes": 108605994,
+        "writer_encode_and_chunk_write_s": 1.062329778,
+        "writer_final_flush_s": 0.187180988,
+        "writer_queue_bound": 65536,
+        "writer_queue_peak": 21925
+      },
+      "stages": {
+        "decode": {
+          "samples": 12101,
+          "mean_ms": 0.006961207916701099,
+          "p50_ms": 0.00351,
+          "p99_ms": 0.030791,
+          "max_ms": 3.385669
+        },
+        "decoded_to_worker": {
+          "samples": 12101,
+          "mean_ms": 10.946707304355012,
+          "p50_ms": 0.176715,
+          "p99_ms": 159.195617,
+          "max_ms": 349.434653
+        },
+        "worker_apply": {
+          "samples": 12101,
+          "mean_ms": 0.037648910090075205,
+          "p50_ms": 0.00128,
+          "p99_ms": 0.0096,
+          "max_ms": 207.446596
+        },
+        "apply_to_submit": {
+          "samples": 12101,
+          "mean_ms": 0.012034524832658459,
+          "p50_ms": 0.00021,
+          "p99_ms": 0.00767,
+          "max_ms": 131.551155
+        },
+        "submit_to_writer": {
+          "samples": 12101,
+          "mean_ms": 10.856984642343608,
+          "p50_ms": 1.176225,
+          "p99_ms": 113.003386,
+          "max_ms": 157.708943
+        },
+        "encode_and_chunk_write": {
+          "samples": 12101,
+          "mean_ms": 0.0006475878026609371,
+          "p50_ms": 0.00018,
+          "p99_ms": 0.00396,
+          "max_ms": 0.993758
+        },
+        "receive_to_encode": {
+          "samples": 12101,
+          "mean_ms": 21.860984177340715,
+          "p50_ms": 2.326727,
+          "p99_ms": 204.867511,
+          "max_ms": 359.820814
+        }
+      },
+      "record_writes": {
+        "samples": 825377,
+        "mean_ms": 0.0014416847016575454,
+        "p50_ms": 0.00018,
+        "p99_ms": 0.00426,
+        "max_ms": 115.900431
+      },
+      "flushes": {
+        "samples": 2,
+        "mean_ms": 150.0898375,
+        "p50_ms": 115.86355,
+        "p99_ms": 184.316125,
+        "max_ms": 184.316125
+      },
+      "writes_over_10ms": 11,
+      "writes_over_100ms": 2
+    },
+    {
+      "case": "stress",
+      "exit_code": 0,
+      "elapsed_s": 19.443910428963136,
+      "cpu_s": 32.02536,
+      "load_before": [
+        5.35595703125,
+        5.57421875,
+        5.677734375
+      ],
+      "load_after": [
+        6.00634765625,
+        5.708984375,
+        5.7197265625
+      ],
+      "benchmark": {
+        "achieved_messages_per_s": 101515.58047948351,
+        "books": 10000,
+        "corrections_by_outcome_side": [
+          1264,
+          1232,
+          1218,
+          1198
+        ],
+        "correctness_pass": true,
+        "decode_wall_s": 23.222361308,
+        "deliberate_corrections": 4912,
+        "depth_per_side": 25,
+        "duration_pass": false,
+        "effective_hot_markets": 64,
+        "events": 1250610,
+        "explicit_changes_per_price_change": 2,
+        "feed_s": 12.319389734,
+        "file_bytes": 335544320,
+        "finish_drain_and_flush_s": 1.301060661,
+        "full_book_every": 32,
+        "full_book_messages": 39104,
+        "generation_wall_s": 0.31107398,
+        "generator_valid": false,
+        "hot_fraction_percent": 1,
+        "hot_selection_percent": 80,
+        "independent_record_oracle_s": 0.092610185,
+        "initial_array_bytes": 18875000,
+        "initial_levels": 500000,
+        "latency_pass": false,
+        "live_max_messages_per_s": 41687,
+        "markets": 5000,
+        "offered_events_per_s": 125061,
+        "offered_messages_per_s": 125061,
+        "offered_rate_pass": true,
+        "pacing_slot_ms": 1,
+        "periodic_snapshots": 0,
+        "price_change_messages": 1211506,
+        "producer_lateness": {
+          "max_ms": 3955.001,
+          "mean_ms": 623.8227478702394,
+          "negative_samples": 0,
+          "overflow_samples": 504813,
+          "p50_upper_ms": 55.0,
+          "p99_upper_ms": 3955.001,
+          "samples": 1250610
+        },
+        "producers": 64,
+        "rate_tolerance_fraction": 0.01,
+        "readback_and_final_oracle_s": 2.150449483,
+        "receive_to_encode": {
+          "max_ms": 6127.976,
+          "mean_ms": 1801.124361257189,
+          "negative_samples": 0,
+          "overflow_samples": 1412515,
+          "p50_upper_ms": 6127.976,
+          "p99_upper_ms": 6127.976,
+          "samples": 2427924
+        },
+        "reinserted_by_outcome_side": [
+          302223,
+          302295,
+          301072,
+          300969
+        ],
+        "removed_by_outcome_side": [
+          304702,
+          304782,
+          303561,
+          303447
+        ],
+        "runtime_threads": 6,
+        "scheduled_arrival_age_includes_generator_lag": true,
+        "seconds": 10,
+        "sustained_rate_pass": false,
+        "target_messages_per_s": 125061,
+        "target_pass": false,
+        "template_pool_bytes": 86240000,
+        "template_pool_bytes_are_raw_json_lengths": true,
+        "template_pool_generation_in_timed_region": false,
+        "total_s": 18.344972768,
+        "validated_books": 10000,
+        "validated_periodic_snapshots": 0,
+        "validated_scheduled_records": 2427924,
+        "validated_updates": 2427924,
+        "warmup_settle_s": 2,
+        "worker_apply_s": [
+          1.202840926,
+          1.919536614,
+          1.965073044,
+          2.241824146
+        ],
+        "worker_input_peaks": [
+          65536,
+          64116,
+          65536,
+          65536
+        ],
+        "worker_messages": [
+          316210,
+          316383,
+          316243,
+          316774
+        ],
+        "worker_queue_bound": 65536,
+        "worker_writer_blocked_s": [
+          0.868502278,
+          0.722768063,
+          0.748547561,
+          0.709541003
+        ],
+        "workers": 4,
+        "workload_limits": "two mutable best prices per outcome; quantities 0/100; fixed exchange timestamp; ignored hash/best bid/ask metadata included; no socket/TLS/discovery; M1 separately covers wide prices/quantities/depth",
+        "workload_seed": 7324878290347098112,
+        "writer_bytes": 305336728,
+        "writer_encode_and_chunk_write_s": 2.351270151,
+        "writer_final_flush_s": 0.218096885,
+        "writer_queue_bound": 65536,
+        "writer_queue_peak": 65537
+      },
+      "stages": {
+        "decode": {
+          "samples": 36180,
+          "mean_ms": 0.020865581039248203,
+          "p50_ms": 0.00242,
+          "p99_ms": 0.024511,
+          "max_ms": 163.12628
+        },
+        "decoded_to_worker": {
+          "samples": 36180,
+          "mean_ms": 1071.4102928292427,
+          "p50_ms": 682.847333,
+          "p99_ms": 4558.950347,
+          "max_ms": 4665.842616
+        },
+        "worker_apply": {
+          "samples": 36180,
+          "mean_ms": 0.002042741763405196,
+          "p50_ms": 0.00054,
+          "p99_ms": 0.00389,
+          "max_ms": 4.468589
+        },
+        "apply_to_submit": {
+          "samples": 36180,
+          "mean_ms": 0.001246008844665561,
+          "p50_ms": 0.00021,
+          "p99_ms": 0.00431,
+          "max_ms": 13.77711
+        },
+        "submit_to_writer": {
+          "samples": 36180,
+          "mean_ms": 101.76112473537867,
+          "p50_ms": 21.694279,
+          "p99_ms": 916.360666,
+          "max_ms": 984.065287
+        },
+        "encode_and_chunk_write": {
+          "samples": 36180,
+          "mean_ms": 0.0007071494195688225,
+          "p50_ms": 0.00018,
+          "p99_ms": 0.00341,
+          "max_ms": 3.472431
+        },
+        "receive_to_encode": {
+          "samples": 36180,
+          "mean_ms": 1173.1962790456882,
+          "p50_ms": 777.992753,
+          "p99_ms": 4656.416263,
+          "max_ms": 4755.239829
+        }
+      },
+      "record_writes": {
+        "samples": 2437924,
+        "mean_ms": 0.0015371634263414283,
+        "p50_ms": 0.00018,
+        "p99_ms": 0.00353,
+        "max_ms": 246.738826
+      },
+      "flushes": {
+        "samples": 5,
+        "mean_ms": 195.612229,
+        "p50_ms": 214.713867,
+        "p99_ms": 246.701095,
+        "max_ms": 246.701095
+      },
+      "writes_over_10ms": 31,
+      "writes_over_100ms": 6
+    },
+    {
+      "case": "snapshot-cycle",
+      "exit_code": 0,
+      "elapsed_s": 78.09809878701344,
+      "cpu_s": 78.64799899999998,
+      "load_before": [
+        6.00537109375,
+        5.7138671875,
+        5.7216796875
+      ],
+      "load_after": [
+        3.919921875,
+        5.087890625,
+        5.4990234375
+      ],
+      "benchmark": {
+        "achieved_messages_per_s": 15993.811857787854,
+        "books": 10000,
+        "corrections_by_outcome_side": [
+          1128,
+          1100,
+          1099,
+          1053
+        ],
+        "correctness_pass": true,
+        "decode_wall_s": 26.999751233,
+        "deliberate_corrections": 4380,
+        "depth_per_side": 25,
+        "duration_pass": true,
+        "effective_hot_markets": 64,
+        "events": 1120000,
+        "explicit_changes_per_price_change": 2,
+        "feed_s": 70.027083597,
+        "file_bytes": 335544320,
+        "finish_drain_and_flush_s": 1.613939354,
+        "full_book_every": 32,
+        "full_book_messages": 35008,
+        "generation_wall_s": 0.336837809,
+        "generator_valid": false,
+        "hot_fraction_percent": 1,
+        "hot_selection_percent": 80,
+        "independent_record_oracle_s": 0.147697505,
+        "initial_array_bytes": 18875000,
+        "initial_levels": 500000,
+        "latency_pass": false,
+        "live_max_messages_per_s": 41687,
+        "markets": 5000,
+        "offered_events_per_s": 16000,
+        "offered_messages_per_s": 16000,
+        "offered_rate_pass": false,
+        "pacing_slot_ms": 1,
+        "periodic_snapshots": 10000,
+        "price_change_messages": 1084992,
+        "producer_lateness": {
+          "max_ms": 1463.245,
+          "mean_ms": 20.195582239285716,
+          "negative_samples": 0,
+          "overflow_samples": 19790,
+          "p50_upper_ms": 3.0,
+          "p99_upper_ms": 1463.245,
+          "samples": 1120000
+        },
+        "producers": 64,
+        "rate_tolerance_fraction": 0.01,
+        "readback_and_final_oracle_s": 2.835433104,
+        "receive_to_encode": {
+          "max_ms": 2291.254,
+          "mean_ms": 42.985403501897565,
+          "negative_samples": 0,
+          "overflow_samples": 67096,
+          "p50_upper_ms": 4.0,
+          "p99_upper_ms": 2291.254,
+          "samples": 2174364
+        },
+        "reinserted_by_outcome_side": [
+          270501,
+          270655,
+          269568,
+          269387
+        ],
+        "removed_by_outcome_side": [
+          272942,
+          273122,
+          272032,
+          271826
+        ],
+        "runtime_threads": 6,
+        "scheduled_arrival_age_includes_generator_lag": true,
+        "seconds": 70,
+        "sustained_rate_pass": false,
+        "target_messages_per_s": 125061,
+        "target_pass": false,
+        "template_pool_bytes": 86240000,
+        "template_pool_bytes_are_raw_json_lengths": true,
+        "template_pool_generation_in_timed_region": false,
+        "total_s": 77.296464479,
+        "validated_books": 10000,
+        "validated_periodic_snapshots": 10000,
+        "validated_scheduled_records": 2174364,
+        "validated_updates": 2174364,
+        "warmup_settle_s": 2,
+        "worker_apply_s": [
+          2.315669048,
+          2.361277443,
+          3.028164812,
+          2.203468853
+        ],
+        "worker_input_peaks": [
+          3102,
+          3344,
+          6630,
+          6555
+        ],
+        "worker_messages": [
+          283670,
+          283735,
+          283622,
+          283973
+        ],
+        "worker_queue_bound": 65536,
+        "worker_writer_blocked_s": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "workers": 4,
+        "workload_limits": "two mutable best prices per outcome; quantities 0/100; fixed exchange timestamp; ignored hash/best bid/ask metadata included; no socket/TLS/discovery; M1 separately covers wide prices/quantities/depth",
+        "workload_seed": 7324878290347098112,
+        "writer_bytes": 283371000,
+        "writer_encode_and_chunk_write_s": 2.879761918,
+        "writer_final_flush_s": 0.212981149,
+        "writer_queue_bound": 65536,
+        "writer_queue_peak": 28779
+      },
+      "stages": {
+        "decode": {
+          "samples": 32460,
+          "mean_ms": 0.018889704682686383,
+          "p50_ms": 0.00454,
+          "p99_ms": 0.034321,
+          "max_ms": 54.003897
+        },
+        "decoded_to_worker": {
+          "samples": 32460,
+          "mean_ms": 15.811436661429452,
+          "p50_ms": 0.00377,
+          "p99_ms": 620.883481,
+          "max_ms": 1298.088897
+        },
+        "worker_apply": {
+          "samples": 32460,
+          "mean_ms": 0.005529324953789279,
+          "p50_ms": 0.00202,
+          "p99_ms": 0.01399,
+          "max_ms": 10.865446
+        },
+        "apply_to_submit": {
+          "samples": 32460,
+          "mean_ms": 0.004274808040665434,
+          "p50_ms": 0.00021,
+          "p99_ms": 0.012441,
+          "max_ms": 42.381859
+        },
+        "submit_to_writer": {
+          "samples": 32460,
+          "mean_ms": 5.6459666020948855,
+          "p50_ms": 0.576036,
+          "p99_ms": 101.907106,
+          "max_ms": 336.157994
+        },
+        "encode_and_chunk_write": {
+          "samples": 32460,
+          "mean_ms": 0.0008449473813924831,
+          "p50_ms": 0.0002,
+          "p99_ms": 0.00396,
+          "max_ms": 5.788148
+        },
+        "receive_to_encode": {
+          "samples": 32460,
+          "mean_ms": 21.486942048582872,
+          "p50_ms": 0.773523,
+          "p99_ms": 664.465595,
+          "max_ms": 1305.507022
+        }
+      },
+      "record_writes": {
+        "samples": 2194364,
+        "mean_ms": 0.0015203028540388011,
+        "p50_ms": 0.00019,
+        "p99_ms": 0.00404,
+        "max_ms": 237.924821
+      },
+      "flushes": {
+        "samples": 5,
+        "mean_ms": 169.99424159999998,
+        "p50_ms": 191.316641,
+        "p99_ms": 237.87362,
+        "max_ms": 237.87362
+      },
+      "writes_over_10ms": 32,
+      "writes_over_100ms": 6
+    }
+  ],
+  "uninstrumented_control": {
+    "binary_sha256": "a149559234d6820e8c9e5fc3b0b84c3e7e6c4ed6d31cb9d9465a7ffe71d97012",
+    "runs": [
+      {
+        "case": "mean",
+        "exit_code": 0,
+        "elapsed_s": 13.814780741988216,
+        "load_before": [
+          2.57568359375,
+          3.833984375,
+          4.69287109375
+        ],
+        "load_after": [
+          3.37744140625,
+          3.9697265625,
+          4.72802734375
+        ],
+        "benchmark": {
+          "achieved_messages_per_s": 15998.54092826778,
+          "books": 10000,
+          "corrections_by_outcome_side": [
+            167,
+            159,
+            184,
+            134
+          ],
+          "correctness_pass": true,
+          "decode_wall_s": 2.731615883,
+          "deliberate_corrections": 644,
+          "depth_per_side": 25,
+          "duration_pass": false,
+          "effective_hot_markets": 64,
+          "events": 160000,
+          "explicit_changes_per_price_change": 2,
+          "feed_s": 10.000912003,
+          "file_bytes": 67108864,
+          "finish_drain_and_flush_s": 0.212834526,
+          "full_book_every": 32,
+          "full_book_messages": 5056,
+          "generation_wall_s": 0.584558719,
+          "generator_valid": false,
+          "hot_fraction_percent": 1,
+          "hot_selection_percent": 80,
+          "independent_record_oracle_s": 0.037168501,
+          "initial_array_bytes": 18875000,
+          "initial_levels": 500000,
+          "latency_pass": false,
+          "live_max_messages_per_s": 41687,
+          "markets": 5000,
+          "offered_events_per_s": 16000,
+          "offered_messages_per_s": 16000,
+          "offered_rate_pass": false,
+          "pacing_slot_ms": 1,
+          "periodic_snapshots": 0,
+          "price_change_messages": 154944,
+          "producer_lateness": {
+            "max_ms": 202.882,
+            "mean_ms": 6.28792578125,
+            "negative_samples": 0,
+            "overflow_samples": 0,
+            "p50_upper_ms": 2.0,
+            "p99_upper_ms": 106.0,
+            "samples": 160000
+          },
+          "producers": 64,
+          "rate_tolerance_fraction": 0.01,
+          "readback_and_final_oracle_s": 0.557220096,
+          "receive_to_encode": {
+            "max_ms": 232.204,
+            "mean_ms": 9.708691223448792,
+            "negative_samples": 0,
+            "overflow_samples": 0,
+            "p50_upper_ms": 3.0,
+            "p99_upper_ms": 130.0,
+            "samples": 310532
+          },
+          "reinserted_by_outcome_side": [
+            37488,
+            37682,
+            37535,
+            37329
+          ],
+          "removed_by_outcome_side": [
+            39947,
+            40153,
+            40000,
+            39792
+          ],
+          "runtime_threads": 6,
+          "scheduled_arrival_age_includes_generator_lag": true,
+          "seconds": 10,
+          "sustained_rate_pass": false,
+          "target_messages_per_s": 125061,
+          "target_pass": false,
+          "template_pool_bytes": 86240000,
+          "template_pool_bytes_are_raw_json_lengths": true,
+          "template_pool_generation_in_timed_region": false,
+          "total_s": 13.657837012,
+          "validated_books": 10000,
+          "validated_periodic_snapshots": 0,
+          "validated_scheduled_records": 310532,
+          "validated_updates": 310532,
+          "warmup_settle_s": 2,
+          "worker_apply_s": [
+            0.352991185,
+            0.352903593,
+            0.372221355,
+            0.338143981
+          ],
+          "worker_input_peaks": [
+            2929,
+            2865,
+            2906,
+            2861
+          ],
+          "worker_messages": [
+            43661,
+            43695,
+            43868,
+            43776
+          ],
+          "worker_queue_bound": 65536,
+          "worker_writer_blocked_s": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "workers": 4,
+          "workload_limits": "two mutable best prices per outcome; quantities 0/100; fixed exchange timestamp; ignored hash/best bid/ask metadata included; no socket/TLS/discovery; M1 separately covers wide prices/quantities/depth",
+          "workload_seed": 7324878290347098112,
+          "writer_bytes": 47014904,
+          "writer_encode_and_chunk_write_s": 0.526523845,
+          "writer_final_flush_s": 0.199648081,
+          "writer_queue_bound": 65536,
+          "writer_queue_peak": 7053
+        }
+      },
+      {
+        "case": "peak",
+        "exit_code": 0,
+        "elapsed_s": 13.895624650991522,
+        "load_before": [
+          3.37744140625,
+          3.9697265625,
+          4.72802734375
+        ],
+        "load_after": [
+          4.02099609375,
+          4.07275390625,
+          4.74853515625
+        ],
+        "benchmark": {
+          "achieved_messages_per_s": 42000.05164746351,
+          "books": 10000,
+          "corrections_by_outcome_side": [
+            433,
+            430,
+            418,
+            368
+          ],
+          "correctness_pass": true,
+          "decode_wall_s": 5.794319735,
+          "deliberate_corrections": 1649,
+          "depth_per_side": 25,
+          "duration_pass": false,
+          "effective_hot_markets": 64,
+          "events": 420000,
+          "explicit_changes_per_price_change": 2,
+          "feed_s": 9.999987703,
+          "file_bytes": 134217728,
+          "finish_drain_and_flush_s": 0.18854532,
+          "full_book_every": 32,
+          "full_book_messages": 13136,
+          "generation_wall_s": 0.309400382,
+          "generator_valid": true,
+          "hot_fraction_percent": 1,
+          "hot_selection_percent": 80,
+          "independent_record_oracle_s": 0.056980166,
+          "initial_array_bytes": 18875000,
+          "initial_levels": 500000,
+          "latency_pass": false,
+          "live_max_messages_per_s": 41687,
+          "markets": 5000,
+          "offered_events_per_s": 42000,
+          "offered_messages_per_s": 42000,
+          "offered_rate_pass": false,
+          "pacing_slot_ms": 1,
+          "periodic_snapshots": 0,
+          "price_change_messages": 406864,
+          "producer_lateness": {
+            "max_ms": 79.794,
+            "mean_ms": 3.050458488095238,
+            "negative_samples": 0,
+            "overflow_samples": 0,
+            "p50_upper_ms": 2.0,
+            "p99_upper_ms": 33.0,
+            "samples": 420000
+          },
+          "producers": 64,
+          "rate_tolerance_fraction": 0.01,
+          "readback_and_final_oracle_s": 0.902607274,
+          "receive_to_encode": {
+            "max_ms": 272.725,
+            "mean_ms": 9.544401826394417,
+            "negative_samples": 0,
+            "overflow_samples": 1540,
+            "p50_upper_ms": 3.0,
+            "p99_upper_ms": 178.0,
+            "samples": 815377
+          },
+          "reinserted_by_outcome_side": [
+            100613,
+            100747,
+            100324,
+            100186
+          ],
+          "removed_by_outcome_side": [
+            103078,
+            103289,
+            102870,
+            102657
+          ],
+          "runtime_threads": 6,
+          "scheduled_arrival_age_includes_generator_lag": true,
+          "seconds": 10,
+          "sustained_rate_pass": false,
+          "target_messages_per_s": 125061,
+          "target_pass": false,
+          "template_pool_bytes": 86240000,
+          "template_pool_bytes_are_raw_json_lengths": true,
+          "template_pool_generation_in_timed_region": false,
+          "total_s": 13.730955875,
+          "validated_books": 10000,
+          "validated_periodic_snapshots": 0,
+          "validated_scheduled_records": 815377,
+          "validated_updates": 815377,
+          "warmup_settle_s": 2,
+          "worker_apply_s": [
+            0.593075393,
+            0.607357413,
+            0.51732555,
+            0.60214815
+          ],
+          "worker_input_peaks": [
+            3325,
+            3491,
+            3224,
+            2854
+          ],
+          "worker_messages": [
+            108458,
+            108683,
+            108881,
+            108978
+          ],
+          "worker_queue_bound": 65536,
+          "worker_writer_blocked_s": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "workers": 4,
+          "workload_limits": "two mutable best prices per outcome; quantities 0/100; fixed exchange timestamp; ignored hash/best bid/ask metadata included; no socket/TLS/discovery; M1 separately covers wide prices/quantities/depth",
+          "workload_seed": 7324878290347098112,
+          "writer_bytes": 108605994,
+          "writer_encode_and_chunk_write_s": 1.003576076,
+          "writer_final_flush_s": 0.176410257,
+          "writer_queue_bound": 65536,
+          "writer_queue_peak": 21924
+        }
+      }
+    ]
+  },
+  "profile": {
+    "returncode": 0,
+    "source_stable": true,
+    "phase_wall_s": 10.410042907984462,
+    "phase_cpu_s": 16.93,
+    "phase_average_cores": 1.6263141419921292,
+    "samples": 793,
+    "lost_samples": 0,
+    "sampling_hz": 99,
+    "event": "cpu-clock:u",
+    "scope": "Separate 10-second 42000 messages/s diagnostic. Profiled latency excluded from reported benchmark results. CPU samples exclude kernel work. Scheduler deltas span monitor observations, including preparation and finish.",
+    "thread_deltas": [
+      {
+        "name": "m5-probe",
+        "cpu_ms": 0.0,
+        "runnable_wait_ms": 0.0,
+        "timeslices": 0
+      },
+      {
+        "name": "paced_pipeline",
+        "cpu_ms": 1617.517813,
+        "runnable_wait_ms": 86.52833,
+        "timeslices": 384
+      },
+      {
+        "name": "tokio-rt-worker",
+        "cpu_ms": 2113.753497,
+        "runnable_wait_ms": 1721.726363,
+        "timeslices": 3134
+      },
+      {
+        "name": "tokio-rt-worker",
+        "cpu_ms": 2360.982195,
+        "runnable_wait_ms": 1784.470507,
+        "timeslices": 2535
+      },
+      {
+        "name": "tokio-rt-worker",
+        "cpu_ms": 2692.538129,
+        "runnable_wait_ms": 1470.182865,
+        "timeslices": 3032
+      },
+      {
+        "name": "tokio-rt-worker",
+        "cpu_ms": 2301.900245,
+        "runnable_wait_ms": 1727.991791,
+        "timeslices": 2699
+      },
+      {
+        "name": "tokio-rt-worker",
+        "cpu_ms": 2525.109604,
+        "runnable_wait_ms": 1644.54824,
+        "timeslices": 2711
+      },
+      {
+        "name": "tokio-rt-worker",
+        "cpu_ms": 2833.915534,
+        "runnable_wait_ms": 1658.921806,
+        "timeslices": 4128
+      },
+      {
+        "name": "writer",
+        "cpu_ms": 2290.442361,
+        "runnable_wait_ms": 1963.554347,
+        "timeslices": 13621
+      },
+      {
+        "name": "telemetry",
+        "cpu_ms": 146.475736,
+        "runnable_wait_ms": 1789.94663,
+        "timeslices": 910
+      }
+    ],
+    "top_symbols": [
+      "     5.55%  tokio-rt-worker  [.] serde_json::read::SliceRead::skip_to_escape                                                                                                                                                                                                                                                            -      -            ",
+      "     3.66%  tokio-rt-worker  [.] _ZN2m514paced_pipeline28_$u7b$$u7b$closure$u7d$$u7d$28_$u7b$$u7b$closure$u7d$$u7d$17hf66cdc4c49149febE.llvm.8178307170839741528                                                                                                                                                                        -      -            ",
+      "     3.66%  tokio-rt-worker  [.] engineering_challenge::core::worker::Worker::handle                                                                                                                                                                                                                                                    -      -            ",
+      "     3.53%  tokio-rt-worker  [.] engineering_challenge::core::order_book::OrderBookSide::set                                                                                                                                                                                                                                            -      -            ",
+      "     3.40%  tokio-rt-worker  [.] <engineering_challenge::exchange::polymarket::decode::MaybeEntry as serde_core::de::DeserializeSeed>::deserialize                                                                                                                                                                                      -      -            ",
+      "     2.77%  tokio-rt-worker  [.] 0x0000000000188632                                                                                                                                                                                                                                                                                     -      -            ",
+      "     2.52%  tokio-rt-worker  [.] <serde_json::read::StrRead as serde_json::read::Read>::parse_str                                                                                                                                                                                                                                       -      -            ",
+      "     2.40%  tokio-rt-worker  [.] engineering_challenge::core::routing::Workers::send_one::_$u7b$$u7b$closure$u7d$$u7d$::h65459a9b020d8d7e                                                                                                                                                                                               -      -            ",
+      "     2.14%  tokio-rt-worker  [.] <engineering_challenge::core::connection::ConnectionIds as engineering_challenge::model::SubscribedIds>::order_book                                                                                                                                                                                    -      -            ",
+      "     2.14%  writer           [.] 0x0000000000000c6a                                                                                                                                                                                                                                                                                     -      -            ",
+      "     2.02%  tokio-rt-worker  [.] _ZN71_$LT$core..hash..sip..Hasher$LT$S$GT$$u20$as$u20$core..hash..Hasher$GT$5write17hd636b530e81f2b4eE.llvm.5196338066162870504                                                                                                                                                                        -      -            ",
+      "     2.02%  tokio-rt-worker  [.] core::str::<impl str>::trim_start_matches                                                                                                                                                                                                                                                              -      -            ",
+      "     2.02%  tokio-rt-worker  [.] engineering_challenge::exchange::polymarket::decode::_::<impl serde_core::de::Deserialize for engineering_challenge::exchange::polymarket::decode::Key>::deserialize                                                                                                                                   -      -            ",
+      "     1.89%  tokio-rt-worker  [.] <engineering_challenge::core::connection::ConnectionIds as engineering_challenge::model::SubscribedIds>::market                                                                                                                                                                                        -      -            ",
+      "     1.89%  tokio-rt-worker  [.] engineering_challenge::exchange::polymarket::number::parse_fixed6                                                                                                                                                                                                                                      -      -            ",
+      "     1.77%  tokio-rt-worker  [.] <engineering_challenge::exchange::polymarket::decode::Text as serde_core::de::Deserialize>::deserialize                                                                                                                                                                                                -      -            ",
+      "     1.64%  tokio-rt-worker  [.] _ZN80_$LT$serde_json..de..MapAccess$LT$R$GT$$u20$as$u20$serde_core..de..MapAccess$GT$13next_key_seed12has_next_key17h16102c402594ef11E.llvm.5840281527830991262                                                                                                                                        -      -            ",
+      "     1.64%  tokio-rt-worker  [.] 0x0000000000188eb4                                                                                                                                                                                                                                                                                     -      -            ",
+      "     1.51%  tokio-rt-worker  [.] tokio::runtime::time::wheel::Wheel::poll                                                                                                                                                                                                                                                               -      -            "
+    ],
+    "first_attempt": "Excluded: driver selected a short-lived perf helper PID and broke its stdout pipe. Retry selected the benchmark process and passed output validation."
+  },
+  "limitations": [
+    "One run per case, shared six-CPU host; no optimization winner or stable machine-independent latency claim.",
+    "5000 markets, 10000 books, 25 levels per side; smaller registry and connection population than full catalog.",
+    "Synthetic pre-generated JSON through real decoder, workers, and SBE writer; excludes WebSocket/TLS/discovery/capture.",
+    "Stage samples are per emitted level record from one in 67 input messages, including refresh corrections; sample messages may produce multiple records.",
+    "Receipt proxy is actual entry into decode_frame, excluding generator lateness; diagnostic timestamps are monotonic.",
+    "The M5 receive_to_encode field still uses scheduled arrivals and is labeled scheduled-to-encode in this report.",
+    "Added timestamp metadata changes message size; sparse sampling can miss a chunk rotation on the specific measured record. Complete all-record write timing and direct flush timing retain those stalls.",
+    "Controls use identical original source hashes but were run later, so host variation and probe overhead are not separable.",
+    "No speedup measurement or production code change was made."
+  ],
+  "tool_sha256": "c2c57d64675a2adc160d003825658277e3dc25d7f3411c3d56359ad39f5d1c8e",
+  "tool_smoke": {
+    "markets": 100,
+    "offered_messages": 2000,
+    "correctness_pass": true,
+    "exit_code": 0
+  },
+  "current_reproduction_tool_sha256": "a044967bfc96df6054ac6303f11265e0d47a66b6f270fd3bd22d17a6ba8dd8d8",
+  "reproduction_note": "Recorded tool_sha256 identifies the original per-record diagnostic. The current reproduction tool supports batched output; recorded results are historical, not batching measurements."
+}

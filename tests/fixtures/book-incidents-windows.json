@@ -1,0 +1,164 @@
+[
+  {
+    "source": "research/recordings/subscription-behavior-20261025/frames.jsonl",
+    "connection": "bulk-4",
+    "end_line": 76,
+    "source_prefix_sha256": "9b56d5be2369d94a09531a3b452c1e9cf0990d414d13a7ed5557001988127859",
+    "repeat_books": 2,
+    "different_books": 2,
+    "incidents": [
+      {
+        "line": 74,
+        "event_index": 0,
+        "asset": "60439878158528690068732587238646919914982640715378138780095969649181440667514",
+        "initial": {
+          "line": 36,
+          "event_index": 203,
+          "received_at": "2026-10-25T14:55:20.057Z",
+          "exchange_ms": 1792940118629,
+          "hash": "0b5705ed20b0542afc0977ca7e4609cd0e794b98"
+        },
+        "incoming_exchange_us": 1792940119338000,
+        "incoming_hash": "f10680edadd4c85565d001289174240f9c76ce1c",
+        "differences": [
+          {
+            "side": "ask",
+            "price": 970000,
+            "held": 5100000000,
+            "incoming": 6100000000
+          }
+        ]
+      },
+      {
+        "line": 76,
+        "event_index": 0,
+        "asset": "41021206714580239746813054711419721306446523118398329746357160802261679058815",
+        "initial": {
+          "line": 36,
+          "event_index": 275,
+          "received_at": "2026-10-25T14:55:20.057Z",
+          "exchange_ms": 1792940118629,
+          "hash": "e3ccc15d8795b7f6c8603e481ae087b8f5bca577"
+        },
+        "incoming_exchange_us": 1792940119338000,
+        "incoming_hash": "87af1ca661709dc1332e469b86ab603f9f561d53",
+        "differences": [
+          {
+            "side": "bid",
+            "price": 30000,
+            "held": 5100000000,
+            "incoming": 6100000000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "source": "research/recordings/subscription-behavior-format-20261025/frames.jsonl",
+    "connection": "bulk-format-2",
+    "end_line": 3680,
+    "source_prefix_sha256": "66b0007f22bd596c75c4fbadbf53746f0c75a272a900c3d74efca5194a16936b",
+    "repeat_books": 20,
+    "different_books": 2,
+    "incidents": [
+      {
+        "line": 3679,
+        "event_index": 0,
+        "asset": "108456264239031514288349092154900311669737695126714294292073692623811849531540",
+        "initial": {
+          "line": 168,
+          "event_index": 546,
+          "received_at": "2026-10-25T14:58:29.731Z",
+          "exchange_ms": 1792940309388,
+          "hash": "7a123a89fe402ca2875f62e2cf75bf983b39760b"
+        },
+        "incoming_exchange_us": 1792940311406000,
+        "incoming_hash": "a124b41858f8252363910e1e94bb11d819b4bc1a",
+        "differences": [
+          {
+            "side": "bid",
+            "price": 180000,
+            "held": 6887750000,
+            "incoming": 7443300000
+          }
+        ]
+      },
+      {
+        "line": 3680,
+        "event_index": 0,
+        "asset": "23344609277608629661394718286862958013114892767053580860403706069160748995639",
+        "initial": {
+          "line": 168,
+          "event_index": 265,
+          "received_at": "2026-10-25T14:58:29.731Z",
+          "exchange_ms": 1792940309388,
+          "hash": "bc119eb07246a0925e545ec966ca56992da13ceb"
+        },
+        "incoming_exchange_us": 1792940311406000,
+        "incoming_hash": "d5b2d1e17c01b52ad3941222c017cb0e65f552d7",
+        "differences": [
+          {
+            "side": "ask",
+            "price": 820000,
+            "held": 6887750000,
+            "incoming": 7443300000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "source": "research/recordings/subscription-behavior-format-20261025/frames.jsonl",
+    "connection": "bulk-format-1",
+    "end_line": 3685,
+    "source_prefix_sha256": "524a15cf97c2de74ba748906ad1855ce7944fb7713cb3e14455323fb9a7b18d0",
+    "repeat_books": 20,
+    "different_books": 2,
+    "incidents": [
+      {
+        "line": 3684,
+        "event_index": 0,
+        "asset": "108456264239031514288349092154900311669737695126714294292073692623811849531540",
+        "initial": {
+          "line": 19,
+          "event_index": 723,
+          "received_at": "2026-10-25T14:58:29.638Z",
+          "exchange_ms": 1792940309388,
+          "hash": "7a123a89fe402ca2875f62e2cf75bf983b39760b"
+        },
+        "incoming_exchange_us": 1792940311406000,
+        "incoming_hash": "a124b41858f8252363910e1e94bb11d819b4bc1a",
+        "differences": [
+          {
+            "side": "bid",
+            "price": 180000,
+            "held": 6887750000,
+            "incoming": 7443300000
+          }
+        ]
+      },
+      {
+        "line": 3685,
+        "event_index": 0,
+        "asset": "23344609277608629661394718286862958013114892767053580860403706069160748995639",
+        "initial": {
+          "line": 19,
+          "event_index": 537,
+          "received_at": "2026-10-25T14:58:29.638Z",
+          "exchange_ms": 1792940309388,
+          "hash": "bc119eb07246a0925e545ec966ca56992da13ceb"
+        },
+        "incoming_exchange_us": 1792940311406000,
+        "incoming_hash": "d5b2d1e17c01b52ad3941222c017cb0e65f552d7",
+        "differences": [
+          {
+            "side": "ask",
+            "price": 820000,
+            "held": 6887750000,
+            "incoming": 7443300000
+          }
+        ]
+      }
+    ]
+  }
+]

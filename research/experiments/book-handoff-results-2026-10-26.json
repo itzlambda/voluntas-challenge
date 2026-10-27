@@ -1,0 +1,2515 @@
+{
+  "conclusion": "Inconclusive: no repeat-book reconstruction incident observed.",
+  "baseline_epochs": 3,
+  "totals": {
+    "joins_started": 20,
+    "joins_successful": 15,
+    "main_feeds": 23,
+    "main_closes": 23,
+    "main_errors": 5,
+    "close_timeouts": 2,
+    "initial_to_FIRST_refresh_windows_compared": 26,
+    "initial_to_FIRST_refresh_windows_without_refresh": 14,
+    "A_unmatched_content_occurrences_in_same_receive_windows": 40,
+    "A_unmatched_with_target_already_in_B_initial_and_no_boundary_match": 2,
+    "A_unmatched_without_boundary_match_or_initial_quantity_match": 0,
+    "A_unmatched_with_equal_B_content_before_initial_or_after_FIRST_within_2s": 38,
+    "B_unmatched_content_occurrences_in_same_receive_windows": 1412,
+    "repeat_book_comparisons": 116,
+    "differing_comparisons": 0,
+    "differing_levels": 0,
+    "FIRST_refresh_comparisons": 32,
+    "FIRST_refresh_differences": 0,
+    "later_refresh_comparisons": 84,
+    "later_refresh_differences": 0,
+    "cross_asof_comparisons": 92,
+    "cross_asof_differences": 48,
+    "cross_asof_differences_all_level_targets_later_on_A_within_2s": 30,
+    "cross_asof_INITIAL_differences": 8,
+    "cross_asof_FIRST_differences": 18,
+    "cross_asof_later_differences": 22
+  },
+  "quality": {
+    "capture_records": 38038,
+    "pilot_records_excluded": 1525,
+    "capture_index_discontinuities": 0,
+    "feed_frame_discontinuities": 0,
+    "receive_monotonic_regressions": 0,
+    "duplicate_book_price_entries": 0,
+    "unexpected_assets": 0,
+    "non_text_messages": 0,
+    "json_errors": 0,
+    "events_without_exchange_timestamp": 0,
+    "experiment_error": 2,
+    "hard_timeout": 0,
+    "non_json": 0,
+    "unexpected_closes": 3,
+    "A_continuity_failure": 2,
+    "unexpected_subscriptions": 0,
+    "overlapping_B_open_events": 2,
+    "maximum_open_B_sockets": 2
+  },
+  "period": {
+    "started_utc": "2026-10-26T11:29:51.734Z",
+    "finished_utc": "2026-10-26T11:53:16.439Z",
+    "wall_seconds": 1404.705,
+    "capture_seconds_including_pilots": 1162.969
+  },
+  "runs": [
+    {
+      "complete_capture": false,
+      "conclusion": "inconclusive: no repeat-book reconstruction incident observed",
+      "period": {
+        "started_utc": "2026-10-26T11:29:51.734Z",
+        "main_started_utc": "2026-10-26T11:30:18.797Z",
+        "finished_utc": "2026-10-26T11:37:02.419Z"
+      },
+      "elapsed_seconds_including_pilot": 430.685,
+      "market": {
+        "id": "682705",
+        "conditionId": "0x7586a96520578acaaaa4ea84a2582f197f84255da1f3392a7aa300386c187b37",
+        "endDate": "2026-10-28T03:59:00Z",
+        "active": true,
+        "closed": false,
+        "acceptingOrders": true
+      },
+      "asset_ids": [
+        "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+        "54533569528927082430133047556849600511985191158927477533124630301934489498530"
+      ],
+      "pilot_absolute_level_entries": 1026,
+      "subscription": {
+        "type": "market",
+        "assets_ids": [
+          "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+          "54533569528927082430133047556849600511985191158927477533124630301934489498530"
+        ],
+        "initial_dump": true
+      },
+      "schedule": {
+        "joins_planned": 20,
+        "baseline_seconds": 45,
+        "join_seconds": 40,
+        "control_gap_seconds": 10,
+        "tail_seconds": 35
+      },
+      "totals": {
+        "joins_started": 7,
+        "joins_successful": 6,
+        "main_feeds": 8,
+        "main_closes": 8,
+        "main_errors": 2,
+        "close_timeouts": 0,
+        "initial_to_FIRST_refresh_windows_compared": 8,
+        "initial_to_FIRST_refresh_windows_without_refresh": 6,
+        "A_unmatched_content_occurrences_in_same_receive_windows": 0,
+        "A_unmatched_with_target_already_in_B_initial_and_no_boundary_match": 0,
+        "A_unmatched_without_boundary_match_or_initial_quantity_match": 0,
+        "A_unmatched_with_equal_B_content_before_initial_or_after_FIRST_within_2s": 0,
+        "B_unmatched_content_occurrences_in_same_receive_windows": 24,
+        "repeat_book_comparisons": 50,
+        "differing_comparisons": 0,
+        "differing_levels": 0,
+        "FIRST_refresh_comparisons": 10,
+        "FIRST_refresh_differences": 0,
+        "later_refresh_comparisons": 40,
+        "later_refresh_differences": 0,
+        "cross_asof_comparisons": 36,
+        "cross_asof_differences": 14,
+        "cross_asof_differences_all_level_targets_later_on_A_within_2s": 12,
+        "cross_asof_INITIAL_differences": 0,
+        "cross_asof_FIRST_differences": 4,
+        "cross_asof_later_differences": 10
+      },
+      "quality": {
+        "capture_records": 16484,
+        "pilot_records_excluded": 1107,
+        "capture_index_discontinuities": 0,
+        "feed_frame_discontinuities": 0,
+        "receive_monotonic_regressions": 0,
+        "duplicate_book_price_entries": 0,
+        "unexpected_assets": 0,
+        "non_text_messages": 0,
+        "json_errors": 0,
+        "events_without_exchange_timestamp": 0,
+        "experiment_error": 1,
+        "hard_timeout": 0,
+        "non_json": 0,
+        "unexpected_closes": 2,
+        "A_continuity_failure": 1,
+        "unexpected_subscriptions": 0,
+        "overlapping_B_open_events": 0,
+        "maximum_open_B_sockets": 1
+      },
+      "feed_statistics": {
+        "A": {
+          "open": 1,
+          "sent": 40,
+          "subscriptions_sent": 1,
+          "received": 9041,
+          "open_to_first_receive_ms": 110.298128,
+          "array_frames": 1,
+          "event_book": 30,
+          "initial_books": 2,
+          "event_price_change": 8959,
+          "absolute_level_entries": 17918,
+          "PING_sent": 39,
+          "PONG": 39,
+          "application_gaps_gt_1s": 4,
+          "comparisons": 28,
+          "first_refresh_comparisons": 2,
+          "event_last_trade_price": 14,
+          "later_refresh_comparisons": 26,
+          "error": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 2.475434,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 1631.302031,
+            "market_ms": 1631.302031
+          }
+        },
+        "B01": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 1041,
+          "open_to_first_receive_ms": 38.532864,
+          "array_frames": 1,
+          "event_book": 6,
+          "initial_books": 2,
+          "cross_asof_comparisons": 6,
+          "event_price_change": 1030,
+          "absolute_level_entries": 2060,
+          "PING_sent": 4,
+          "PONG": 4,
+          "comparisons": 4,
+          "first_refresh_comparisons": 2,
+          "event_last_trade_price": 2,
+          "later_refresh_comparisons": 2,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1083.409757,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 409.889299,
+            "market_ms": 409.889299
+          }
+        },
+        "B02": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 956,
+          "open_to_first_receive_ms": 25.108637,
+          "array_frames": 1,
+          "event_book": 8,
+          "initial_books": 2,
+          "cross_asof_comparisons": 8,
+          "event_price_change": 943,
+          "absolute_level_entries": 1886,
+          "comparisons": 6,
+          "first_refresh_comparisons": 2,
+          "cross_asof_differences": 4,
+          "event_last_trade_price": 3,
+          "PING_sent": 4,
+          "PONG": 3,
+          "later_refresh_comparisons": 4,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1093.900599,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 716.278012,
+            "market_ms": 716.278012
+          }
+        },
+        "B03": {
+          "open": 1,
+          "sent": 4,
+          "subscriptions_sent": 1,
+          "received": 835,
+          "open_to_first_receive_ms": 35.69292,
+          "array_frames": 1,
+          "event_book": 2,
+          "initial_books": 2,
+          "cross_asof_comparisons": 2,
+          "event_price_change": 831,
+          "absolute_level_entries": 1662,
+          "PING_sent": 3,
+          "PONG": 3,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1060.854678,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 914.03068,
+            "market_ms": 914.03068
+          }
+        },
+        "B04": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 866,
+          "open_to_first_receive_ms": 26.497577,
+          "array_frames": 1,
+          "event_book": 2,
+          "initial_books": 2,
+          "cross_asof_comparisons": 2,
+          "event_price_change": 862,
+          "absolute_level_entries": 1724,
+          "PING_sent": 4,
+          "PONG": 3,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1113.917966,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 532.17048,
+            "market_ms": 532.17048
+          }
+        },
+        "B05": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 878,
+          "open_to_first_receive_ms": 111.411941,
+          "array_frames": 1,
+          "event_book": 8,
+          "initial_books": 2,
+          "cross_asof_comparisons": 8,
+          "event_price_change": 864,
+          "absolute_level_entries": 1728,
+          "PING_sent": 4,
+          "PONG": 4,
+          "comparisons": 6,
+          "first_refresh_comparisons": 2,
+          "event_last_trade_price": 3,
+          "later_refresh_comparisons": 4,
+          "cross_asof_differences": 4,
+          "application_gaps_gt_1s": 1,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1159.316881,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 1631.160429,
+            "market_ms": 1631.160429
+          }
+        },
+        "B06": {
+          "open": 1,
+          "sent": 4,
+          "subscriptions_sent": 1,
+          "received": 783,
+          "open_to_first_receive_ms": 47.568369,
+          "array_frames": 1,
+          "event_book": 8,
+          "initial_books": 2,
+          "cross_asof_comparisons": 8,
+          "event_price_change": 770,
+          "absolute_level_entries": 1540,
+          "comparisons": 6,
+          "first_refresh_comparisons": 2,
+          "cross_asof_differences": 6,
+          "event_last_trade_price": 3,
+          "PING_sent": 3,
+          "PONG": 3,
+          "later_refresh_comparisons": 4,
+          "application_gaps_gt_1s": 1,
+          "error": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 26.063362,
+          "close_requested": 1,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 1210.838674,
+            "market_ms": 1210.838674
+          }
+        },
+        "B07": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 840,
+          "open_to_first_receive_ms": 31.212148,
+          "array_frames": 1,
+          "event_book": 2,
+          "initial_books": 2,
+          "cross_asof_comparisons": 2,
+          "event_price_change": 835,
+          "absolute_level_entries": 1670,
+          "PING_sent": 4,
+          "PONG": 4,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1095.052528,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 753.925095,
+            "market_ms": 753.925095
+          }
+        }
+      },
+      "joins": [
+        {
+          "feed": "B01",
+          "join": 1,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.055373328,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 4,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 2,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 24771.256212,
+              "A_occurrences": 634,
+              "B_occurrences": 634,
+              "matched_content_occurrences": 634,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 0
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 24771.486399,
+              "A_occurrences": 634,
+              "B_occurrences": 634,
+              "matched_content_occurrences": 634,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 0
+            }
+          ]
+        },
+        {
+          "feed": "B02",
+          "join": 2,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.081821898,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 6,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 4,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 7016.259896,
+              "A_occurrences": 174,
+              "B_occurrences": 178,
+              "matched_content_occurrences": 174,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 4
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 7016.42723,
+              "A_occurrences": 174,
+              "B_occurrences": 178,
+              "matched_content_occurrences": 174,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 4
+            }
+          ]
+        },
+        {
+          "feed": "B03",
+          "join": 3,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.0596403,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 0,
+          "repeat_comparisons": 0,
+          "FIRST_comparisons": 0,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "no_initial_or_no_first_refresh"
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "no_initial_or_no_first_refresh"
+            }
+          ]
+        },
+        {
+          "feed": "B04",
+          "join": 4,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.047726532,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 0,
+          "repeat_comparisons": 0,
+          "FIRST_comparisons": 0,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "no_initial_or_no_first_refresh"
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "no_initial_or_no_first_refresh"
+            }
+          ]
+        },
+        {
+          "feed": "B05",
+          "join": 5,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.176065114,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 6,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 4,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 12625.373548,
+              "A_occurrences": 267,
+              "B_occurrences": 269,
+              "matched_content_occurrences": 267,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 2
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 12625.577154,
+              "A_occurrences": 267,
+              "B_occurrences": 269,
+              "matched_content_occurrences": 267,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 2
+            }
+          ]
+        },
+        {
+          "feed": "B06",
+          "join": 6,
+          "successful": false,
+          "initial_books": 2,
+          "observed_seconds": 30.634535137,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 6,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 4,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 6326.124175,
+              "A_occurrences": 101,
+              "B_occurrences": 107,
+              "matched_content_occurrences": 101,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 6
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 6326.316729,
+              "A_occurrences": 101,
+              "B_occurrences": 107,
+              "matched_content_occurrences": 101,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 6
+            }
+          ]
+        },
+        {
+          "feed": "B07",
+          "join": 7,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.044922296,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 0,
+          "repeat_comparisons": 0,
+          "FIRST_comparisons": 0,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "no_initial_or_no_first_refresh"
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "no_initial_or_no_first_refresh"
+            }
+          ]
+        }
+      ],
+      "established_only_control": {
+        "intervals": 8,
+        "seconds": 122.085168759,
+        "counts": {
+          "event_book": 8,
+          "event_price_change": 2667,
+          "absolute_level_entries": 5334,
+          "comparisons": 6,
+          "event_last_trade_price": 3
+        }
+      },
+      "control_intervals": [
+        {
+          "name": "established_control_0",
+          "start_mono_ns": "447393380444741",
+          "start_utc": "2026-10-26T11:30:19.162Z",
+          "counts": {
+            "event_book": 2,
+            "event_price_change": 962,
+            "absolute_level_entries": 1924
+          },
+          "end_mono_ns": "447438727879085",
+          "end_utc": "2026-10-26T11:31:04.509Z",
+          "seconds": 45.347434344
+        },
+        {
+          "name": "joining_B01",
+          "start_mono_ns": "447438727879085",
+          "start_utc": "2026-10-26T11:31:04.509Z",
+          "counts": {
+            "event_price_change": 1056,
+            "absolute_level_entries": 2112,
+            "event_book": 4,
+            "comparisons": 4,
+            "event_last_trade_price": 2
+          },
+          "end_mono_ns": "447479783252413",
+          "end_utc": "2026-10-26T11:31:45.565Z",
+          "seconds": 41.055373328
+        },
+        {
+          "name": "established_control_1",
+          "start_mono_ns": "447479783252413",
+          "start_utc": "2026-10-26T11:31:45.565Z",
+          "counts": {
+            "event_price_change": 252,
+            "absolute_level_entries": 504,
+            "event_book": 2,
+            "comparisons": 2,
+            "event_last_trade_price": 1
+          },
+          "end_mono_ns": "447490029875316",
+          "end_utc": "2026-10-26T11:31:55.811Z",
+          "seconds": 10.246622903
+        },
+        {
+          "name": "joining_B02",
+          "start_mono_ns": "447490029875316",
+          "start_utc": "2026-10-26T11:31:55.811Z",
+          "counts": {
+            "event_price_change": 974,
+            "absolute_level_entries": 1948,
+            "event_book": 6,
+            "comparisons": 6,
+            "event_last_trade_price": 3
+          },
+          "end_mono_ns": "447531111697214",
+          "end_utc": "2026-10-26T11:32:36.893Z",
+          "seconds": 41.081821898
+        },
+        {
+          "name": "established_control_2",
+          "start_mono_ns": "447531111697214",
+          "start_utc": "2026-10-26T11:32:36.893Z",
+          "counts": {
+            "event_price_change": 185,
+            "absolute_level_entries": 370
+          },
+          "end_mono_ns": "447541314247912",
+          "end_utc": "2026-10-26T11:32:47.096Z",
+          "seconds": 10.202550698
+        },
+        {
+          "name": "joining_B03",
+          "start_mono_ns": "447541314247912",
+          "start_utc": "2026-10-26T11:32:47.096Z",
+          "counts": {
+            "event_price_change": 854,
+            "absolute_level_entries": 1708
+          },
+          "end_mono_ns": "447582373888212",
+          "end_utc": "2026-10-26T11:33:28.155Z",
+          "seconds": 41.0596403
+        },
+        {
+          "name": "established_control_3",
+          "start_mono_ns": "447582373888212",
+          "start_utc": "2026-10-26T11:33:28.155Z",
+          "counts": {
+            "event_price_change": 227,
+            "absolute_level_entries": 454
+          },
+          "end_mono_ns": "447592505793688",
+          "end_utc": "2026-10-26T11:33:38.287Z",
+          "seconds": 10.131905476
+        },
+        {
+          "name": "joining_B04",
+          "start_mono_ns": "447592505793688",
+          "start_utc": "2026-10-26T11:33:38.287Z",
+          "counts": {
+            "event_price_change": 885,
+            "absolute_level_entries": 1770
+          },
+          "end_mono_ns": "447633553520220",
+          "end_utc": "2026-10-26T11:34:19.335Z",
+          "seconds": 41.047726532
+        },
+        {
+          "name": "established_control_4",
+          "start_mono_ns": "447633553520220",
+          "start_utc": "2026-10-26T11:34:19.335Z",
+          "counts": {
+            "event_price_change": 201,
+            "absolute_level_entries": 402
+          },
+          "end_mono_ns": "447643775897675",
+          "end_utc": "2026-10-26T11:34:29.557Z",
+          "seconds": 10.222377455
+        },
+        {
+          "name": "joining_B05",
+          "start_mono_ns": "447643775897675",
+          "start_utc": "2026-10-26T11:34:29.557Z",
+          "counts": {
+            "event_price_change": 891,
+            "absolute_level_entries": 1782,
+            "event_book": 6,
+            "comparisons": 6,
+            "event_last_trade_price": 3
+          },
+          "end_mono_ns": "447684951962789",
+          "end_utc": "2026-10-26T11:35:10.733Z",
+          "seconds": 41.176065114
+        },
+        {
+          "name": "established_control_5",
+          "start_mono_ns": "447684951962789",
+          "start_utc": "2026-10-26T11:35:10.733Z",
+          "counts": {
+            "event_price_change": 295,
+            "absolute_level_entries": 590,
+            "event_book": 2,
+            "comparisons": 2,
+            "event_last_trade_price": 1
+          },
+          "end_mono_ns": "447695262404305",
+          "end_utc": "2026-10-26T11:35:21.044Z",
+          "seconds": 10.310441516
+        },
+        {
+          "name": "joining_B06",
+          "start_mono_ns": "447695262404305",
+          "start_utc": "2026-10-26T11:35:21.044Z",
+          "counts": {
+            "event_price_change": 774,
+            "absolute_level_entries": 1548,
+            "event_book": 6,
+            "comparisons": 6,
+            "event_last_trade_price": 3
+          },
+          "end_mono_ns": "447725896939442",
+          "end_utc": "2026-10-26T11:35:51.678Z",
+          "seconds": 30.634535137
+        },
+        {
+          "name": "established_control_6",
+          "start_mono_ns": "447725896939442",
+          "start_utc": "2026-10-26T11:35:51.678Z",
+          "counts": {
+            "event_price_change": 417,
+            "absolute_level_entries": 834,
+            "event_book": 2,
+            "comparisons": 2,
+            "event_last_trade_price": 1
+          },
+          "end_mono_ns": "447745449414619",
+          "end_utc": "2026-10-26T11:36:11.231Z",
+          "seconds": 19.552475177
+        },
+        {
+          "name": "joining_B07",
+          "start_mono_ns": "447745449414619",
+          "start_utc": "2026-10-26T11:36:11.231Z",
+          "counts": {
+            "event_price_change": 858,
+            "absolute_level_entries": 1716
+          },
+          "end_mono_ns": "447786494336915",
+          "end_utc": "2026-10-26T11:36:52.276Z",
+          "seconds": 41.044922296
+        },
+        {
+          "name": "established_control_7",
+          "start_mono_ns": "447786494336915",
+          "start_utc": "2026-10-26T11:36:52.276Z",
+          "counts": {
+            "event_price_change": 128,
+            "absolute_level_entries": 256
+          },
+          "end_mono_ns": "447792565698105",
+          "end_utc": "2026-10-26T11:36:58.347Z",
+          "seconds": 6.07136119
+        }
+      ],
+      "close_records": [
+        {
+          "feed": "B01",
+          "index": 4209,
+          "received_utc": "2026-10-26T11:31:45.565Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B02",
+          "index": 6426,
+          "received_utc": "2026-10-26T11:32:36.893Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B03",
+          "index": 8323,
+          "received_utc": "2026-10-26T11:33:28.155Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B04",
+          "index": 10325,
+          "received_utc": "2026-10-26T11:34:19.335Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B05",
+          "index": 12326,
+          "received_utc": "2026-10-26T11:35:10.733Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B06",
+          "index": 14207,
+          "received_utc": "2026-10-26T11:35:51.678Z",
+          "code": 1006,
+          "was_clean": false
+        },
+        {
+          "feed": "B07",
+          "index": 16351,
+          "received_utc": "2026-10-26T11:36:52.276Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "A",
+          "index": 16481,
+          "received_utc": "2026-10-26T11:36:58.347Z",
+          "code": 1006,
+          "was_clean": false
+        }
+      ],
+      "main_close_codes": {
+        "1000": 6,
+        "1006": 2
+      },
+      "receive_gaps_over_5s": [],
+      "collector_lag": {
+        "over_100ms": 22,
+        "maximum_ms": 708.7832330000001
+      },
+      "remaining_sockets": 0,
+      "source_fingerprints": {
+        "frames.jsonl": "37cf319b8b94715471b6bb990d1f329a28656ce3444e761e782708fb78c0798e",
+        "meta.json": "daca3690b791d8ef1a1ea6e3b3885dba71e8928a83385cf8ea7e53334c7bf117",
+        "gamma.json": "95f7d6031da4402df24977834a15480cb9fea362a04fc2ee7cae677e010bdf98",
+        "analyzer": "4396b6e442a3b9be4285feedef322a9488f77a0ab843a0f500ef2045d16bc49d",
+        "capture_script": "8e0842c29056f6cd90b04f7429fa46d56dbc50b86a7cfd0df20bc7c6a74ed0bf"
+      },
+      "script_fingerprints": {
+        "book-handoff-capture.mjs": "4df17add17786cfad2e010144403353318c97b00f3107729dbc1e06da6fbb6ad",
+        "book-handoff-analyze.py": "4396b6e442a3b9be4285feedef322a9488f77a0ab843a0f500ef2045d16bc49d",
+        "book-handoff-summarize.py": "b3c90ea19e1089c0385018eb9982f4d9bbac180fe70154f927ddef467631794a",
+        "book-handoff-supervise.py": "be5e67d0b3d61c3bb670b7bee50777e2929b7e8c54d30646c7dfbcb09f86c974",
+        "book-handoff-verify.py": "2ba19414801c79e2c388d5fa53b988da69e431003a10907a726672bab662d4bd"
+      },
+      "public_documentation": [
+        {
+          "url": "https://raw.githubusercontent.com/Polymarket/agent-skills/91ee44ae113e958affd20cd505c6e9d9d6100e0b/websocket.md",
+          "http_status": 200,
+          "retrieved_utc": "2026-10-26T11:31:01.667Z",
+          "sha256": "e2835abbe4e1f3b543f29915cdfc491157027b77db0ff6ed7f93cfe8bb291c88",
+          "bytes": 5909
+        },
+        {
+          "url": "https://docs.polymarket.com/market-data/realtime-data",
+          "http_status": 200,
+          "retrieved_utc": "2026-10-26T11:31:04.194Z",
+          "sha256": "26c18a6110328e49408a3032c902724a6ece0da162f3deca9bc8e55c82d22155",
+          "bytes": 1625341
+        }
+      ],
+      "limitations": [
+        "Application messages, not TCP packets; automatic protocol control frames unavailable.",
+        "Shared process, runtime, host, network route and upstream can hide correlated gaps.",
+        "Receive silence is not proof of missing data; cross-feed as-of comparisons include delivery skew.",
+        "Content sequence alignment is occurrence-aware but cannot prove unique event identity.",
+        "No negative observation establishes handoff correctness or causes of earlier incidents."
+      ],
+      "publication": "Local repository artifacts only; no external publication. Raw application messages retained privately under /tmp.",
+      "analysis_label": "analysis-initial"
+    },
+    {
+      "complete_capture": false,
+      "conclusion": "inconclusive: no repeat-book reconstruction incident observed",
+      "period": {
+        "started_utc": "2026-10-26T11:38:32.619Z",
+        "main_started_utc": "2026-10-26T11:38:44.553Z",
+        "finished_utc": "2026-10-26T11:41:27.021Z"
+      },
+      "elapsed_seconds_including_pilot": 174.402,
+      "market": {
+        "id": "682705",
+        "conditionId": "0x7586a96520578acaaaa4ea84a2582f197f84255da1f3392a7aa300386c187b37",
+        "endDate": "2026-10-28T03:59:00Z",
+        "active": true,
+        "closed": false,
+        "acceptingOrders": true
+      },
+      "asset_ids": [
+        "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+        "54533569528927082430133047556849600511985191158927477533124630301934489498530"
+      ],
+      "pilot_absolute_level_entries": 424,
+      "subscription": {
+        "type": "market",
+        "assets_ids": [
+          "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+          "54533569528927082430133047556849600511985191158927477533124630301934489498530"
+        ],
+        "initial_dump": true
+      },
+      "schedule": {
+        "joins_planned": 14,
+        "baseline_seconds": 30,
+        "join_seconds": 35,
+        "control_gap_seconds": 7,
+        "tail_seconds": 25
+      },
+      "totals": {
+        "joins_started": 3,
+        "joins_successful": 1,
+        "main_feeds": 4,
+        "main_closes": 4,
+        "main_errors": 1,
+        "close_timeouts": 1,
+        "initial_to_FIRST_refresh_windows_compared": 6,
+        "initial_to_FIRST_refresh_windows_without_refresh": 0,
+        "A_unmatched_content_occurrences_in_same_receive_windows": 2,
+        "A_unmatched_with_target_already_in_B_initial_and_no_boundary_match": 2,
+        "A_unmatched_without_boundary_match_or_initial_quantity_match": 0,
+        "A_unmatched_with_equal_B_content_before_initial_or_after_FIRST_within_2s": 0,
+        "B_unmatched_content_occurrences_in_same_receive_windows": 506,
+        "repeat_book_comparisons": 32,
+        "differing_comparisons": 0,
+        "differing_levels": 0,
+        "FIRST_refresh_comparisons": 8,
+        "FIRST_refresh_differences": 0,
+        "later_refresh_comparisons": 24,
+        "later_refresh_differences": 0,
+        "cross_asof_comparisons": 22,
+        "cross_asof_differences": 20,
+        "cross_asof_differences_all_level_targets_later_on_A_within_2s": 10,
+        "cross_asof_INITIAL_differences": 4,
+        "cross_asof_FIRST_differences": 6,
+        "cross_asof_later_differences": 10
+      },
+      "quality": {
+        "capture_records": 4030,
+        "pilot_records_excluded": 219,
+        "capture_index_discontinuities": 0,
+        "feed_frame_discontinuities": 0,
+        "receive_monotonic_regressions": 0,
+        "duplicate_book_price_entries": 0,
+        "unexpected_assets": 0,
+        "non_text_messages": 0,
+        "json_errors": 0,
+        "events_without_exchange_timestamp": 0,
+        "experiment_error": 1,
+        "hard_timeout": 0,
+        "non_json": 0,
+        "unexpected_closes": 1,
+        "A_continuity_failure": 1,
+        "unexpected_subscriptions": 0,
+        "overlapping_B_open_events": 1,
+        "maximum_open_B_sockets": 2
+      },
+      "feed_statistics": {
+        "A": {
+          "open": 1,
+          "sent": 15,
+          "subscriptions_sent": 1,
+          "received": 1879,
+          "open_to_first_receive_ms": 59.366854,
+          "array_frames": 1,
+          "event_book": 18,
+          "initial_books": 2,
+          "event_price_change": 1846,
+          "absolute_level_entries": 3692,
+          "comparisons": 16,
+          "first_refresh_comparisons": 2,
+          "event_last_trade_price": 8,
+          "later_refresh_comparisons": 14,
+          "PING_sent": 14,
+          "PONG": 8,
+          "application_gaps_gt_1s": 1,
+          "application_gaps_gt_5s": 1,
+          "market_gaps_gt_5s": 1,
+          "error": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 97.387282,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 67712.105255,
+            "market_ms": 67712.105255
+          }
+        },
+        "B01": {
+          "open": 1,
+          "sent": 4,
+          "subscriptions_sent": 1,
+          "received": 834,
+          "open_to_first_receive_ms": 55.641941,
+          "array_frames": 1,
+          "event_book": 8,
+          "initial_books": 2,
+          "cross_asof_comparisons": 8,
+          "cross_asof_differences": 8,
+          "event_price_change": 821,
+          "absolute_level_entries": 1642,
+          "PING_sent": 3,
+          "PONG": 3,
+          "comparisons": 6,
+          "first_refresh_comparisons": 2,
+          "event_last_trade_price": 3,
+          "application_gaps_gt_1s": 1,
+          "later_refresh_comparisons": 4,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1115.001131,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 1006.907262,
+            "market_ms": 1006.907262
+          }
+        },
+        "B02": {
+          "open": 1,
+          "sent": 4,
+          "subscriptions_sent": 1,
+          "received": 163,
+          "open_to_first_receive_ms": 40.358211,
+          "array_frames": 1,
+          "event_book": 4,
+          "initial_books": 2,
+          "cross_asof_comparisons": 4,
+          "event_price_change": 159,
+          "absolute_level_entries": 318,
+          "comparisons": 2,
+          "first_refresh_comparisons": 2,
+          "cross_asof_differences": 2,
+          "event_last_trade_price": 1,
+          "application_gaps_gt_1s": 1,
+          "PING_sent": 3,
+          "close_requested": 1,
+          "close_timeout": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 78780.328015,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 1101.009628,
+            "market_ms": 1101.009628
+          }
+        },
+        "B03": {
+          "open": 1,
+          "sent": 4,
+          "subscriptions_sent": 1,
+          "received": 876,
+          "open_to_first_receive_ms": 67.252993,
+          "array_frames": 1,
+          "event_book": 10,
+          "initial_books": 2,
+          "cross_asof_comparisons": 10,
+          "cross_asof_differences": 10,
+          "event_price_change": 860,
+          "absolute_level_entries": 1720,
+          "PING_sent": 3,
+          "PONG": 3,
+          "comparisons": 8,
+          "first_refresh_comparisons": 2,
+          "event_last_trade_price": 4,
+          "later_refresh_comparisons": 6,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1153.582718,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 853.166218,
+            "market_ms": 853.166218
+          }
+        }
+      },
+      "joins": [
+        {
+          "feed": "B01",
+          "join": 1,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 36.055123554,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 6,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 4,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 18577.475881,
+              "A_occurrences": 393,
+              "B_occurrences": 393,
+              "matched_content_occurrences": 392,
+              "A_unmatched_occurrences": 1,
+              "B_unmatched_occurrences": 1
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 18577.740789,
+              "A_occurrences": 393,
+              "B_occurrences": 393,
+              "matched_content_occurrences": 392,
+              "A_unmatched_occurrences": 1,
+              "B_unmatched_occurrences": 1
+            }
+          ]
+        },
+        {
+          "feed": "B02",
+          "join": 2,
+          "successful": false,
+          "initial_books": 2,
+          "observed_seconds": 86.00801193,
+          "A_open_throughout": false,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 2,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 3309.453983,
+              "A_occurrences": 59,
+              "B_occurrences": 66,
+              "matched_content_occurrences": 59,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 7
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 3317.849796,
+              "A_occurrences": 59,
+              "B_occurrences": 66,
+              "matched_content_occurrences": 59,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 7
+            }
+          ]
+        },
+        {
+          "feed": "B03",
+          "join": 3,
+          "successful": false,
+          "initial_books": 2,
+          "observed_seconds": 36.124098329,
+          "A_open_throughout": false,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 8,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 6,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 11090.824135,
+              "A_occurrences": 0,
+              "B_occurrences": 245,
+              "matched_content_occurrences": 0,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 245
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 11091.094863,
+              "A_occurrences": 0,
+              "B_occurrences": 245,
+              "matched_content_occurrences": 0,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 245
+            }
+          ]
+        }
+      ],
+      "established_only_control": {
+        "intervals": 2,
+        "seconds": 37.546396224999995,
+        "counts": {
+          "event_book": 10,
+          "event_price_change": 840,
+          "absolute_level_entries": 1680,
+          "comparisons": 8,
+          "event_last_trade_price": 4
+        }
+      },
+      "control_intervals": [
+        {
+          "name": "established_control_0",
+          "start_mono_ns": "447899036446446",
+          "start_utc": "2026-10-26T11:38:44.813Z",
+          "counts": {
+            "event_book": 8,
+            "event_price_change": 641,
+            "absolute_level_entries": 1282,
+            "comparisons": 6,
+            "event_last_trade_price": 3
+          },
+          "end_mono_ns": "447929218814345",
+          "end_utc": "2026-10-26T11:39:15.000Z",
+          "seconds": 30.182367899
+        },
+        {
+          "name": "joining_B01",
+          "start_mono_ns": "447929218814345",
+          "start_utc": "2026-10-26T11:39:15.000Z",
+          "counts": {
+            "event_price_change": 846,
+            "absolute_level_entries": 1692,
+            "event_book": 6,
+            "comparisons": 6,
+            "event_last_trade_price": 3
+          },
+          "end_mono_ns": "447965273937899",
+          "end_utc": "2026-10-26T11:39:51.055Z",
+          "seconds": 36.055123554
+        },
+        {
+          "name": "established_control_1",
+          "start_mono_ns": "447965273937899",
+          "start_utc": "2026-10-26T11:39:51.055Z",
+          "counts": {
+            "event_price_change": 199,
+            "absolute_level_entries": 398,
+            "event_book": 2,
+            "comparisons": 2,
+            "event_last_trade_price": 1
+          },
+          "end_mono_ns": "447972637966225",
+          "end_utc": "2026-10-26T11:39:58.419Z",
+          "seconds": 7.364028326
+        },
+        {
+          "name": "joining_B02",
+          "start_mono_ns": "447972637966225",
+          "start_utc": "2026-10-26T11:39:58.419Z",
+          "counts": {
+            "event_price_change": 159,
+            "absolute_level_entries": 318,
+            "event_book": 2,
+            "comparisons": 2,
+            "event_last_trade_price": 1
+          },
+          "end_mono_ns": "448018104838551",
+          "end_utc": "2026-10-26T11:40:43.886Z",
+          "seconds": 45.466872326
+        },
+        {
+          "name": "joining_B02+B03",
+          "start_mono_ns": "448018104838551",
+          "start_utc": "2026-10-26T11:40:43.886Z",
+          "counts": {
+            "event_price_change": 1,
+            "absolute_level_entries": 2
+          },
+          "end_mono_ns": "448047674164231",
+          "end_utc": "2026-10-26T11:41:13.456Z",
+          "seconds": 29.56932568
+        }
+      ],
+      "close_records": [
+        {
+          "feed": "B01",
+          "index": 2585,
+          "received_utc": "2026-10-26T11:39:51.055Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "A",
+          "index": 3896,
+          "received_utc": "2026-10-26T11:41:13.456Z",
+          "code": 1006,
+          "was_clean": false
+        },
+        {
+          "feed": "B03",
+          "index": 4027,
+          "received_utc": "2026-10-26T11:41:20.010Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B02",
+          "index": 4028,
+          "received_utc": "2026-10-26T11:41:24.427Z",
+          "code": 1000,
+          "was_clean": true
+        }
+      ],
+      "main_close_codes": {
+        "1000": 3,
+        "1006": 1
+      },
+      "receive_gaps_over_5s": [
+        {
+          "feed": "A",
+          "frame": 1879,
+          "index": 3871,
+          "received_utc": "2026-10-26T11:41:13.358Z",
+          "gap_ms": 67712.105255,
+          "start_mono_ns": "447979864671694",
+          "end_mono_ns": "448047576776949",
+          "previous_receive": {
+            "index": 3116,
+            "frame": 1878,
+            "received_utc": "2026-10-26T11:40:05.646Z",
+            "received_mono_ns": "447979864671694"
+          },
+          "other_feed_absolute_level_entries_during_gap": {
+            "B01": 0,
+            "B02": 10,
+            "B03": 1428
+          }
+        }
+      ],
+      "collector_lag": {
+        "over_100ms": 10,
+        "maximum_ms": 1390.497562
+      },
+      "remaining_sockets": 0,
+      "source_fingerprints": {
+        "frames.jsonl": "0f60e9a620f1c091e0546a43c4a50a09812d520f6f850a6ca61660363b8a2c59",
+        "meta.json": "05da9caf61fbfd986fbeb442e1fb32d2e66e1607d0d2da1f4912c97ec3d1d3cf",
+        "gamma.json": "d548ed99d6df6c11331ed5515a2b57182ffc0c2311aebf2fc2d0298fa47311d7",
+        "analyzer": "4396b6e442a3b9be4285feedef322a9488f77a0ab843a0f500ef2045d16bc49d",
+        "capture_script": "4df17add17786cfad2e010144403353318c97b00f3107729dbc1e06da6fbb6ad"
+      },
+      "script_fingerprints": {
+        "book-handoff-capture.mjs": "4df17add17786cfad2e010144403353318c97b00f3107729dbc1e06da6fbb6ad",
+        "book-handoff-analyze.py": "4396b6e442a3b9be4285feedef322a9488f77a0ab843a0f500ef2045d16bc49d",
+        "book-handoff-summarize.py": "b3c90ea19e1089c0385018eb9982f4d9bbac180fe70154f927ddef467631794a",
+        "book-handoff-supervise.py": "be5e67d0b3d61c3bb670b7bee50777e2929b7e8c54d30646c7dfbcb09f86c974",
+        "book-handoff-verify.py": "2ba19414801c79e2c388d5fa53b988da69e431003a10907a726672bab662d4bd"
+      },
+      "public_documentation": [
+        {
+          "url": "https://raw.githubusercontent.com/Polymarket/agent-skills/91ee44ae113e958affd20cd505c6e9d9d6100e0b/websocket.md",
+          "http_status": 200,
+          "retrieved_utc": "2026-10-26T11:31:01.667Z",
+          "sha256": "e2835abbe4e1f3b543f29915cdfc491157027b77db0ff6ed7f93cfe8bb291c88",
+          "bytes": 5909
+        },
+        {
+          "url": "https://docs.polymarket.com/market-data/realtime-data",
+          "http_status": 200,
+          "retrieved_utc": "2026-10-26T11:31:04.194Z",
+          "sha256": "26c18a6110328e49408a3032c902724a6ece0da162f3deca9bc8e55c82d22155",
+          "bytes": 1625341
+        }
+      ],
+      "limitations": [
+        "Application messages, not TCP packets; automatic protocol control frames unavailable.",
+        "Shared process, runtime, host, network route and upstream can hide correlated gaps.",
+        "Receive silence is not proof of missing data; cross-feed as-of comparisons include delivery skew.",
+        "Content sequence alignment is occurrence-aware but cannot prove unique event identity.",
+        "No negative observation establishes handoff correctness or causes of earlier incidents."
+      ],
+      "publication": "Local repository artifacts only; no external publication. Raw application messages retained privately under /tmp.",
+      "analysis_label": "analysis-continuation"
+    },
+    {
+      "complete_capture": true,
+      "conclusion": "inconclusive: no repeat-book reconstruction incident observed",
+      "period": {
+        "started_utc": "2026-10-26T11:43:58.557Z",
+        "main_started_utc": "2026-10-26T11:44:10.770Z",
+        "finished_utc": "2026-10-26T11:53:16.439Z"
+      },
+      "elapsed_seconds_including_pilot": 557.882,
+      "market": {
+        "id": "682705",
+        "conditionId": "0x7586a96520578acaaaa4ea84a2582f197f84255da1f3392a7aa300386c187b37",
+        "endDate": "2026-10-28T03:59:00Z",
+        "active": true,
+        "closed": false,
+        "acceptingOrders": true
+      },
+      "asset_ids": [
+        "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+        "54533569528927082430133047556849600511985191158927477533124630301934489498530"
+      ],
+      "pilot_absolute_level_entries": 384,
+      "subscription": {
+        "type": "market",
+        "assets_ids": [
+          "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+          "54533569528927082430133047556849600511985191158927477533124630301934489498530"
+        ],
+        "initial_dump": true
+      },
+      "schedule": {
+        "joins_planned": 10,
+        "baseline_seconds": 30,
+        "join_seconds": 40,
+        "control_gap_seconds": 7,
+        "tail_seconds": 20
+      },
+      "totals": {
+        "joins_started": 10,
+        "joins_successful": 8,
+        "main_feeds": 11,
+        "main_closes": 11,
+        "main_errors": 2,
+        "close_timeouts": 1,
+        "initial_to_FIRST_refresh_windows_compared": 12,
+        "initial_to_FIRST_refresh_windows_without_refresh": 8,
+        "A_unmatched_content_occurrences_in_same_receive_windows": 38,
+        "A_unmatched_with_target_already_in_B_initial_and_no_boundary_match": 0,
+        "A_unmatched_without_boundary_match_or_initial_quantity_match": 0,
+        "A_unmatched_with_equal_B_content_before_initial_or_after_FIRST_within_2s": 38,
+        "B_unmatched_content_occurrences_in_same_receive_windows": 882,
+        "repeat_book_comparisons": 34,
+        "differing_comparisons": 0,
+        "differing_levels": 0,
+        "FIRST_refresh_comparisons": 14,
+        "FIRST_refresh_differences": 0,
+        "later_refresh_comparisons": 20,
+        "later_refresh_differences": 0,
+        "cross_asof_comparisons": 34,
+        "cross_asof_differences": 14,
+        "cross_asof_differences_all_level_targets_later_on_A_within_2s": 8,
+        "cross_asof_INITIAL_differences": 4,
+        "cross_asof_FIRST_differences": 8,
+        "cross_asof_later_differences": 2
+      },
+      "quality": {
+        "capture_records": 17524,
+        "pilot_records_excluded": 199,
+        "capture_index_discontinuities": 0,
+        "feed_frame_discontinuities": 0,
+        "receive_monotonic_regressions": 0,
+        "duplicate_book_price_entries": 0,
+        "unexpected_assets": 0,
+        "non_text_messages": 0,
+        "json_errors": 0,
+        "events_without_exchange_timestamp": 0,
+        "experiment_error": 0,
+        "hard_timeout": 0,
+        "non_json": 0,
+        "unexpected_closes": 0,
+        "A_continuity_failure": 0,
+        "unexpected_subscriptions": 0,
+        "overlapping_B_open_events": 1,
+        "maximum_open_B_sockets": 2
+      },
+      "feed_statistics": {
+        "A": {
+          "open": 1,
+          "sent": 55,
+          "subscriptions_sent": 1,
+          "received": 9920,
+          "open_to_first_receive_ms": 35.984513,
+          "array_frames": 1,
+          "event_book": 22,
+          "initial_books": 2,
+          "event_price_change": 9835,
+          "absolute_level_entries": 19670,
+          "comparisons": 20,
+          "first_refresh_comparisons": 2,
+          "event_last_trade_price": 10,
+          "PING_sent": 54,
+          "PONG": 54,
+          "later_refresh_comparisons": 18,
+          "application_gaps_gt_1s": 16,
+          "application_gaps_gt_5s": 1,
+          "market_gaps_gt_5s": 1,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1072.447604,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 40270.135003,
+            "market_ms": 40270.135003
+          }
+        },
+        "B01": {
+          "open": 1,
+          "sent": 4,
+          "subscriptions_sent": 1,
+          "received": 772,
+          "open_to_first_receive_ms": 22.645564,
+          "array_frames": 1,
+          "event_book": 4,
+          "initial_books": 2,
+          "cross_asof_comparisons": 4,
+          "event_price_change": 765,
+          "absolute_level_entries": 1530,
+          "PING_sent": 3,
+          "PONG": 3,
+          "comparisons": 2,
+          "first_refresh_comparisons": 2,
+          "event_last_trade_price": 1,
+          "application_gaps_gt_1s": 2,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1179.114528,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 1416.435359,
+            "market_ms": 1416.435359
+          }
+        },
+        "B02": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 766,
+          "open_to_first_receive_ms": 61.552681,
+          "array_frames": 1,
+          "event_book": 4,
+          "initial_books": 2,
+          "cross_asof_comparisons": 4,
+          "event_price_change": 758,
+          "absolute_level_entries": 1516,
+          "PING_sent": 4,
+          "PONG": 4,
+          "comparisons": 2,
+          "first_refresh_comparisons": 2,
+          "cross_asof_differences": 2,
+          "event_last_trade_price": 1,
+          "application_gaps_gt_1s": 1,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1471.311914,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 1265.48076,
+            "market_ms": 1265.48076
+          }
+        },
+        "B03": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 689,
+          "open_to_first_receive_ms": 39.938237,
+          "array_frames": 1,
+          "event_book": 4,
+          "initial_books": 2,
+          "cross_asof_comparisons": 4,
+          "event_price_change": 681,
+          "absolute_level_entries": 1362,
+          "PING_sent": 4,
+          "PONG": 4,
+          "application_gaps_gt_1s": 2,
+          "comparisons": 2,
+          "first_refresh_comparisons": 2,
+          "event_last_trade_price": 1,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1574.760275,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 1213.129539,
+            "market_ms": 1213.129539
+          }
+        },
+        "B04": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 677,
+          "open_to_first_receive_ms": 252.063902,
+          "array_frames": 1,
+          "event_book": 2,
+          "initial_books": 2,
+          "cross_asof_comparisons": 2,
+          "cross_asof_differences": 2,
+          "event_price_change": 672,
+          "absolute_level_entries": 1344,
+          "PING_sent": 4,
+          "PONG": 4,
+          "application_gaps_gt_1s": 2,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1059.073928,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 1210.589087,
+            "market_ms": 1210.589087
+          }
+        },
+        "B05": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 665,
+          "open_to_first_receive_ms": 27.777469,
+          "array_frames": 1,
+          "event_book": 2,
+          "initial_books": 2,
+          "cross_asof_comparisons": 2,
+          "event_price_change": 660,
+          "absolute_level_entries": 1320,
+          "PING_sent": 4,
+          "PONG": 4,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1077.232631,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 748.984248,
+            "market_ms": 748.984248
+          }
+        },
+        "B06": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 761,
+          "open_to_first_receive_ms": 66.350354,
+          "array_frames": 1,
+          "event_book": 4,
+          "initial_books": 2,
+          "cross_asof_comparisons": 4,
+          "event_price_change": 754,
+          "absolute_level_entries": 1508,
+          "PING_sent": 4,
+          "PONG": 3,
+          "comparisons": 2,
+          "first_refresh_comparisons": 2,
+          "cross_asof_differences": 2,
+          "event_last_trade_price": 1,
+          "close_requested": 1,
+          "close_timeout": 1,
+          "error": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 49359.127202,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 702.018245,
+            "market_ms": 702.018245
+          }
+        },
+        "B07": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 728,
+          "open_to_first_receive_ms": 20.199844,
+          "array_frames": 1,
+          "event_book": 4,
+          "initial_books": 2,
+          "cross_asof_comparisons": 4,
+          "cross_asof_differences": 4,
+          "event_price_change": 720,
+          "absolute_level_entries": 1440,
+          "PING_sent": 4,
+          "PONG": 4,
+          "comparisons": 2,
+          "first_refresh_comparisons": 2,
+          "event_last_trade_price": 1,
+          "application_gaps_gt_1s": 1,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1545.005489,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 1003.836054,
+            "market_ms": 1003.836054
+          }
+        },
+        "B08": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 678,
+          "open_to_first_receive_ms": 123.761296,
+          "array_frames": 1,
+          "event_book": 2,
+          "initial_books": 2,
+          "cross_asof_comparisons": 2,
+          "event_price_change": 674,
+          "absolute_level_entries": 1348,
+          "PING_sent": 4,
+          "PONG": 3,
+          "application_gaps_gt_1s": 2,
+          "close_requested": 1,
+          "error": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 511.319433,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 1662.31545,
+            "market_ms": 1662.31545
+          }
+        },
+        "B09": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 785,
+          "open_to_first_receive_ms": 32.833071,
+          "array_frames": 1,
+          "event_book": 6,
+          "initial_books": 2,
+          "cross_asof_comparisons": 6,
+          "event_price_change": 774,
+          "absolute_level_entries": 1548,
+          "comparisons": 4,
+          "first_refresh_comparisons": 2,
+          "cross_asof_differences": 4,
+          "event_last_trade_price": 2,
+          "PING_sent": 4,
+          "PONG": 4,
+          "later_refresh_comparisons": 2,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 1084.737023,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 963.799154,
+            "market_ms": 963.799154
+          }
+        },
+        "B10": {
+          "open": 1,
+          "sent": 5,
+          "subscriptions_sent": 1,
+          "received": 700,
+          "open_to_first_receive_ms": 214.435448,
+          "array_frames": 1,
+          "event_book": 2,
+          "initial_books": 2,
+          "cross_asof_comparisons": 2,
+          "event_price_change": 695,
+          "absolute_level_entries": 1390,
+          "PING_sent": 4,
+          "PONG": 4,
+          "close_requested": 1,
+          "close": 1,
+          "last_receive_to_close_ms": 2587.790916,
+          "maximum_receive_gaps_ms": {
+            "application_ms": 886.873674,
+            "market_ms": 886.873674
+          }
+        }
+      },
+      "joins": [
+        {
+          "feed": "B01",
+          "join": 1,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.123216608,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 2,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 21301.513966,
+              "A_occurrences": 401,
+              "B_occurrences": 401,
+              "matched_content_occurrences": 401,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 0
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 21301.756693,
+              "A_occurrences": 401,
+              "B_occurrences": 401,
+              "matched_content_occurrences": 401,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 0
+            }
+          ]
+        },
+        {
+          "feed": "B02",
+          "join": 2,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.266692908,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 2,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 30380.65885,
+              "A_occurrences": 565,
+              "B_occurrences": 566,
+              "matched_content_occurrences": 565,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 1
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 30381.598965,
+              "A_occurrences": 565,
+              "B_occurrences": 566,
+              "matched_content_occurrences": 565,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 1
+            }
+          ]
+        },
+        {
+          "feed": "B03",
+          "join": 3,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.112777742,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 2,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 21981.086111,
+              "A_occurrences": 366,
+              "B_occurrences": 366,
+              "matched_content_occurrences": 366,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 0
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 21981.383699,
+              "A_occurrences": 366,
+              "B_occurrences": 366,
+              "matched_content_occurrences": 366,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 0
+            }
+          ]
+        },
+        {
+          "feed": "B04",
+          "join": 4,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.161852731,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 0,
+          "repeat_comparisons": 0,
+          "FIRST_comparisons": 0,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "no_initial_or_no_first_refresh"
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "no_initial_or_no_first_refresh"
+            }
+          ]
+        },
+        {
+          "feed": "B05",
+          "join": 5,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.080602279,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 0,
+          "repeat_comparisons": 0,
+          "FIRST_comparisons": 0,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "no_initial_or_no_first_refresh"
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "no_initial_or_no_first_refresh"
+            }
+          ]
+        },
+        {
+          "feed": "B06",
+          "join": 6,
+          "successful": false,
+          "initial_books": 2,
+          "observed_seconds": 89.322456079,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 2,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 33324.704837,
+              "A_occurrences": 627,
+              "B_occurrences": 608,
+              "matched_content_occurrences": 608,
+              "A_unmatched_occurrences": 19,
+              "B_unmatched_occurrences": 0
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 33324.944434,
+              "A_occurrences": 627,
+              "B_occurrences": 608,
+              "matched_content_occurrences": 608,
+              "A_unmatched_occurrences": 19,
+              "B_unmatched_occurrences": 0
+            }
+          ]
+        },
+        {
+          "feed": "B07",
+          "join": 7,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.15669686,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 2,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 24316.820496,
+              "A_occurrences": 0,
+              "B_occurrences": 439,
+              "matched_content_occurrences": 0,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 439
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 24397.157338,
+              "A_occurrences": 0,
+              "B_occurrences": 439,
+              "matched_content_occurrences": 0,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 439
+            }
+          ]
+        },
+        {
+          "feed": "B08",
+          "join": 8,
+          "successful": false,
+          "initial_books": 2,
+          "observed_seconds": 40.386305167,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 0,
+          "repeat_comparisons": 0,
+          "FIRST_comparisons": 0,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "no_initial_or_no_first_refresh"
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "no_initial_or_no_first_refresh"
+            }
+          ]
+        },
+        {
+          "feed": "B09",
+          "join": 9,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 41.076777338,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 2,
+          "repeat_comparisons": 4,
+          "FIRST_comparisons": 2,
+          "FIRST_differences": 0,
+          "later_comparisons": 2,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "compared",
+              "window_ms": 3722.731728,
+              "A_occurrences": 48,
+              "B_occurrences": 49,
+              "matched_content_occurrences": 48,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 1
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "compared",
+              "window_ms": 3723.065808,
+              "A_occurrences": 48,
+              "B_occurrences": 49,
+              "matched_content_occurrences": 48,
+              "A_unmatched_occurrences": 0,
+              "B_unmatched_occurrences": 1
+            }
+          ]
+        },
+        {
+          "feed": "B10",
+          "join": 10,
+          "successful": true,
+          "initial_books": 2,
+          "observed_seconds": 42.585860946,
+          "A_open_throughout": true,
+          "assets_with_FIRST_refresh": 0,
+          "repeat_comparisons": 0,
+          "FIRST_comparisons": 0,
+          "FIRST_differences": 0,
+          "later_comparisons": 0,
+          "later_differences": 0,
+          "first_refresh_windows": [
+            {
+              "asset_id": "20006732765674855733524007935991362439352594042415161039767275461950712817548",
+              "status": "no_initial_or_no_first_refresh"
+            },
+            {
+              "asset_id": "54533569528927082430133047556849600511985191158927477533124630301934489498530",
+              "status": "no_initial_or_no_first_refresh"
+            }
+          ]
+        }
+      ],
+      "established_only_control": {
+        "intervals": 10,
+        "seconds": 123.569087655,
+        "counts": {
+          "event_book": 8,
+          "event_price_change": 2293,
+          "absolute_level_entries": 4586,
+          "comparisons": 6,
+          "event_last_trade_price": 3
+        }
+      },
+      "control_intervals": [
+        {
+          "name": "established_control_0",
+          "start_mono_ns": "448225289301025",
+          "start_utc": "2026-10-26T11:44:11.071Z",
+          "counts": {
+            "event_book": 8,
+            "event_price_change": 667,
+            "absolute_level_entries": 1334,
+            "comparisons": 6,
+            "event_last_trade_price": 3
+          },
+          "end_mono_ns": "448255446176979",
+          "end_utc": "2026-10-26T11:44:41.228Z",
+          "seconds": 30.156875954
+        },
+        {
+          "name": "joining_B01",
+          "start_mono_ns": "448255446176979",
+          "start_utc": "2026-10-26T11:44:41.228Z",
+          "counts": {
+            "event_price_change": 786,
+            "absolute_level_entries": 1572,
+            "event_book": 2,
+            "comparisons": 2,
+            "event_last_trade_price": 1
+          },
+          "end_mono_ns": "448296569393587",
+          "end_utc": "2026-10-26T11:45:22.351Z",
+          "seconds": 41.123216608
+        },
+        {
+          "name": "established_control_1",
+          "start_mono_ns": "448296569393587",
+          "start_utc": "2026-10-26T11:45:22.351Z",
+          "counts": {
+            "event_price_change": 123,
+            "absolute_level_entries": 246
+          },
+          "end_mono_ns": "448304185985416",
+          "end_utc": "2026-10-26T11:45:29.967Z",
+          "seconds": 7.616591829
+        },
+        {
+          "name": "joining_B02",
+          "start_mono_ns": "448304185985416",
+          "start_utc": "2026-10-26T11:45:29.967Z",
+          "counts": {
+            "event_price_change": 781,
+            "absolute_level_entries": 1562,
+            "event_book": 2,
+            "comparisons": 2,
+            "event_last_trade_price": 1
+          },
+          "end_mono_ns": "448345452678324",
+          "end_utc": "2026-10-26T11:46:11.234Z",
+          "seconds": 41.266692908
+        },
+        {
+          "name": "established_control_2",
+          "start_mono_ns": "448345452678324",
+          "start_utc": "2026-10-26T11:46:11.234Z",
+          "counts": {
+            "event_price_change": 99,
+            "absolute_level_entries": 198
+          },
+          "end_mono_ns": "448353874142599",
+          "end_utc": "2026-10-26T11:46:19.656Z",
+          "seconds": 8.421464275
+        },
+        {
+          "name": "joining_B03",
+          "start_mono_ns": "448353874142599",
+          "start_utc": "2026-10-26T11:46:19.656Z",
+          "counts": {
+            "event_price_change": 691,
+            "absolute_level_entries": 1382,
+            "event_book": 2,
+            "comparisons": 2,
+            "event_last_trade_price": 1
+          },
+          "end_mono_ns": "448394986920341",
+          "end_utc": "2026-10-26T11:47:00.768Z",
+          "seconds": 41.112777742
+        },
+        {
+          "name": "established_control_3",
+          "start_mono_ns": "448394986920341",
+          "start_utc": "2026-10-26T11:47:00.768Z",
+          "counts": {
+            "event_price_change": 174,
+            "absolute_level_entries": 348
+          },
+          "end_mono_ns": "448403912276115",
+          "end_utc": "2026-10-26T11:47:09.694Z",
+          "seconds": 8.925355774
+        },
+        {
+          "name": "joining_B04",
+          "start_mono_ns": "448403912276115",
+          "start_utc": "2026-10-26T11:47:09.694Z",
+          "counts": {
+            "event_price_change": 700,
+            "absolute_level_entries": 1400
+          },
+          "end_mono_ns": "448445074128846",
+          "end_utc": "2026-10-26T11:47:50.856Z",
+          "seconds": 41.161852731
+        },
+        {
+          "name": "established_control_4",
+          "start_mono_ns": "448445074128846",
+          "start_utc": "2026-10-26T11:47:50.856Z",
+          "counts": {
+            "event_price_change": 134,
+            "absolute_level_entries": 268
+          },
+          "end_mono_ns": "448452281906978",
+          "end_utc": "2026-10-26T11:47:58.063Z",
+          "seconds": 7.207778132
+        },
+        {
+          "name": "joining_B05",
+          "start_mono_ns": "448452281906978",
+          "start_utc": "2026-10-26T11:47:58.063Z",
+          "counts": {
+            "event_price_change": 679,
+            "absolute_level_entries": 1358
+          },
+          "end_mono_ns": "448493362509257",
+          "end_utc": "2026-10-26T11:48:39.144Z",
+          "seconds": 41.080602279
+        },
+        {
+          "name": "established_control_5",
+          "start_mono_ns": "448493362509257",
+          "start_utc": "2026-10-26T11:48:39.144Z",
+          "counts": {
+            "event_price_change": 137,
+            "absolute_level_entries": 274
+          },
+          "end_mono_ns": "448500657227328",
+          "end_utc": "2026-10-26T11:48:46.439Z",
+          "seconds": 7.294718071
+        },
+        {
+          "name": "joining_B06",
+          "start_mono_ns": "448500657227328",
+          "start_utc": "2026-10-26T11:48:46.439Z",
+          "counts": {
+            "event_price_change": 754,
+            "absolute_level_entries": 1508,
+            "event_book": 2,
+            "comparisons": 2,
+            "event_last_trade_price": 1
+          },
+          "end_mono_ns": "448551418296253",
+          "end_utc": "2026-10-26T11:49:37.200Z",
+          "seconds": 50.761068925
+        },
+        {
+          "name": "joining_B06+B07",
+          "start_mono_ns": "448551418296253",
+          "start_utc": "2026-10-26T11:49:37.200Z",
+          "counts": {
+            "event_price_change": 901,
+            "absolute_level_entries": 1802,
+            "event_book": 2,
+            "comparisons": 2,
+            "event_last_trade_price": 1
+          },
+          "end_mono_ns": "448589979683407",
+          "end_utc": "2026-10-26T11:50:15.761Z",
+          "seconds": 38.561387154
+        },
+        {
+          "name": "joining_B07",
+          "start_mono_ns": "448589979683407",
+          "start_utc": "2026-10-26T11:50:15.761Z",
+          "counts": {
+            "event_price_change": 29,
+            "absolute_level_entries": 58
+          },
+          "end_mono_ns": "448592574993113",
+          "end_utc": "2026-10-26T11:50:18.356Z",
+          "seconds": 2.595309706
+        },
+        {
+          "name": "established_control_7",
+          "start_mono_ns": "448592574993113",
+          "start_utc": "2026-10-26T11:50:18.356Z",
+          "counts": {
+            "event_price_change": 134,
+            "absolute_level_entries": 268
+          },
+          "end_mono_ns": "448600038527125",
+          "end_utc": "2026-10-26T11:50:25.820Z",
+          "seconds": 7.463534012
+        },
+        {
+          "name": "joining_B08",
+          "start_mono_ns": "448600038527125",
+          "start_utc": "2026-10-26T11:50:25.820Z",
+          "counts": {
+            "event_price_change": 692,
+            "absolute_level_entries": 1384
+          },
+          "end_mono_ns": "448640424832292",
+          "end_utc": "2026-10-26T11:51:06.206Z",
+          "seconds": 40.386305167
+        },
+        {
+          "name": "established_control_8",
+          "start_mono_ns": "448640424832292",
+          "start_utc": "2026-10-26T11:51:06.206Z",
+          "counts": {
+            "event_price_change": 132,
+            "absolute_level_entries": 264
+          },
+          "end_mono_ns": "448647586820117",
+          "end_utc": "2026-10-26T11:51:13.368Z",
+          "seconds": 7.161987825
+        },
+        {
+          "name": "joining_B09",
+          "start_mono_ns": "448647586820117",
+          "start_utc": "2026-10-26T11:51:13.368Z",
+          "counts": {
+            "event_price_change": 796,
+            "absolute_level_entries": 1592,
+            "event_book": 4,
+            "comparisons": 4,
+            "event_last_trade_price": 2
+          },
+          "end_mono_ns": "448688663597455",
+          "end_utc": "2026-10-26T11:51:54.445Z",
+          "seconds": 41.076777338
+        },
+        {
+          "name": "established_control_9",
+          "start_mono_ns": "448688663597455",
+          "start_utc": "2026-10-26T11:51:54.445Z",
+          "counts": {
+            "event_price_change": 208,
+            "absolute_level_entries": 416
+          },
+          "end_mono_ns": "448699900122663",
+          "end_utc": "2026-10-26T11:52:05.682Z",
+          "seconds": 11.236525208
+        },
+        {
+          "name": "joining_B10",
+          "start_mono_ns": "448699900122663",
+          "start_utc": "2026-10-26T11:52:05.682Z",
+          "counts": {
+            "event_price_change": 733,
+            "absolute_level_entries": 1466
+          },
+          "end_mono_ns": "448742485983609",
+          "end_utc": "2026-10-26T11:52:48.267Z",
+          "seconds": 42.585860946
+        },
+        {
+          "name": "established_control_10",
+          "start_mono_ns": "448742485983609",
+          "start_utc": "2026-10-26T11:52:48.267Z",
+          "counts": {
+            "event_price_change": 485,
+            "absolute_level_entries": 970
+          },
+          "end_mono_ns": "448770570240184",
+          "end_utc": "2026-10-26T11:53:16.352Z",
+          "seconds": 28.084256575
+        }
+      ],
+      "close_records": [
+        {
+          "feed": "B01",
+          "index": 2470,
+          "received_utc": "2026-10-26T11:45:22.351Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B02",
+          "index": 4165,
+          "received_utc": "2026-10-26T11:46:11.234Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B03",
+          "index": 5671,
+          "received_utc": "2026-10-26T11:47:00.768Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B04",
+          "index": 7242,
+          "received_utc": "2026-10-26T11:47:50.856Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B05",
+          "index": 8740,
+          "received_utc": "2026-10-26T11:48:39.144Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B06",
+          "index": 12042,
+          "received_utc": "2026-10-26T11:50:15.761Z",
+          "code": 1006,
+          "was_clean": false
+        },
+        {
+          "feed": "B07",
+          "index": 12102,
+          "received_utc": "2026-10-26T11:50:18.356Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B08",
+          "index": 13627,
+          "received_utc": "2026-10-26T11:51:06.206Z",
+          "code": 1006,
+          "was_clean": false
+        },
+        {
+          "feed": "B09",
+          "index": 15367,
+          "received_utc": "2026-10-26T11:51:54.445Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "B10",
+          "index": 17030,
+          "received_utc": "2026-10-26T11:52:48.267Z",
+          "code": 1000,
+          "was_clean": true
+        },
+        {
+          "feed": "A",
+          "index": 17523,
+          "received_utc": "2026-10-26T11:53:16.352Z",
+          "code": 1000,
+          "was_clean": true
+        }
+      ],
+      "main_close_codes": {
+        "1000": 9,
+        "1006": 2
+      },
+      "receive_gaps_over_5s": [
+        {
+          "feed": "A",
+          "frame": 5779,
+          "index": 10990,
+          "received_utc": "2026-10-26T11:50:06.674Z",
+          "gap_ms": 40270.135003,
+          "start_mono_ns": "448540622102217",
+          "end_mono_ns": "448580892237220",
+          "previous_receive": {
+            "index": 10413,
+            "frame": 5778,
+            "received_utc": "2026-10-26T11:49:26.404Z",
+            "received_mono_ns": "448540622102217"
+          },
+          "other_feed_absolute_level_entries_during_gap": {
+            "B01": 0,
+            "B02": 0,
+            "B03": 0,
+            "B04": 0,
+            "B05": 0,
+            "B06": 0,
+            "B07": 1108,
+            "B08": 0,
+            "B09": 0,
+            "B10": 0
+          }
+        }
+      ],
+      "collector_lag": {
+        "over_100ms": 22,
+        "maximum_ms": 442.74197000000004
+      },
+      "remaining_sockets": 0,
+      "source_fingerprints": {
+        "frames.jsonl": "855758052a98bcbe30992a0765b04334aec7c59ded3b66898017239f718e93a6",
+        "meta.json": "d859df30b866f2981d90e3ac4d5df0e282b77abc080b553c5dfb3875f28711b6",
+        "gamma.json": "ef6e9d79dd289181971bfdc54581cb1e75900fa81ed314856ecdd2e1364e5131",
+        "analyzer": "4396b6e442a3b9be4285feedef322a9488f77a0ab843a0f500ef2045d16bc49d",
+        "capture_script": "4df17add17786cfad2e010144403353318c97b00f3107729dbc1e06da6fbb6ad"
+      },
+      "script_fingerprints": {
+        "book-handoff-capture.mjs": "4df17add17786cfad2e010144403353318c97b00f3107729dbc1e06da6fbb6ad",
+        "book-handoff-analyze.py": "4396b6e442a3b9be4285feedef322a9488f77a0ab843a0f500ef2045d16bc49d",
+        "book-handoff-summarize.py": "b3c90ea19e1089c0385018eb9982f4d9bbac180fe70154f927ddef467631794a",
+        "book-handoff-supervise.py": "be5e67d0b3d61c3bb670b7bee50777e2929b7e8c54d30646c7dfbcb09f86c974",
+        "book-handoff-verify.py": "2ba19414801c79e2c388d5fa53b988da69e431003a10907a726672bab662d4bd"
+      },
+      "public_documentation": [
+        {
+          "url": "https://raw.githubusercontent.com/Polymarket/agent-skills/91ee44ae113e958affd20cd505c6e9d9d6100e0b/websocket.md",
+          "http_status": 200,
+          "retrieved_utc": "2026-10-26T11:31:01.667Z",
+          "sha256": "e2835abbe4e1f3b543f29915cdfc491157027b77db0ff6ed7f93cfe8bb291c88",
+          "bytes": 5909
+        },
+        {
+          "url": "https://docs.polymarket.com/market-data/realtime-data",
+          "http_status": 200,
+          "retrieved_utc": "2026-10-26T11:31:04.194Z",
+          "sha256": "26c18a6110328e49408a3032c902724a6ece0da162f3deca9bc8e55c82d22155",
+          "bytes": 1625341
+        }
+      ],
+      "limitations": [
+        "Application messages, not TCP packets; automatic protocol control frames unavailable.",
+        "Shared process, runtime, host, network route and upstream can hide correlated gaps.",
+        "Receive silence is not proof of missing data; cross-feed as-of comparisons include delivery skew.",
+        "Content sequence alignment is occurrence-aware but cannot prove unique event identity.",
+        "No negative observation establishes handoff correctness or causes of earlier incidents."
+      ],
+      "publication": "Local repository artifacts only; no external publication. Raw application messages retained privately under /tmp.",
+      "analysis_label": "analysis-followup-01"
+    }
+  ],
+  "scope": "Public feed only. No orders, production edits, commits, performance benchmark, or external publication.",
+  "limitations": [
+    "An established socket failed; the baseline epochs are separate. There was no uninterrupted 20-join baseline.",
+    "Shared collector, runtime, host, network and upstream can hide correlated gaps.",
+    "Application messages are retained, not wire fragments or automatic protocol control frames.",
+    "No observed incident establishes neither handoff correctness nor the cause of earlier divergences."
+  ]
+}

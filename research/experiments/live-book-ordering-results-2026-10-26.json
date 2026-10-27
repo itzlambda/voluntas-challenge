@@ -1,0 +1,120 @@
+{
+  "date_utc": "2026-10-26",
+  "method": "Six independent Python public market subscriptions with exact online book comparisons. Captured first mismatch and60seconds of follow-up. Every message retained; no trade subtraction or timestamp filter in live path.",
+  "first_mismatch_utc": "2026-10-26T21:43:09.015351+00:00",
+  "checks": 994,
+  "disagreements": 4,
+  "trade_notifications": 496,
+  "raw_bytes": 15488952,
+  "capture_completed": true,
+  "stop_reason": "mismatch_followup",
+  "capture_errors": [],
+  "collector_sha256": "bacbaa727189e72b5128122bc32e340998eb880d82ad96bde7676671930d7f13",
+  "independent_analyzer_sha256": "fd05e952451fca50d7e5556f8274b1bf7ddbb329a5fc5df4568b10f7b260dd53",
+  "per_stream": [
+    {
+      "label": "A",
+      "comparisons": 262,
+      "mismatches": 0,
+      "frames": 1420,
+      "pongs": 26,
+      "raw_sha256": "e4515ec8fdb22a370aa0411908e9cc2c2251b8e7bf9e281497a070318d6c13cf",
+      "elapsed_s": 265.65885434699885
+    },
+    {
+      "label": "B",
+      "comparisons": 284,
+      "mismatches": 0,
+      "frames": 2781,
+      "pongs": 26,
+      "raw_sha256": "4b481f93bf63cf2b19e1b308cc0ce595db0ac6b3c9e89a7880b53ebca77fc823",
+      "elapsed_s": 265.64900666700123
+    },
+    {
+      "label": "C",
+      "comparisons": 8,
+      "mismatches": 0,
+      "frames": 1360,
+      "pongs": 26,
+      "raw_sha256": "30a019a7cd41cb309e9366cb96487accfa4f62968e8c3683cf48d0361d4322d9",
+      "elapsed_s": 265.6238358920018
+    },
+    {
+      "label": "D",
+      "comparisons": 278,
+      "mismatches": 4,
+      "frames": 3387,
+      "pongs": 26,
+      "raw_sha256": "1144adbba40e0e70f9e1b7c1ea5e7580b750eb16a12033b799fe21e7c2881aee",
+      "elapsed_s": 265.63631650200114
+    },
+    {
+      "label": "E",
+      "comparisons": 160,
+      "mismatches": 0,
+      "frames": 522,
+      "pongs": 26,
+      "raw_sha256": "8ccba5206d920ac89de76831a8249524bf70e206c547025157645fd5e65fe25e",
+      "elapsed_s": 265.65800182199746
+    },
+    {
+      "label": "F",
+      "comparisons": 2,
+      "mismatches": 0,
+      "frames": 102,
+      "pongs": 26,
+      "raw_sha256": "34e8df1657a137e325c35cabef22f6a327e9914749131b738e540f948daca499",
+      "elapsed_s": 265.6429083670009
+    }
+  ],
+  "incidents": [
+    {
+      "frame": 2199,
+      "exchange_timestamp_ms": 1793050988999,
+      "received_at": "2026-10-26T21:43:09.015351+00:00",
+      "changed_levels": 4,
+      "full_held_and_incoming_match_online": true,
+      "entire_incoming_matches_prior_received_version": true,
+      "matching_prior_frame": 2194,
+      "initial_baseline_plus_deltas_agrees_with_incoming": false
+    },
+    {
+      "frame": 2200,
+      "exchange_timestamp_ms": 1793050988999,
+      "received_at": "2026-10-26T21:43:09.022169+00:00",
+      "changed_levels": 4,
+      "full_held_and_incoming_match_online": true,
+      "entire_incoming_matches_prior_received_version": true,
+      "matching_prior_frame": 2194,
+      "initial_baseline_plus_deltas_agrees_with_incoming": false
+    },
+    {
+      "frame": 2216,
+      "exchange_timestamp_ms": 1793050989407,
+      "received_at": "2026-10-26T21:43:09.412798+00:00",
+      "changed_levels": 2,
+      "full_held_and_incoming_match_online": true,
+      "entire_incoming_matches_prior_received_version": true,
+      "matching_prior_frame": 2215,
+      "initial_baseline_plus_deltas_agrees_with_incoming": true
+    },
+    {
+      "frame": 2217,
+      "exchange_timestamp_ms": 1793050989407,
+      "received_at": "2026-10-26T21:43:09.418403+00:00",
+      "changed_levels": 2,
+      "full_held_and_incoming_match_online": true,
+      "entire_incoming_matches_prior_received_version": true,
+      "matching_prior_frame": 2215,
+      "initial_baseline_plus_deltas_agrees_with_incoming": true
+    }
+  ],
+  "offline_timestamp_filter": {
+    "scope": "Offline experiment only. Reject strictly older repeated books per initialized asset, using maximum accepted exchange timestamp. Do not reject deltas or change running collector. This does not establish universal safety.",
+    "skipped_books": 2,
+    "accepted_repeat_books": 992,
+    "accepted_book_disagreements": 0
+  },
+  "scope": "All four flags in this capture are explained by older full books overwriting received updates followed by later books restoring remaining levels. No claim that every earlier18/199occurrence has this cause. No production filter implemented.",
+  "source_revision_note": "Original verifier completed before a guarded safety revision could be launched. V2 was not run. Actual files/heartbeats were checked; all six streams have26PINGs and26PONGs, approximately15MBtotal."
+}

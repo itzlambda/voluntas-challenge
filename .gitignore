@@ -1,0 +1,9 @@
+/target/
+*.sbe
+/data/
+
+__pycache__/
+
+.env
+.env.*
+.cloudflare/

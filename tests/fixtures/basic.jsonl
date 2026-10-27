@@ -1,0 +1,16 @@
+# Two outcomes share a worker; the other market suffixes spread across workers.
+{"type":"add_market","market":"0xa1","order_books":["101","102"],"connection":1}
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:01.000123Z","text":"[{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"101\",\"bids\":[{\"price\":\"0.1\",\"size\":\"52438.01\"},{\"price\":\"0.4\",\"size\":\"1\"},{\"price\":\"0.3\",\"size\":\"2\"}],\"asks\":[{\"price\":\"0.8\",\"size\":\"3\"},{\"price\":\"0.7\",\"size\":\"4\"}],\"timestamp\":\"1100\"},{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"102\",\"bids\":[{\"price\":\"0.2\",\"size\":\"8\"}],\"asks\":[{\"price\":\"0.6\",\"size\":\"9\"}],\"timestamp\":\"1100\"}]"}
+{"type":"add_market","market":"0xb2","order_books":["201"],"connection":2}
+{"type":"add_market","market":"0xc7","order_books":["301"],"connection":1}
+{"type":"frame","connection":2,"received_at":"2026-10-25T12:00:02.000123Z","text":"[{\"event_type\":\"book\",\"market\":\"0xb2\",\"asset_id\":\"201\",\"bids\":[],\"asks\":[],\"timestamp\":\"1200\"},{\"event_type\":\"book\",\"market\":\"0xc7\",\"asset_id\":\"301\",\"bids\":[{\"price\":\"0.1234560000\",\"size\":\"1.000001\"}],\"asks\":[],\"timestamp\":\"1200\"}]"}
+# The c7 book above is on the wrong connection; only its next book applies.
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:03.000123Z","text":"{\"event_type\":\"book\",\"market\":\"0xc7\",\"asset_id\":\"301\",\"bids\":[{\"price\":\"0.1234560000\",\"size\":\"1.000001\"}],\"asks\":[],\"timestamp\":\"1300\"}"}
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:04.000123Z","text":"{\"event_type\":\"price_change\",\"market\":\"0xa1\",\"price_changes\":[{\"asset_id\":\"101\",\"side\":\"BUY\",\"price\":\"0.4\",\"size\":\"5\"},{\"asset_id\":\"102\",\"side\":\"SELL\",\"price\":\"0.6\",\"size\":\"0\"},{\"asset_id\":\"101\",\"side\":\"BUY\",\"price\":\"0.4\",\"size\":\"6\"},{\"asset_id\":\"101\",\"side\":\"SELL\",\"price\":\"0.9\",\"size\":\"0.000001\"}],\"timestamp\":\"1400\"}"}
+# Identical repeat emits nothing but advances timestamps for the next periodic snapshot.
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:05.000123Z","text":"{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"101\",\"bids\":[{\"price\":\"0.4\",\"size\":\"6\"},{\"price\":\"0.3\",\"size\":\"2\"},{\"price\":\"0.1\",\"size\":\"52438.01\"}],\"asks\":[{\"price\":\"0.9\",\"size\":\"0.000001\"},{\"price\":\"0.8\",\"size\":\"3\"},{\"price\":\"0.7\",\"size\":\"4\"}],\"timestamp\":\"1500\"}"}
+{"type":"advance","millis":60010}
+# Different repeat removes two bids and one ask, adds a bid and changes an ask.
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:06.000123Z","text":"{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"101\",\"bids\":[{\"price\":\"0.4\",\"size\":\"6\"},{\"price\":\"0.35\",\"size\":\"7\"}],\"asks\":[{\"price\":\"0.9\",\"size\":\"0.000001\"},{\"price\":\"0.8\",\"size\":\"20\"}],\"timestamp\":\"1600\"}"}
+{"type":"advance","millis":120000}
+{"type":"advance","millis":1000}

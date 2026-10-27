@@ -1,0 +1,1524 @@
+{
+  "date": "2026-10-26",
+  "verdict": "Throughput improved; the combined >=20,000 frames/s and p99 <50 ms target was not met in the recorded shared-host measurements.",
+  "configuration": {
+    "markets": 5000,
+    "connections": 50,
+    "assets_per_connection": 200,
+    "server_cores": [
+      0
+    ],
+    "client_cores": [
+      1
+    ],
+    "seconds_per_run": 10,
+    "level_changes_per_second": 100000,
+    "entries_min": 1,
+    "entries_max": 4,
+    "mirror_probability": 0.25,
+    "history": false,
+    "outbound_capacity": 16384,
+    "max_one_minute_load": 12,
+    "initial_books_included": true
+  },
+  "comparison": {
+    "method": "Six alternating before/after pairs, one workload at a time. The pair with an early close is retained and excluded as a whole; five clean pairs remain. Both sides use the same null-client receive/metadata path. Final diagnostics add /proc reads outside the timed interval only.",
+    "baseline_server_commit": "3879fdc",
+    "clean_pairs": 5,
+    "excluded_rounds": [
+      2
+    ],
+    "before": {
+      "frames_per_second": {
+        "median": 2029.2069206598778,
+        "min": 1267.1739163156171,
+        "max": 3040.232483419501
+      },
+      "p99_ms": {
+        "median": 1223.0,
+        "min": 434.0,
+        "max": 2264.0
+      },
+      "bytes_per_second": {
+        "median": 2208657.3757671067,
+        "min": 1698878.6560890048,
+        "max": 2818091.5049895747
+      }
+    },
+    "after": {
+      "frames_per_second": {
+        "median": 26329.531451050734,
+        "min": 16755.002244876086,
+        "max": 31749.34774821991
+      },
+      "p99_ms": {
+        "median": 238.0,
+        "min": 167.0,
+        "max": 839.0
+      },
+      "bytes_per_second": {
+        "median": 17487212.15790138,
+        "min": 11470736.823857032,
+        "max": 20806132.008371104
+      }
+    },
+    "median_throughput_ratio": 12.975281713748855,
+    "accepted_clean_runs": 0,
+    "trials": [
+      {
+        "round": 1,
+        "valid": true,
+        "before": {
+          "name": "comparison-before-1",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 2325.0,
+              "min": 3.0,
+              "p50": 1369.0,
+              "p99": 2316.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 2208657.3757671067,
+            "connections": 50,
+            "early_closes": 0,
+            "errors": 0,
+            "frames": 21250,
+            "frames_per_second": 2029.2069206598778,
+            "latency_ms": {
+              "count": 31150,
+              "max": 2325.0,
+              "min": 0.0,
+              "p50": 34.0,
+              "p99": 2264.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 21150,
+              "max": 1343.0,
+              "min": 0.0,
+              "p50": 9.0,
+              "p99": 1277.0,
+              "resolution_ms": 0.1
+            },
+            "seconds": 10.472071519
+          },
+          "server_cpu": {
+            "elapsed_seconds": 14.267746172961779,
+            "cpu_seconds": 7.529999999999999,
+            "cpu_cores": 0.5277638043680504,
+            "runqueue_seconds": 5.823392823
+          },
+          "client_cpu": {
+            "elapsed_seconds": 13.59,
+            "user_seconds": 0.4,
+            "system_seconds": 0.68
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 1307086.587231479,
+              "closes_1013": 0,
+              "connections": 50,
+              "entries_per_second": 1570.0819563905497,
+              "event": "stats",
+              "frames_per_second": 515.0380159726521,
+              "generated_changes_per_second": 16791.018319452807,
+              "generator_lag_ms": [
+                8329.049
+              ],
+              "outbound_queue_depth_max": 57,
+              "subscriptions": 10000
+            }
+          ],
+          "load_gate": [
+            " 13:50:30 up 5 days,  6:36,  1 user,  load average: 7.03, 6.68, 7.44"
+          ]
+        },
+        "after": {
+          "name": "comparison-after-1",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 310.0,
+              "min": 10.0,
+              "p50": 246.0,
+              "p99": 308.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 11470736.823857032,
+            "connections": 50,
+            "early_closes": 0,
+            "errors": 0,
+            "frames": 179159,
+            "frames_per_second": 16755.002244876086,
+            "latency_ms": {
+              "count": 189059,
+              "max": 903.0,
+              "min": 0.0,
+              "p50": 8.0,
+              "p99": 618.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 179059,
+              "max": 903.0,
+              "min": 0.0,
+              "p50": 7.0,
+              "p99": 618.0,
+              "resolution_ms": 0.1
+            },
+            "seconds": 10.692866368
+          },
+          "server_cpu": {
+            "elapsed_seconds": 13.393306220008526,
+            "cpu_seconds": 6.5,
+            "cpu_cores": 0.4853170601213852,
+            "runqueue_seconds": 6.606555952
+          },
+          "client_cpu": {
+            "elapsed_seconds": 12.95,
+            "user_seconds": 1.61,
+            "system_seconds": 1.79
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 7366010.670649078,
+              "closes_1013": 0,
+              "connections": 50,
+              "entries_per_second": 31479.59184821009,
+              "event": "stats",
+              "frames_per_second": 10073.517373886041,
+              "generated_changes_per_second": 61279.697674522635,
+              "generator_lag_ms": [
+                3873.841
+              ],
+              "outbound_queue_depth_max": 403,
+              "subscriptions": 10000
+            }
+          ],
+          "load_gate": [
+            " 13:50:48 up 5 days,  6:37,  1 user,  load average: 7.94, 6.93, 7.50"
+          ]
+        }
+      },
+      {
+        "round": 2,
+        "valid": false,
+        "before": {
+          "name": "comparison-before-2",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 881.0,
+              "min": 3.0,
+              "p50": 171.0,
+              "p99": 814.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 1608146.3123689366,
+            "connections": 50,
+            "early_closes": 0,
+            "errors": 0,
+            "frames": 11105,
+            "frames_per_second": 1083.5470710835243,
+            "latency_ms": {
+              "count": 21005,
+              "max": 1719.0,
+              "min": 0.0,
+              "p50": 30.0,
+              "p99": 671.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 11005,
+              "max": 1719.0,
+              "min": 0.0,
+              "p50": 10.0,
+              "p99": 567.0,
+              "resolution_ms": 0.1
+            },
+            "seconds": 10.24874719
+          },
+          "server_cpu": {
+            "elapsed_seconds": 11.663535840983968,
+            "cpu_seconds": 5.83,
+            "cpu_cores": 0.4998484232812342,
+            "runqueue_seconds": 5.289735064
+          },
+          "client_cpu": {
+            "elapsed_seconds": 11.6,
+            "user_seconds": 0.59,
+            "system_seconds": 1.11
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 1384962.1691141804,
+              "closes_1013": 0,
+              "connections": 50,
+              "entries_per_second": 2248.6624063805134,
+              "event": "stats",
+              "frames_per_second": 719.4541876372398,
+              "generated_changes_per_second": 11507.63537805633,
+              "generator_lag_ms": [
+                8989.096
+              ],
+              "outbound_queue_depth_max": 52,
+              "subscriptions": 10000
+            }
+          ],
+          "load_gate": [
+            " 13:51:03 up 5 days,  6:37,  1 user,  load average: 9.26, 7.26, 7.60"
+          ]
+        },
+        "after": {
+          "name": "comparison-after-2",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 766.0,
+              "min": 6.0,
+              "p50": 737.0,
+              "p99": 766.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 5857619.8756003985,
+            "connections": 50,
+            "early_closes": 1,
+            "errors": 0,
+            "frames": 78590,
+            "frames_per_second": 7769.037613208898,
+            "latency_ms": {
+              "count": 88490,
+              "max": 820.0,
+              "min": 0.0,
+              "p50": 19.0,
+              "p99": 784.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 78490,
+              "max": 820.0,
+              "min": 0.0,
+              "p50": 16.0,
+              "p99": 785.0,
+              "resolution_ms": 0.1
+            },
+            "seconds": 10.11579605
+          },
+          "server_cpu": {
+            "elapsed_seconds": 11.132016675954219,
+            "cpu_seconds": 5.47,
+            "cpu_cores": 0.49137547662998987,
+            "runqueue_seconds": 4.8626296
+          },
+          "client_cpu": {
+            "elapsed_seconds": 10.89,
+            "user_seconds": 1.11,
+            "system_seconds": 1.44
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 5325135.084011898,
+              "closes_1013": 1,
+              "connections": 49,
+              "entries_per_second": 21522.572211287443,
+              "event": "stats",
+              "frames_per_second": 6911.648600154741,
+              "generated_changes_per_second": 100063.05458449254,
+              "generator_lag_ms": [
+                3.762
+              ],
+              "outbound_queue_depth_max": 16384,
+              "subscriptions": 9800
+            }
+          ],
+          "load_gate": [
+            " 13:51:16 up 5 days,  6:37,  1 user,  load average: 8.87, 7.24, 7.59"
+          ]
+        },
+        "excluded_reason": "The optimized run closed one connection; both sides of this pair are excluded from clean paired statistics."
+      },
+      {
+        "round": 3,
+        "valid": true,
+        "before": {
+          "name": "comparison-before-3",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 1246.0,
+              "min": 4.0,
+              "p50": 1011.0,
+              "p99": 1242.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 2818091.5049895747,
+            "connections": 50,
+            "early_closes": 0,
+            "errors": 0,
+            "frames": 31206,
+            "frames_per_second": 3040.232483419501,
+            "latency_ms": {
+              "count": 41106,
+              "max": 1246.0,
+              "min": 0.0,
+              "p50": 10.0,
+              "p99": 1223.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 31106,
+              "max": 407.0,
+              "min": 0.0,
+              "p50": 7.0,
+              "p99": 137.0,
+              "resolution_ms": 0.1
+            },
+            "seconds": 10.264346615000001
+          },
+          "server_cpu": {
+            "elapsed_seconds": 11.231408473977353,
+            "cpu_seconds": 10.059999999999999,
+            "cpu_cores": 0.8957024422456495,
+            "runqueue_seconds": 0.7965017249999999
+          },
+          "client_cpu": {
+            "elapsed_seconds": 11.02,
+            "user_seconds": 0.53,
+            "system_seconds": 1.11
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 2278729.297323595,
+              "closes_1013": 0,
+              "connections": 50,
+              "entries_per_second": 6684.132715457465,
+              "event": "stats",
+              "frames_per_second": 2136.7105326523865,
+              "generated_changes_per_second": 15205.06928586698,
+              "generator_lag_ms": [
+                8486.122
+              ],
+              "outbound_queue_depth_max": 53,
+              "subscriptions": 10000
+            }
+          ],
+          "load_gate": [
+            " 13:51:29 up 5 days,  6:37,  1 user,  load average: 8.95, 7.34, 7.62"
+          ]
+        },
+        "after": {
+          "name": "comparison-after-3",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 88.0,
+              "min": 3.0,
+              "p50": 11.0,
+              "p99": 86.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 20806132.008371104,
+            "connections": 50,
+            "early_closes": 0,
+            "errors": 0,
+            "frames": 318441,
+            "frames_per_second": 31749.34774821991,
+            "latency_ms": {
+              "count": 328341,
+              "max": 329.0,
+              "min": 0.0,
+              "p50": 6.0,
+              "p99": 214.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 318341,
+              "max": 329.0,
+              "min": 0.0,
+              "p50": 5.0,
+              "p99": 215.0,
+              "resolution_ms": 0.1
+            },
+            "seconds": 10.029843842
+          },
+          "server_cpu": {
+            "elapsed_seconds": 11.298550850013271,
+            "cpu_seconds": 10.12,
+            "cpu_cores": 0.8956900875467683,
+            "runqueue_seconds": 0.447642625
+          },
+          "client_cpu": {
+            "elapsed_seconds": 11.12,
+            "user_seconds": 2.11,
+            "system_seconds": 2.9
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 17983852.211560566,
+              "closes_1013": 0,
+              "connections": 50,
+              "entries_per_second": 85137.57779065716,
+              "event": "stats",
+              "frames_per_second": 27230.779812320434,
+              "generated_changes_per_second": 97008.83574571059,
+              "generator_lag_ms": [
+                305.441
+              ],
+              "outbound_queue_depth_max": 322,
+              "subscriptions": 10000
+            }
+          ],
+          "load_gate": [
+            " 13:51:42 up 5 days,  6:37,  1 user,  load average: 7.90, 7.19, 7.57"
+          ]
+        }
+      },
+      {
+        "round": 4,
+        "valid": true,
+        "before": {
+          "name": "comparison-before-4",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 1051.0,
+              "min": 4.0,
+              "p50": 879.0,
+              "p99": 1043.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 1698878.6560890048,
+            "connections": 50,
+            "early_closes": 0,
+            "errors": 0,
+            "frames": 12717,
+            "frames_per_second": 1267.1739163156171,
+            "latency_ms": {
+              "count": 22617,
+              "max": 1051.0,
+              "min": 0.0,
+              "p50": 196.0,
+              "p99": 1036.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 12617,
+              "max": 892.0,
+              "min": 0.0,
+              "p50": 18.0,
+              "p99": 549.0,
+              "resolution_ms": 0.1
+            },
+            "seconds": 10.035717936
+          },
+          "server_cpu": {
+            "elapsed_seconds": 11.260264248994645,
+            "cpu_seconds": 7.65,
+            "cpu_cores": 0.6793801487103661,
+            "runqueue_seconds": 3.263336752
+          },
+          "client_cpu": {
+            "elapsed_seconds": 11.07,
+            "user_seconds": 0.55,
+            "system_seconds": 0.83
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 1573513.89765063,
+              "closes_1013": 0,
+              "connections": 50,
+              "entries_per_second": 3284.9288903922416,
+              "event": "stats",
+              "frames_per_second": 1064.780386149945,
+              "generated_changes_per_second": 8108.051451837414,
+              "generator_lag_ms": [
+                9192.717
+              ],
+              "outbound_queue_depth_max": 54,
+              "subscriptions": 10000
+            }
+          ],
+          "load_gate": [
+            " 13:51:54 up 5 days,  6:38,  1 user,  load average: 6.68, 6.95, 7.49"
+          ]
+        },
+        "after": {
+          "name": "comparison-after-4",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 86.0,
+              "min": 1.0,
+              "p50": 12.0,
+              "p99": 85.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 17487212.15790138,
+            "connections": 50,
+            "early_closes": 0,
+            "errors": 0,
+            "frames": 270556,
+            "frames_per_second": 26329.531451050734,
+            "latency_ms": {
+              "count": 280456,
+              "max": 890.0,
+              "min": 0.0,
+              "p50": 9.0,
+              "p99": 839.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 270456,
+              "max": 890.0,
+              "min": 0.0,
+              "p50": 9.0,
+              "p99": 841.0,
+              "resolution_ms": 0.1
+            },
+            "seconds": 10.275762047
+          },
+          "server_cpu": {
+            "elapsed_seconds": 13.293301888974383,
+            "cpu_seconds": 9.24,
+            "cpu_cores": 0.6950868999419747,
+            "runqueue_seconds": 3.74507561
+          },
+          "client_cpu": {
+            "elapsed_seconds": 12.64,
+            "user_seconds": 1.95,
+            "system_seconds": 1.78
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 12618458.317508578,
+              "closes_1013": 0,
+              "connections": 50,
+              "entries_per_second": 57840.2598722689,
+              "event": "stats",
+              "frames_per_second": 18502.56335435578,
+              "generated_changes_per_second": 86122.98011700141,
+              "generator_lag_ms": [
+                1393.571
+              ],
+              "outbound_queue_depth_max": 10524,
+              "subscriptions": 10000
+            }
+          ],
+          "load_gate": [
+            " 13:52:07 up 5 days,  6:38,  1 user,  load average: 7.38, 7.09, 7.52"
+          ]
+        }
+      },
+      {
+        "round": 5,
+        "valid": true,
+        "before": {
+          "name": "comparison-before-5",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 1931.0,
+              "min": 5.0,
+              "p50": 1642.0,
+              "p99": 1914.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 2560981.435860275,
+            "connections": 50,
+            "early_closes": 0,
+            "errors": 0,
+            "frames": 26568,
+            "frames_per_second": 2596.2577261457163,
+            "latency_ms": {
+              "count": 36468,
+              "max": 1931.0,
+              "min": 0.0,
+              "p50": 12.0,
+              "p99": 1902.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 26468,
+              "max": 976.0,
+              "min": 0.0,
+              "p50": 7.0,
+              "p99": 249.0,
+              "resolution_ms": 0.1
+            },
+            "seconds": 10.233190539
+          },
+          "server_cpu": {
+            "elapsed_seconds": 11.102351937966887,
+            "cpu_seconds": 8.71,
+            "cpu_cores": 0.7845184559691607,
+            "runqueue_seconds": 2.133126818
+          },
+          "client_cpu": {
+            "elapsed_seconds": 10.95,
+            "user_seconds": 0.47,
+            "system_seconds": 0.87
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 2182614.0373521294,
+              "closes_1013": 0,
+              "connections": 50,
+              "entries_per_second": 6051.817547546846,
+              "event": "stats",
+              "frames_per_second": 1956.9331606479996,
+              "generated_changes_per_second": 17922.18708900773,
+              "generator_lag_ms": [
+                8211.145
+              ],
+              "outbound_queue_depth_max": 57,
+              "subscriptions": 10000
+            }
+          ],
+          "load_gate": [
+            " 13:52:21 up 5 days,  6:38,  1 user,  load average: 7.04, 7.02, 7.49"
+          ]
+        },
+        "after": {
+          "name": "comparison-after-5",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 104.0,
+              "min": 2.0,
+              "p50": 73.0,
+              "p99": 104.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 19092231.59094513,
+            "connections": 50,
+            "early_closes": 0,
+            "errors": 0,
+            "frames": 295373,
+            "frames_per_second": 29030.883263415853,
+            "latency_ms": {
+              "count": 305273,
+              "max": 217.0,
+              "min": 0.0,
+              "p50": 6.0,
+              "p99": 167.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 295273,
+              "max": 217.0,
+              "min": 0.0,
+              "p50": 5.0,
+              "p99": 168.0,
+              "resolution_ms": 0.1
+            },
+            "seconds": 10.174440692
+          },
+          "server_cpu": {
+            "elapsed_seconds": 11.167961507977452,
+            "cpu_seconds": 10.26,
+            "cpu_cores": 0.9186994414935187,
+            "runqueue_seconds": 0.321439413
+          },
+          "client_cpu": {
+            "elapsed_seconds": 11.01,
+            "user_seconds": 2.16,
+            "system_seconds": 2.94
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 18466516.018071305,
+              "closes_1013": 0,
+              "connections": 50,
+              "entries_per_second": 87581.44478258616,
+              "event": "stats",
+              "frames_per_second": 28001.469520218478,
+              "generated_changes_per_second": 99502.1707571535,
+              "generator_lag_ms": [
+                72.671
+              ],
+              "outbound_queue_depth_max": 396,
+              "subscriptions": 10000
+            }
+          ],
+          "load_gate": [
+            " 13:52:33 up 5 days,  6:38,  1 user,  load average: 7.85, 7.21, 7.55"
+          ]
+        }
+      },
+      {
+        "round": 6,
+        "valid": true,
+        "before": {
+          "name": "comparison-before-6",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 611.0,
+              "min": 3.0,
+              "p50": 46.0,
+              "p99": 511.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 1932234.8689266131,
+            "connections": 50,
+            "early_closes": 0,
+            "errors": 0,
+            "frames": 16515,
+            "frames_per_second": 1634.9364925640068,
+            "latency_ms": {
+              "count": 26415,
+              "max": 611.0,
+              "min": 0.0,
+              "p50": 19.0,
+              "p99": 434.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 16415,
+              "max": 432.0,
+              "min": 0.0,
+              "p50": 14.0,
+              "p99": 381.0,
+              "resolution_ms": 0.1
+            },
+            "runqueue_seconds": 3.6770915310000003,
+            "seconds": 10.101309791
+          },
+          "server_cpu": {
+            "elapsed_seconds": 13.442829163977876,
+            "cpu_seconds": 8.0,
+            "cpu_cores": 0.5951128220417491,
+            "runqueue_seconds": 4.233095698,
+            "user_seconds": 6.72,
+            "system_seconds": 1.28
+          },
+          "client_cpu": {
+            "elapsed_seconds": 13.16,
+            "user_seconds": 0.86,
+            "system_seconds": 1.63
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 1600373.791485321,
+              "closes_1013": 0,
+              "connections": 50,
+              "entries_per_second": 3451.166963478217,
+              "event": "stats",
+              "frames_per_second": 1111.1454104578734,
+              "generated_changes_per_second": 8959.959486050842,
+              "generator_lag_ms": [
+                9221.089
+              ],
+              "outbound_queue_depth_max": 53,
+              "subscriptions": 10000
+            }
+          ],
+          "load_gate": [
+            " 14:01:23 up 5 days,  6:47,  1 user,  load average: 7.90, 6.08, 6.66"
+          ]
+        },
+        "after": {
+          "name": "comparison-after-6",
+          "load": {
+            "assets_per_connection": 200,
+            "book_frames": 10000,
+            "book_latency_ms": {
+              "count": 10000,
+              "max": 33.0,
+              "min": 1.0,
+              "p50": 7.0,
+              "p99": 32.0,
+              "resolution_ms": 0.1
+            },
+            "bytes_per_second": 16427044.00189383,
+            "connections": 50,
+            "early_closes": 0,
+            "errors": 0,
+            "frames": 246049,
+            "frames_per_second": 24568.242315279185,
+            "latency_ms": {
+              "count": 255949,
+              "max": 427.0,
+              "min": 0.0,
+              "p50": 6.0,
+              "p99": 238.0,
+              "resolution_ms": 0.1
+            },
+            "non_book_latency_ms": {
+              "count": 245949,
+              "max": 427.0,
+              "min": 0.0,
+              "p50": 6.0,
+              "p99": 239.0,
+              "resolution_ms": 0.1
+            },
+            "runqueue_seconds": 4.602748215,
+            "seconds": 10.01492076
+          },
+          "server_cpu": {
+            "elapsed_seconds": 12.46002622297965,
+            "cpu_seconds": 8.049999999999999,
+            "cpu_cores": 0.6460660560371556,
+            "runqueue_seconds": 3.509381796,
+            "user_seconds": 5.89,
+            "system_seconds": 2.16
+          },
+          "client_cpu": {
+            "elapsed_seconds": 12.35,
+            "user_seconds": 1.27,
+            "system_seconds": 1.36
+          },
+          "server_intervals": [
+            {
+              "bytes_per_second": 11196542.515964426,
+              "closes_1013": 0,
+              "connections": 50,
+              "entries_per_second": 50644.91742134958,
+              "event": "stats",
+              "frames_per_second": 16205.602445504888,
+              "generated_changes_per_second": 80819.74737690974,
+              "generator_lag_ms": [
+                1920.66
+              ],
+              "outbound_queue_depth_max": 356,
+              "subscriptions": 10000
+            }
+          ],
+          "load_gate": [
+            " 14:01:37 up 5 days,  6:47,  1 user,  load average: 7.55, 6.10, 6.66"
+          ]
+        }
+      }
+    ]
+  },
+  "historical_baseline": {
+    "frames_per_second": 3910.0950114901316,
+    "p99_ms": 920.0,
+    "note": "Earlier phase-1 measurement with the original full-JSON null client; not used to compute the paired ratio."
+  },
+  "profiles": {
+    "method": "perf record -e cpu-clock:u -F 199 --call-graph dwarf,8192; profile runs are separate from unprofiled comparisons. Percentages are approximate user-CPU samples, not wall time or kernel CPU.",
+    "before": {
+      "hash_inclusive_percent": 69.85,
+      "decimal_inclusive_percent": 34.43,
+      "sha1_compression_self_percent": 3.37,
+      "malloc_self_percent": 3.1,
+      "free_self_percent": 3.64
+    },
+    "intermediate": {
+      "small_memory_copy_self_percent": 22.57,
+      "response": "Changed the per-level cache into two contiguous encoded side buffers; hash preimages now use bulk copies."
+    },
+    "after": {
+      "sha1_compression_self_percent": 40.97,
+      "generate_self_percent": 12.0,
+      "entry_writer_self_percent": 4.43,
+      "decimal_self_percent": 3.57,
+      "cached_side_splice_self_percent": 2.81,
+      "cache_update_self_percent": 2.49,
+      "memory_copy_self_percent": 2.27,
+      "malloc_self_percent": 1.3
+    },
+    "client_after": {
+      "timestamp_search_self_percent": 18.78,
+      "latency_histogram_self_percent": 6.55,
+      "utf8_validation_self_percent": 4.37,
+      "frame_decode_self_percent": 3.49
+    },
+    "final_profile_run": {
+      "name": "profile-verified",
+      "load": {
+        "assets_per_connection": 200,
+        "book_frames": 10000,
+        "book_latency_ms": {
+          "count": 10000,
+          "max": 85.0,
+          "min": 4.0,
+          "p50": 20.0,
+          "p99": 83.0,
+          "resolution_ms": 0.1
+        },
+        "bytes_per_second": 17834883.406567145,
+        "connections": 50,
+        "early_closes": 0,
+        "errors": 0,
+        "frames": 281892,
+        "frames_per_second": 27002.216305096776,
+        "latency_ms": {
+          "count": 291792,
+          "max": 610.0,
+          "min": 0.0,
+          "p50": 12.0,
+          "p99": 336.0,
+          "resolution_ms": 0.1
+        },
+        "non_book_latency_ms": {
+          "count": 281792,
+          "max": 610.0,
+          "min": 0.0,
+          "p50": 11.0,
+          "p99": 337.0,
+          "resolution_ms": 0.1
+        },
+        "runqueue_seconds": 2.986813951,
+        "seconds": 10.439587507
+      },
+      "server_cpu": {
+        "elapsed_seconds": 12.838498630968388,
+        "cpu_seconds": 10.06,
+        "cpu_cores": 0.7835807199241949,
+        "runqueue_seconds": 2.013899403
+      },
+      "client_cpu": {
+        "elapsed_seconds": 12.68,
+        "user_seconds": 2.36,
+        "system_seconds": 3.15
+      },
+      "server_intervals": [
+        {
+          "bytes_per_second": 16673585.647282396,
+          "closes_1013": 0,
+          "connections": 50,
+          "entries_per_second": 78429.73137835575,
+          "event": "stats",
+          "frames_per_second": 25082.492922095465,
+          "generated_changes_per_second": 95274.97175140986,
+          "generator_lag_ms": [
+            478.071
+          ],
+          "outbound_queue_depth_max": 352,
+          "subscriptions": 10000
+        }
+      ],
+      "load_gate": [
+        " 13:57:50 up 5 days,  6:44,  1 user,  load average: 4.15, 5.51, 6.72"
+      ]
+    },
+    "interpretation": "Formatting/allocation is no longer the main server cost. Exact full-book SHA1 compression is the largest remaining user-CPU hotspot. The profiled client spent 3.15 s in the kernel and 2.36 s in user space, and recorded 2.99 s of summed thread runqueue wait; the server recorded 2.01 s runqueue wait. Contention explains substantial throughput variability, but the precise cause of the remaining latency tail has not been isolated."
+  },
+  "diagnostic_runs": [
+    {
+      "name": "optimized-second",
+      "load": {
+        "assets_per_connection": 200,
+        "book_frames": 10000,
+        "bytes_per_second": 16266350.46814806,
+        "connections": 50,
+        "early_closes": 0,
+        "errors": 0,
+        "frames": 246078,
+        "frames_per_second": 24334.536594013785,
+        "latency_ms": {
+          "count": 255978,
+          "max": 330.0,
+          "min": 0.0,
+          "p50": 3.0,
+          "p99": 201.0,
+          "resolution_ms": 0.1
+        },
+        "seconds": 10.112294477
+      },
+      "server_cpu": {
+        "elapsed_seconds": 12.898077867983375,
+        "cpu_seconds": 11.19,
+        "cpu_cores": 0.8675711307168256
+      },
+      "client_cpu": {
+        "elapsed_seconds": 12.75,
+        "user_seconds": 3.02,
+        "system_seconds": 2.64
+      },
+      "server_intervals": [
+        {
+          "bytes_per_second": 14484896.222760415,
+          "closes_1013": 0,
+          "connections": 50,
+          "entries_per_second": 67116.61678230832,
+          "event": "stats",
+          "frames_per_second": 21465.163938626163,
+          "generated_changes_per_second": 97027.49595549969,
+          "generator_lag_ms": [
+            298.052
+          ],
+          "outbound_queue_depth_max": 86,
+          "subscriptions": 10000
+        }
+      ],
+      "load_gate": [
+        " 13:24:15 up 5 days,  6:10,  0 user,  load average: 11.27, 10.39, 9.35"
+      ]
+    },
+    {
+      "name": "optimized-third",
+      "load": {
+        "assets_per_connection": 200,
+        "book_frames": 10000,
+        "book_latency_ms": {
+          "count": 10000,
+          "max": 27.0,
+          "min": 1.0,
+          "p50": 5.0,
+          "p99": 27.0,
+          "resolution_ms": 0.1
+        },
+        "bytes_per_second": 16789727.136258204,
+        "connections": 50,
+        "early_closes": 0,
+        "errors": 0,
+        "frames": 259030,
+        "frames_per_second": 25305.10383130065,
+        "latency_ms": {
+          "count": 268930,
+          "max": 600.0,
+          "min": 0.0,
+          "p50": 6.0,
+          "p99": 327.0,
+          "resolution_ms": 0.1
+        },
+        "non_book_latency_ms": {
+          "count": 258930,
+          "max": 600.0,
+          "min": 0.0,
+          "p50": 6.0,
+          "p99": 329.0,
+          "resolution_ms": 0.1
+        },
+        "seconds": 10.236274932
+      },
+      "server_cpu": {
+        "elapsed_seconds": 11.81380334298592,
+        "cpu_seconds": 9.73,
+        "cpu_cores": 0.8236128296292393
+      },
+      "client_cpu": {
+        "elapsed_seconds": 11.47,
+        "user_seconds": 2.82,
+        "system_seconds": 2.61
+      },
+      "server_intervals": [
+        {
+          "bytes_per_second": 14949655.325254686,
+          "closes_1013": 0,
+          "connections": 50,
+          "entries_per_second": 69802.12891503882,
+          "event": "stats",
+          "frames_per_second": 22328.10644085262,
+          "generated_changes_per_second": 86433.72460745565,
+          "generator_lag_ms": [
+            1357.421
+          ],
+          "outbound_queue_depth_max": 86,
+          "subscriptions": 10000
+        }
+      ],
+      "load_gate": [
+        " 13:30:46 up 5 days,  6:17,  0 user,  load average: 8.30, 9.64, 9.36"
+      ]
+    },
+    {
+      "name": "optimized-cores34",
+      "load": {
+        "assets_per_connection": 200,
+        "book_frames": 10000,
+        "book_latency_ms": {
+          "count": 10000,
+          "max": 141.0,
+          "min": 2.0,
+          "p50": 87.0,
+          "p99": 141.0,
+          "resolution_ms": 0.1
+        },
+        "bytes_per_second": 13579233.533440912,
+        "connections": 50,
+        "early_closes": 0,
+        "errors": 0,
+        "frames": 215971,
+        "frames_per_second": 20270.333901968865,
+        "latency_ms": {
+          "count": 225871,
+          "max": 848.0,
+          "min": 0.0,
+          "p50": 10.0,
+          "p99": 288.0,
+          "resolution_ms": 0.1
+        },
+        "non_book_latency_ms": {
+          "count": 215871,
+          "max": 848.0,
+          "min": 0.0,
+          "p50": 9.0,
+          "p99": 291.0,
+          "resolution_ms": 0.1
+        },
+        "seconds": 10.654535887
+      },
+      "server_cpu": {
+        "elapsed_seconds": 11.8138541560038,
+        "cpu_seconds": 8.860000000000001,
+        "cpu_cores": 0.7499669356843508
+      },
+      "client_cpu": {
+        "elapsed_seconds": 11.72,
+        "user_seconds": 2.72,
+        "system_seconds": 2.45
+      },
+      "server_intervals": [
+        {
+          "bytes_per_second": 13302507.532729648,
+          "closes_1013": 0,
+          "connections": 50,
+          "entries_per_second": 61658.81925465058,
+          "event": "stats",
+          "frames_per_second": 19736.260690186704,
+          "generated_changes_per_second": 74988.21321371465,
+          "generator_lag_ms": [
+            2502.587
+          ],
+          "outbound_queue_depth_max": 79,
+          "subscriptions": 10000
+        }
+      ],
+      "load_gate": [
+        " 13:33:13 up 5 days,  6:19,  1 user,  load average: 7.79, 9.05, 9.19"
+      ]
+    },
+    {
+      "name": "acceptance-fast",
+      "load": {
+        "assets_per_connection": 200,
+        "book_frames": 10000,
+        "book_latency_ms": {
+          "count": 10000,
+          "max": 267.0,
+          "min": 1.0,
+          "p50": 247.0,
+          "p99": 267.0,
+          "resolution_ms": 0.1
+        },
+        "bytes_per_second": 14518501.399308585,
+        "connections": 50,
+        "early_closes": 1,
+        "errors": 0,
+        "frames": 217181,
+        "frames_per_second": 21633.342483028973,
+        "latency_ms": {
+          "count": 227081,
+          "max": 767.0,
+          "min": 0.0,
+          "p50": 53.0,
+          "p99": 738.0,
+          "resolution_ms": 0.1
+        },
+        "non_book_latency_ms": {
+          "count": 217081,
+          "max": 767.0,
+          "min": 0.0,
+          "p50": 49.0,
+          "p99": 740.0,
+          "resolution_ms": 0.1
+        },
+        "seconds": 10.039179113
+      },
+      "server_cpu": {
+        "elapsed_seconds": 11.643998413986992,
+        "cpu_seconds": 10.08,
+        "cpu_cores": 0.8656820141689227,
+        "runqueue_seconds": 1.071717156
+      },
+      "client_cpu": {
+        "elapsed_seconds": 11.56,
+        "user_seconds": 2.59,
+        "system_seconds": 2.45
+      },
+      "server_intervals": [
+        {
+          "bytes_per_second": 11588649.07009021,
+          "closes_1013": 0,
+          "connections": 50,
+          "entries_per_second": 52972.92332101252,
+          "event": "stats",
+          "frames_per_second": 16952.17530296691,
+          "generated_changes_per_second": 70638.06300161402,
+          "generator_lag_ms": [
+            2939.618
+          ],
+          "outbound_queue_depth_max": 4213,
+          "subscriptions": 10000
+        }
+      ],
+      "load_gate": [
+        " 13:39:42 up 5 days,  6:25,  1 user,  load average: 9.18, 7.98, 8.51"
+      ]
+    },
+    {
+      "name": "acceptance-io",
+      "load": {
+        "assets_per_connection": 200,
+        "book_frames": 10000,
+        "book_latency_ms": {
+          "count": 10000,
+          "max": 61.0,
+          "min": 1.0,
+          "p50": 20.0,
+          "p99": 60.0,
+          "resolution_ms": 0.1
+        },
+        "bytes_per_second": 19864808.488403227,
+        "connections": 50,
+        "early_closes": 0,
+        "errors": 0,
+        "frames": 307068,
+        "frames_per_second": 30310.384245369263,
+        "latency_ms": {
+          "count": 316968,
+          "max": 311.0,
+          "min": 0.0,
+          "p50": 5.0,
+          "p99": 152.0,
+          "resolution_ms": 0.1
+        },
+        "non_book_latency_ms": {
+          "count": 306968,
+          "max": 311.0,
+          "min": 0.0,
+          "p50": 5.0,
+          "p99": 153.0,
+          "resolution_ms": 0.1
+        },
+        "seconds": 10.13078546
+      },
+      "server_cpu": {
+        "elapsed_seconds": 10.763803880021442,
+        "cpu_seconds": 9.67,
+        "cpu_cores": 0.8983812886026624,
+        "runqueue_seconds": 0.471747691
+      },
+      "client_cpu": {
+        "elapsed_seconds": 10.68,
+        "user_seconds": 2.57,
+        "system_seconds": 2.9
+      },
+      "server_intervals": [
+        {
+          "bytes_per_second": 19173904.59718631,
+          "closes_1013": 0,
+          "connections": 50,
+          "entries_per_second": 91344.5951364434,
+          "event": "stats",
+          "frames_per_second": 29196.682382704614,
+          "generated_changes_per_second": 97823.19783859675,
+          "generator_lag_ms": [
+            223.066
+          ],
+          "outbound_queue_depth_max": 314,
+          "subscriptions": 10000
+        }
+      ],
+      "load_gate": [
+        " 13:43:16 up 5 days,  6:29,  1 user,  load average: 4.18, 6.63, 7.89"
+      ]
+    },
+    {
+      "name": "operating-80k",
+      "load": {
+        "assets_per_connection": 200,
+        "book_frames": 10000,
+        "book_latency_ms": {
+          "count": 10000,
+          "max": 57.0,
+          "min": 1.0,
+          "p50": 6.0,
+          "p99": 57.0,
+          "resolution_ms": 0.1
+        },
+        "bytes_per_second": 16399123.513655225,
+        "connections": 50,
+        "early_closes": 0,
+        "errors": 0,
+        "frames": 247693,
+        "frames_per_second": 24689.718846445394,
+        "latency_ms": {
+          "count": 257593,
+          "max": 1005.0,
+          "min": 0.0,
+          "p50": 27.0,
+          "p99": 906.0,
+          "resolution_ms": 0.1
+        },
+        "non_book_latency_ms": {
+          "count": 247593,
+          "max": 1005.0,
+          "min": 0.0,
+          "p50": 29.0,
+          "p99": 909.0,
+          "resolution_ms": 0.1
+        },
+        "seconds": 10.032232507
+      },
+      "server_cpu": {
+        "elapsed_seconds": 11.81267840898363,
+        "cpu_seconds": 9.49,
+        "cpu_cores": 0.8033741097008774,
+        "runqueue_seconds": 1.513540955
+      },
+      "client_cpu": {
+        "elapsed_seconds": 11.52,
+        "user_seconds": 3.32,
+        "system_seconds": 2.38
+      },
+      "server_intervals": [
+        {
+          "bytes_per_second": 14218891.196415206,
+          "closes_1013": 0,
+          "connections": 50,
+          "entries_per_second": 66259.56869325637,
+          "event": "stats",
+          "frames_per_second": 21204.049467212066,
+          "generated_changes_per_second": 79106.57345103285,
+          "generator_lag_ms": [
+            116.059
+          ],
+          "outbound_queue_depth_max": 301,
+          "subscriptions": 10000
+        }
+      ],
+      "load_gate": [
+        " 13:45:15 up 5 days,  6:31,  1 user,  load average: 4.29, 6.12, 7.57"
+      ]
+    }
+  ],
+  "diagnostic_notes": {
+    "operating-80k": "This diagnostic alone uses 80,000 level changes/s. It did not meet the latency target and is not included in paired statistics.",
+    "acceptance-fast": "This diagnostic had an early close and is not an accepted result."
+  },
+  "smoke": {
+    "seconds": 60,
+    "initial_markets": 200,
+    "new_markets_per_second": 0.2,
+    "resolutions_per_second": 0.1,
+    "checker": {
+      "records": 59817,
+      "snapshots": 424,
+      "updates": 59393,
+      "errors": {
+        "count": 0,
+        "samples": []
+      },
+      "gaps": {
+        "count": 0,
+        "samples": []
+      },
+      "coverage": {
+        "catalog_assets": 424,
+        "creation_to_first_snapshot_ms": {
+          "count": 424,
+          "max": 1401.388,
+          "min": 0.81,
+          "p50": 1304.3,
+          "p99": 1401.3,
+          "resolution_ms": 0.1
+        },
+        "eligible_without_snapshot": 0,
+        "grace_seconds": 5.0,
+        "samples": [],
+        "snapshotted_assets": 424
+      },
+      "tail": {
+        "assets": 424,
+        "changes_after_output": 1531,
+        "changes_before_last_received_record": 0,
+        "max": 0,
+        "note": "unobserved trailing changes are reported separately from interior gaps",
+        "p50": 0,
+        "p99": 0
+      },
+      "latency_ms": {
+        "count": 59817,
+        "max": 421.485,
+        "min": 0.058,
+        "p50": 1.2,
+        "p99": 99.6,
+        "resolution_ms": 0.1
+      }
+    },
+    "collector": {
+      "books_held": 414,
+      "books_synced": 414,
+      "bytes_written": 2951688,
+      "catch_up_levels": 0,
+      "connection_splits": 0,
+      "connections": 5,
+      "coverage_pct": 100.0,
+      "decode_errors": 0,
+      "delivery_latency_ms_max": 421.485,
+      "delivery_latency_ms_mean": 5.785383429773803,
+      "event": "run_summary",
+      "events": 19553,
+      "frames": 19210,
+      "hints": 36,
+      "level_updates_written": 59393,
+      "mismatched_books": 0,
+      "provisional_markets": 2,
+      "registered_markets": 207,
+      "scans_completed": 6,
+      "snapshots_written": 424,
+      "subscribed_markets": 207,
+      "telemetry_dropped": 0,
+      "ts": "2026-10-26T13:59:10.115209934+00:00",
+      "unsync_marks": 0
+    }
+  },
+  "verification": {
+    "tests_passed": 20,
+    "fmt_check": true,
+    "clippy_all_targets_warnings_denied": true,
+    "build_jobs": 2,
+    "test_threads": 1,
+    "processes_cleaned_up": true,
+    "commands": [
+      "cargo fmt --check --manifest-path fake-exchange/Cargo.toml",
+      "cargo clippy --manifest-path fake-exchange/Cargo.toml -j 2 --all-targets -- -D warnings",
+      "cargo test --manifest-path fake-exchange/Cargo.toml -j 2 -- --test-threads=1",
+      "FX_LOAD_SECONDS=10 fake-exchange/scripts/load.sh",
+      "fake-exchange/scripts/smoke.sh"
+    ]
+  },
+  "changes": [
+    "Direct byte serialization into reusable frame/hash buffers and a fixed-point formatter; cached contiguous book-side bytes update only the changed row.",
+    "Per-market deduplicated subscribers maintained on subscribe/unsubscribe.",
+    "Elapsed-time generation credits with a 500 us work quantum, explicit yields, and immediate scheduling when backlogged.",
+    "Connection writers feed queued frames and then flush, preserving control-message order.",
+    "Server/client read buffers of 4 KiB/16 KiB, cooperative client batches, and Tokio I/O/global-queue polling every four task polls.",
+    "The null client reads generated price-change timestamps directly and trusts their bodies. Other frame shapes retain JSON parsing. Full correctness is checked by wire-equivalence tests and the independent smoke checker."
+  ],
+  "limitations": [
+    "The latency acceptance threshold remains unmet; no clean full-scale capacity claim is made.",
+    "One measured optimized overload run closed early; its entire pair is excluded and retained in the report.",
+    "A load gate waited about 50 seconds before an early diagnostic run when one-minute load exceeded 12. All workload starts passed the gate.",
+    "No collector source changed and no collector correctness issue was found.",
+    "CLI flags and public Value-returning book/hash interfaces are preserved. fx-load adds book/non-book latency and optional Linux runqueue diagnostics."
+  ]
+}

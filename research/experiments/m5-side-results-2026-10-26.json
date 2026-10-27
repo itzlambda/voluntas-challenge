@@ -1,0 +1,42 @@
+{
+  "runs": 20,
+  "operations_per_run": 1000000,
+  "initial_levels_per_side": 25,
+  "sides": 2048,
+  "validated_equal_checksums": true,
+  "modes": {
+    "btree": {
+      "runs": 5,
+      "elapsed_s_median": 0.165268893,
+      "elapsed_s_range": [
+        0.148802824,
+        0.181911356
+      ]
+    },
+    "hybrid": {
+      "runs": 5,
+      "elapsed_s_median": 0.13430816,
+      "elapsed_s_range": [
+        0.110686072,
+        0.243337696
+      ]
+    },
+    "sorted_vec": {
+      "runs": 5,
+      "elapsed_s_median": 0.069244071,
+      "elapsed_s_range": [
+        0.063878299,
+        0.125403652
+      ]
+    },
+    "tick_array": {
+      "runs": 5,
+      "elapsed_s_median": 0.253565154,
+      "elapsed_s_range": [
+        0.196466392,
+        1.09220704
+      ]
+    }
+  },
+  "limits": "Construction, identical updates, and final traversal are timed; this is not a full-pipeline speed comparison. Keep production BTreeMap until end-to-end evidence justifies change. Tick array is 80008 bytes/side at 0.0001 resolution, about80GB for500kbooks."
+}

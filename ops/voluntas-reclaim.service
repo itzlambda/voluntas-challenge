@@ -1,0 +1,19 @@
+[Unit]
+Description=Reclaim disposable Voluntas output blocks
+Requisite=voluntas-collector.service
+After=voluntas-collector.service
+PartOf=voluntas-collector.service
+ConditionPathExists=/etc/voluntas/collector-approved
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/voluntas/reclaim-output.py --output /var/lib/voluntas-collector/books.sbe --state /var/lib/voluntas-collector/reclaim.json
+ExecStopPost=/usr/bin/python3 /opt/voluntas/check-disk.py
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=-/var/lib/voluntas-collector -/var/lib/private/voluntas-collector
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes

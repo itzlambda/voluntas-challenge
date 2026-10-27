@@ -1,0 +1,345 @@
+{
+  "checked_at": "2026-10-25T01:45:34.646445+00:00",
+  "listings": {
+    "openings": {
+      "query": {
+        "closed": "false",
+        "limit": "100",
+        "order": "acceptingOrdersTimestamp,id",
+        "ascending": "false"
+      },
+      "pages": [
+        100,
+        100
+      ],
+      "rows": 200,
+      "unique_ids": 200,
+      "all_closed_match": true,
+      "null_timestamps": 0,
+      "descending_time_numeric_id_order": true,
+      "eligible_rows": 200,
+      "first": {
+        "id": "6168306",
+        "question": "Mogi das Cruzes vs. Unifacisa: O/U 154.5",
+        "closed": false,
+        "acceptingOrders": true,
+        "active": true,
+        "archived": false,
+        "enableOrderBook": true,
+        "acceptingOrdersTimestamp": "2026-10-25T01:43:22Z",
+        "updatedAt": "2026-10-25T01:44:38.00341Z",
+        "version": "v1"
+      },
+      "last": {
+        "id": "6168097",
+        "question": "Exact Margin: Thunder by 21+",
+        "closed": false,
+        "acceptingOrders": true,
+        "active": true,
+        "archived": false,
+        "enableOrderBook": true,
+        "acceptingOrdersTimestamp": "2026-10-25T01:29:41Z",
+        "updatedAt": "2026-10-25T01:40:38.467625Z",
+        "version": "v1"
+      }
+    },
+    "closures": {
+      "query": {
+        "closed": "true",
+        "limit": "100",
+        "order": "closedTime,id",
+        "ascending": "false"
+      },
+      "pages": [
+        100,
+        100
+      ],
+      "rows": 200,
+      "unique_ids": 200,
+      "all_closed_match": true,
+      "null_timestamps": 0,
+      "descending_time_numeric_id_order": false,
+      "eligible_rows": 0,
+      "first": {
+        "id": "5630206",
+        "question": "Washington State Field Goals Made: O/U 1.5",
+        "closed": true,
+        "acceptingOrders": false,
+        "active": true,
+        "archived": false,
+        "enableOrderBook": true,
+        "closedTime": "2026-10-25 01:45:22.225932+00",
+        "updatedAt": "2026-10-25T01:45:34.15439Z",
+        "version": "v1"
+      },
+      "last": {
+        "id": "5623577",
+        "question": "Spread: Boise State (-4.5)",
+        "closed": true,
+        "acceptingOrders": false,
+        "active": true,
+        "archived": false,
+        "enableOrderBook": true,
+        "closedTime": "2026-10-25 01:43:22.342761+00",
+        "updatedAt": "2026-10-25T01:43:31.454536Z",
+        "version": "v1"
+      }
+    }
+  },
+  "protocol_queries": [
+    {
+      "params": [],
+      "ids": [
+        "559651",
+        "559652",
+        "559653"
+      ],
+      "versions": {
+        "v1": 3
+      }
+    },
+    {
+      "params": [
+        [
+          "version",
+          "v1"
+        ]
+      ],
+      "ids": [
+        "559651",
+        "559652",
+        "559653"
+      ],
+      "versions": {
+        "v1": 3
+      }
+    },
+    {
+      "params": [
+        [
+          "version",
+          "v2"
+        ]
+      ],
+      "ids": [
+        "5931598",
+        "5931604",
+        "5931605"
+      ],
+      "versions": {
+        "v2": 3
+      }
+    },
+    {
+      "params": [
+        [
+          "version",
+          "v1"
+        ],
+        [
+          "version",
+          "v2"
+        ]
+      ],
+      "ids": [
+        "559651",
+        "559652",
+        "559653"
+      ],
+      "versions": {
+        "v1": 3
+      }
+    }
+  ],
+  "closure_followups": [
+    {
+      "rows": 200,
+      "unique_ids": 200,
+      "descending_time_order": true,
+      "descending_time_and_id_inversions": 39,
+      "examples": [
+        {
+          "index": 77,
+          "cross_page": false,
+          "a": {
+            "id": "5578611",
+            "closedTime": "2026-10-25 01:44:33+00",
+            "updatedAt": "2026-10-25T01:45:33.529664Z"
+          },
+          "b": {
+            "id": "5578612",
+            "closedTime": "2026-10-25 01:44:33+00",
+            "updatedAt": "2026-10-25T01:45:33.253468Z"
+          }
+        },
+        {
+          "index": 78,
+          "cross_page": false,
+          "a": {
+            "id": "5578612",
+            "closedTime": "2026-10-25 01:44:33+00",
+            "updatedAt": "2026-10-25T01:45:33.253468Z"
+          },
+          "b": {
+            "id": "5578614",
+            "closedTime": "2026-10-25 01:44:33+00",
+            "updatedAt": "2026-10-25T01:45:33.529792Z"
+          }
+        }
+      ]
+    },
+    {
+      "rows": 200,
+      "unique_ids": 200,
+      "descending_time_order": true,
+      "descending_time_and_id_inversions": 39,
+      "examples": [
+        {
+          "index": 77,
+          "cross_page": false,
+          "a": {
+            "id": "5578611",
+            "closedTime": "2026-10-25 01:44:33+00",
+            "updatedAt": "2026-10-25T01:45:33.529664Z"
+          },
+          "b": {
+            "id": "5578612",
+            "closedTime": "2026-10-25 01:44:33+00",
+            "updatedAt": "2026-10-25T01:45:33.253468Z"
+          }
+        },
+        {
+          "index": 78,
+          "cross_page": false,
+          "a": {
+            "id": "5578612",
+            "closedTime": "2026-10-25 01:44:33+00",
+            "updatedAt": "2026-10-25T01:45:33.253468Z"
+          },
+          "b": {
+            "id": "5578614",
+            "closedTime": "2026-10-25 01:44:33+00",
+            "updatedAt": "2026-10-25T01:45:33.529792Z"
+          }
+        }
+      ]
+    }
+  ],
+  "v2_sample": [
+    {
+      "id": "5931598",
+      "version": "v2",
+      "active": true,
+      "closed": false,
+      "archived": false,
+      "acceptingOrders": true,
+      "enableOrderBook": true,
+      "conditionId": "0x012e7a40967dcf7782f543c855d644fd23000000000000000000000000000000",
+      "positionIds": [
+        "534431567902566368018385983072631079381328077538165832970367261582458617856",
+        "534431567902566368018385983072631079381328077538165832970367261582458617857"
+      ],
+      "clobTokenIds": "[\"534431567902566368018385983072631079381328077538165832970367261582458617856\", \"534431567902566368018385983072631079381328077538165832970367261582458617857\"]",
+      "outcomes": "[\"Bahcesehir Koleji\", \"Besiktas\"]",
+      "acceptingOrdersTimestamp": "2026-10-19T17:07:08Z"
+    },
+    {
+      "id": "5931604",
+      "version": "v2",
+      "active": true,
+      "closed": false,
+      "archived": false,
+      "acceptingOrders": true,
+      "enableOrderBook": true,
+      "conditionId": "0x01d6fd1969591ad5f4e9fc65d574216f30000000000000000000000000000000",
+      "positionIds": [
+        "832164947364691551324361485165400028834171767032415940519474181712990175232",
+        "832164947364691551324361485165400028834171767032415940519474181712990175233"
+      ],
+      "clobTokenIds": "[\"832164947364691551324361485165400028834171767032415940519474181712990175232\", \"832164947364691551324361485165400028834171767032415940519474181712990175233\"]",
+      "outcomes": "[\"Anadolu Efes\", \"Korfez Basket\"]",
+      "acceptingOrdersTimestamp": "2026-10-19T17:07:10Z"
+    },
+    {
+      "id": "5931605",
+      "version": "v2",
+      "active": true,
+      "closed": false,
+      "archived": false,
+      "acceptingOrders": true,
+      "enableOrderBook": true,
+      "conditionId": "0x010c0043707a7d6424d706ff95fd57486b000000000000000000000000000000",
+      "positionIds": [
+        "473516831522399751166910538569036922431732286640529568208012330442459971584",
+        "473516831522399751166910538569036922431732286640529568208012330442459971585"
+      ],
+      "clobTokenIds": "[\"473516831522399751166910538569036922431732286640529568208012330442459971584\", \"473516831522399751166910538569036922431732286640529568208012330442459971585\"]",
+      "outcomes": "[\"Galatasaray\", \"Bandirma Bordo\"]",
+      "acceptingOrdersTimestamp": "2026-10-19T17:07:10Z"
+    }
+  ],
+  "protocol_identifier_lookup": [
+    {
+      "versions": [],
+      "rows": []
+    },
+    {
+      "versions": [
+        [
+          "version",
+          "v2"
+        ]
+      ],
+      "rows": [
+        {
+          "id": "5931598",
+          "version": "v2",
+          "acceptingOrders": true,
+          "closed": false
+        }
+      ]
+    },
+    {
+      "versions": [
+        [
+          "version",
+          "v1"
+        ],
+        [
+          "version",
+          "v2"
+        ]
+      ],
+      "rows": [
+        {
+          "id": "5931598",
+          "version": "v2",
+          "acceptingOrders": true,
+          "closed": false
+        }
+      ]
+    }
+  ],
+  "saved_seed_membership_checks": [
+    {
+      "id": "6168306",
+      "kind": "recently_opened",
+      "present": false
+    },
+    {
+      "id": "5630206",
+      "kind": "recently_closed",
+      "present": true
+    },
+    {
+      "id": "5931598",
+      "kind": "tradable_v2",
+      "present": false
+    }
+  ],
+  "limitations": [
+    "Bounded current-state samples, not a complete lifecycle feed test.",
+    "No incremental polling implementation exists yet.",
+    "Null timestamps, pauses, reopening timestamp refresh, and publication delay guarantees remain unverified."
+  ]
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "kind": "ordinary",
+    "received_at": "2026-10-25T02:28:38.275653+00:00",
+    "headers": {
+      "Date": "Sun, 25 Oct 2026 02:26:28 GMT",
+      "Age": "130",
+      "Cache-Control": "public, max-age=300",
+      "CDN-Cache-Control": null,
+      "Surrogate-Control": null,
+      "Vary": "Accept-Encoding,Origin",
+      "X-Cache": "Hit from cloudfront",
+      "ETag": null
+    },
+    "first_id": "5340072",
+    "first_updatedAt": "2026-10-25T02:26:27.928977Z"
+  },
+  {
+    "kind": "cache_control_no_cache",
+    "received_at": "2026-10-25T02:28:38.372021+00:00",
+    "headers": {
+      "Date": "Sun, 25 Oct 2026 02:26:28 GMT",
+      "Age": "130",
+      "Cache-Control": "public, max-age=300",
+      "CDN-Cache-Control": null,
+      "Surrogate-Control": null,
+      "Vary": "Accept-Encoding,Origin",
+      "X-Cache": "Hit from cloudfront",
+      "ETag": null
+    },
+    "first_id": "5340072",
+    "first_updatedAt": "2026-10-25T02:26:27.928977Z"
+  },
+  {
+    "kind": "unique_query",
+    "received_at": "2026-10-25T02:28:38.508243+00:00",
+    "headers": {
+      "Date": "Sun, 25 Oct 2026 02:28:38 GMT",
+      "Age": null,
+      "Cache-Control": "public, max-age=300",
+      "CDN-Cache-Control": null,
+      "Surrogate-Control": null,
+      "Vary": "Accept-Encoding,Origin",
+      "X-Cache": "Miss from cloudfront",
+      "ETag": null
+    },
+    "first_id": "5677010",
+    "first_updatedAt": "2026-10-25T02:28:38.180903Z"
+  }
+]

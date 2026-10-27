@@ -1,0 +1,97 @@
+{
+  "date_utc": "2026-10-26",
+  "subscription_window_utc": "21:18:37\u201321:23:37",
+  "method": "Three independent Python public market subscriptions, both outcomes per market, 300 seconds each. Selected three eligible markets with highest reported volume24hr among Gamma top100 results. Compare entire depth before accepting every repeated book. Independently compare an initial-baseline-plus-absolute-updates model that ignores all subsequent books and trades.",
+  "collector_sha256": "74b37740a608b36f349ce3d7236e90a04d7ead5e57739e105c32e7e5218d82eb",
+  "analyzer_sha256": "6a4b2556b6289f9929e5a90344c8df8e2aa6b666ea0416c3e899d14081c6c21f",
+  "dependency": {
+    "name": "websockets",
+    "version": "15.0.1",
+    "wheel_sha256": "f7a866fbc1e97b5c617ee4116daaa09b722101d4a3c170c787450ba409f9736f"
+  },
+  "markets": [
+    {
+      "label": "A",
+      "reported_volume24hr": 4866536.89278,
+      "subscription_seconds": 300.0005378549977,
+      "received_frames": 2248,
+      "trade_notifications": 92,
+      "repeat_books": 184,
+      "arrival_model_disagreements": 0,
+      "initial_baseline_plus_deltas_disagreements": 0,
+      "older_repeated_books": 0,
+      "interior_trade_notifications": 92,
+      "interior_trade_candidates_zero": 61,
+      "interior_trade_candidates_one": 31,
+      "interior_trade_candidates_multiple": 0,
+      "initial_book_delays_ms": [
+        14.271899,
+        14.271899
+      ],
+      "observed_initialized_spans_seconds": [
+        299.825745546,
+        299.825745546
+      ],
+      "pings": 29,
+      "pongs": 29,
+      "raw_file_bytes": 3044276,
+      "raw_file_sha256": "777ee7ef01ecbcccefa3b144a4f9364edd76acd7d558d38bbfe4a65f64a4326b"
+    },
+    {
+      "label": "B",
+      "reported_volume24hr": 4773032.807785002,
+      "subscription_seconds": 300.00032331400143,
+      "received_frames": 2873,
+      "trade_notifications": 83,
+      "repeat_books": 166,
+      "arrival_model_disagreements": 0,
+      "initial_baseline_plus_deltas_disagreements": 0,
+      "older_repeated_books": 0,
+      "interior_trade_notifications": 80,
+      "interior_trade_candidates_zero": 44,
+      "interior_trade_candidates_one": 34,
+      "interior_trade_candidates_multiple": 2,
+      "initial_book_delays_ms": [
+        16.81276,
+        16.81276
+      ],
+      "observed_initialized_spans_seconds": [
+        299.936969975,
+        299.936969975
+      ],
+      "pings": 29,
+      "pongs": 29,
+      "raw_file_bytes": 4344886,
+      "raw_file_sha256": "afe17cc5ae8cbe7a1359813895fe86b2fa23afd156ce00ca04c9c89dfe5d5092"
+    },
+    {
+      "label": "C",
+      "reported_volume24hr": 4563041.2449239995,
+      "subscription_seconds": 300.00088266199964,
+      "received_frames": 2443,
+      "trade_notifications": 15,
+      "repeat_books": 30,
+      "arrival_model_disagreements": 0,
+      "initial_baseline_plus_deltas_disagreements": 0,
+      "older_repeated_books": 0,
+      "interior_trade_notifications": 15,
+      "interior_trade_candidates_zero": 1,
+      "interior_trade_candidates_one": 4,
+      "interior_trade_candidates_multiple": 10,
+      "initial_book_delays_ms": [
+        12.469959,
+        12.469959
+      ],
+      "observed_initialized_spans_seconds": [
+        299.793561636,
+        299.793561636
+      ],
+      "pings": 29,
+      "pongs": 29,
+      "raw_file_bytes": 2245066,
+      "raw_file_sha256": "26fa0db80cf111f52a4bbd35fe377cd804fef1cdf669c751be2e8b816a9dda84"
+    }
+  ],
+  "conclusion": "All 380 repeated full books agree with both reconstruction models despite 190 observed trade notifications being ignored for depth. This sample does not establish individual causal trade-to-delta coverage, universal ordering, upstream completeness, or the cause of the earlier 18 or 199 disagreements.",
+  "raw_data": "Retained privately with source and metadata; market labels anonymized for this report."
+}

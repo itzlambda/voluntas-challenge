@@ -1,0 +1,183 @@
+{
+  "checked_at_utc": "2026-10-25T00:36:13.220466+00:00",
+  "scope": "Two sequential pages with closed=true, order=closedTime,id, ascending=false. Response and ordering check only; not a complete lifecycle or delayed-indexing guarantee.",
+  "rows": 20,
+  "all_closed": true,
+  "all_closed_time_present": true,
+  "closed_times_nonincreasing": true,
+  "page_ids_disjoint": true,
+  "pages": [
+    {
+      "url": "https://gamma-api.polymarket.com/markets/keyset?closed=true&limit=10&order=closedTime%2Cid&ascending=false",
+      "markets": [
+        {
+          "id": "5622662",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.319833+00",
+          "updatedAt": "2026-10-25T00:36:01.072611Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T19:30:00Z"
+        },
+        {
+          "id": "5622665",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.302939+00",
+          "updatedAt": "2026-10-25T00:36:00.946868Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T19:30:00Z"
+        },
+        {
+          "id": "5617918",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.280206+00",
+          "updatedAt": "2026-10-25T00:36:00.803613Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T19:30:00Z"
+        },
+        {
+          "id": "5617858",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.27519+00",
+          "updatedAt": "2026-10-25T00:36:00.626083Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T19:30:00Z"
+        },
+        {
+          "id": "6101088",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.269506+00",
+          "updatedAt": "2026-10-25T00:36:00.479839Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-31T23:00:00Z"
+        },
+        {
+          "id": "6101082",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.263639+00",
+          "updatedAt": "2026-10-25T00:36:00.342849Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-31T23:05:00Z"
+        },
+        {
+          "id": "6101090",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.258225+00",
+          "updatedAt": "2026-10-25T00:36:00.236022Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-31T23:00:00Z"
+        },
+        {
+          "id": "6078512",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.252804+00",
+          "updatedAt": "2026-10-25T00:36:00.123089Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T17:00:00Z"
+        },
+        {
+          "id": "6148573",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.247698+00",
+          "updatedAt": "2026-10-25T00:36:00.003874Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T19:30:00Z"
+        },
+        {
+          "id": "6148549",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.242557+00",
+          "updatedAt": "2026-10-25T00:35:59.889683Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T19:30:00Z"
+        }
+      ],
+      "next_cursor": "RRC-Fz5x1cMZvv2irEH0Sp7LpCq15z7Co3tymVcj0TN7InYiOjEsImsiOiJtYXJrZXRzIiwib2giOiJjNmI2MzAwYWRmM2Q3NWFmYTZhYzAzNDUwNTM3MzZhMDk2ODc3Mzc2NDM5OTQ0MjIzYjA0MDRiMjU0MTVkMDVkIiwia2V5cyI6W3sidCI6InN0cmluZyIsInYiOiIyMDI2LTEwLTI1IDAwOjM1OjUyLjI0MjU1NyswMCJ9LHsidCI6InN0cmluZyIsInYiOiI2MTQ4NTQ5In1dfQ"
+    },
+    {
+      "url": "https://gamma-api.polymarket.com/markets/keyset?closed=true&limit=10&order=closedTime%2Cid&ascending=false&after_cursor=RRC-Fz5x1cMZvv2irEH0Sp7LpCq15z7Co3tymVcj0TN7InYiOjEsImsiOiJtYXJrZXRzIiwib2giOiJjNmI2MzAwYWRmM2Q3NWFmYTZhYzAzNDUwNTM3MzZhMDk2ODc3Mzc2NDM5OTQ0MjIzYjA0MDRiMjU0MTVkMDVkIiwia2V5cyI6W3sidCI6InN0cmluZyIsInYiOiIyMDI2LTEwLTI1IDAwOjM1OjUyLjI0MjU1NyswMCJ9LHsidCI6InN0cmluZyIsInYiOiI2MTQ4NTQ5In1dfQ",
+      "markets": [
+        {
+          "id": "6125338",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.237266+00",
+          "updatedAt": "2026-10-25T00:35:59.787439Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T14:00:00Z"
+        },
+        {
+          "id": "6125382",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.229582+00",
+          "updatedAt": "2026-10-25T00:35:59.67977Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T14:00:00Z"
+        },
+        {
+          "id": "6125394",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.224367+00",
+          "updatedAt": "2026-10-25T00:35:59.575114Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T14:00:00Z"
+        },
+        {
+          "id": "6125386",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.21944+00",
+          "updatedAt": "2026-10-25T00:35:59.466844Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T14:00:00Z"
+        },
+        {
+          "id": "5924597",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.214309+00",
+          "updatedAt": "2026-10-25T00:35:59.349799Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T20:00:00Z"
+        },
+        {
+          "id": "5924598",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.208724+00",
+          "updatedAt": "2026-10-25T00:35:59.225801Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T20:00:00Z"
+        },
+        {
+          "id": "5924600",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.202965+00",
+          "updatedAt": "2026-10-25T00:35:59.110248Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T20:00:00Z"
+        },
+        {
+          "id": "5924594",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.197302+00",
+          "updatedAt": "2026-10-25T00:35:58.972729Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T20:00:00Z"
+        },
+        {
+          "id": "5924595",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.1912+00",
+          "updatedAt": "2026-10-25T00:35:58.83937Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T20:00:00Z"
+        },
+        {
+          "id": "5924581",
+          "closed": true,
+          "closedTime": "2026-10-25 00:35:52.185369+00",
+          "updatedAt": "2026-10-25T00:35:58.722164Z",
+          "acceptingOrders": false,
+          "endDate": "2026-10-24T20:00:00Z"
+        }
+      ],
+      "next_cursor": "3P1Vl2BZvglpEgmY9_H1o0Z7Haijq5gk_JT3630DjqZ7InYiOjEsImsiOiJtYXJrZXRzIiwib2giOiJjNmI2MzAwYWRmM2Q3NWFmYTZhYzAzNDUwNTM3MzZhMDk2ODc3Mzc2NDM5OTQ0MjIzYjA0MDRiMjU0MTVkMDVkIiwia2V5cyI6W3sidCI6InN0cmluZyIsInYiOiIyMDI2LTEwLTI1IDAwOjM1OjUyLjE4NTM2OSswMCJ9LHsidCI6InN0cmluZyIsInYiOiI1OTI0NTgxIn1dfQ"
+    }
+  ]
+}

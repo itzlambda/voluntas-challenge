@@ -1,0 +1,39 @@
+{
+  "requested_assets": 500,
+  "returned_unique_assets": 500,
+  "missing_requested_assets": 0,
+  "batches": 10,
+  "batch_failures": [],
+  "depth_per_side": {
+    "samples": 1000,
+    "mean": 6.045,
+    "p50": 2,
+    "p99": 49,
+    "max": 130
+  },
+  "response_sha256": [
+    "f27c949a1bd72c827cae64d01d4c20edbf3fd65e39c539e2bb26d7faebf2c859",
+    "5fd983e211d945067aad8cc6ce36052aefd6395061b8c3ef30fa61eedb86dc3f",
+    "fdcd76b4fb6d6ee1d642ba02be97bde1c174cf640d2e8a45f35ec97a2dc57c0d",
+    "f4ecac17adcec3b3f0b05c3933253c5ecfcee10fee46d14ce205c42c3572cf3a",
+    "db222b168f6c2ed887b69a407bfbd8ccbd20d52812b49ce57a22ab961a88fabe",
+    "b04f2cd895cea8c7e0f117d04b470ef311b6b9e90634911b24363b5b714599ab",
+    "33ed5aebfdcfd773d60a67d4cdb1224c03dd38ad3d07fdb25c711be49a88d550",
+    "6af73facab93cb4b58cffe80a268bf416863e51382ea61144c4ce8484d74a944",
+    "727d4654839b52cacf3823a7a1843b0cabf0fd6a63705d048b5192e65f1a56d4",
+    "dd6e281eb26f95a9a6d4e3bd4ecf24bfe2a856be02a0c845d104b16b0bd2f685"
+  ],
+  "sample_method": "Fixed-seed uniform 500-asset sample among books baselined in this capture; current REST depth, not synchronized with WS. Both sides included.",
+  "latency_s": [
+    0.2159102099831216,
+    0.18988479598192498,
+    0.34183188003953546,
+    0.07997283199802041,
+    0.23690830398118123,
+    0.1168267159955576,
+    0.08437032502843067,
+    0.08653354499256238,
+    0.19824335898738354,
+    0.1597801210009493
+  ]
+}

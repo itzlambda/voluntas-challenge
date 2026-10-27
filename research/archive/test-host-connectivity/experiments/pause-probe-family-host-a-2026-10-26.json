@@ -1,0 +1,723 @@
+{
+  "first": 1793019431.590747,
+  "last": 1793026631.537447,
+  "first_utc": "2026-10-26T12:57:11.590747+00:00",
+  "last_utc": "2026-10-26T14:57:11.537447+00:00",
+  "records": 149648,
+  "timestamp_regressions_by_probe": {},
+  "min_gap_s": 15.0,
+  "method": {
+    "alive_events": [
+      "frame",
+      "pong",
+      "ws_control",
+      "http_ok",
+      "ICMP echo reply"
+    ],
+    "gap": "Time between consecutive receipts, including reconnect time. Edge silence is excluded.",
+    "http_ok": "HTTP response headers received; inspect status counts. Response body is not consumed.",
+    "tcp": "ESTAB samples only, strictly after handshake and before close, grouped by session. First second of gap excluded.",
+    "limitation": "Frame lengths only; market update completeness and exchange-to-receive latency are not measured."
+  },
+  "markers": {
+    "started": "2026-10-26T12:57:11Z",
+    "DONE": "2026-10-26T14:57:11Z",
+    "probe.exit": "probe exit 0"
+  },
+  "source_files": {
+    "probe.jsonl": {
+      "bytes": 12195017,
+      "sha256": "a62272a73d276f95a186c423497c2c0a9897f85613b053d9cc8d559e84149831"
+    },
+    "ping4.txt": {
+      "bytes": 541495,
+      "sha256": "4a84e73a386514c097ea92f4484fdb05563321a21802243d7e94902b762e167a"
+    },
+    "ping6.txt": {
+      "bytes": 615145,
+      "sha256": "07bcdb7f125fc8758f45836a09036d2c6acd3ec505b4d92ef5b6353dbd16f3b1"
+    },
+    "ss.txt": {
+      "bytes": 32221467,
+      "sha256": "32fb5c8cfe7a595875b5e58b4443133b6c80134d3c9cf2d0b61ea96187f2a431"
+    },
+    "nd.pcap": {
+      "bytes": 454968,
+      "sha256": "5a5960ee2daa306be797c008ebf98159a2c6d37a9f944000f906a0b67f88ecfe"
+    },
+    "tcpdump.log": {
+      "bytes": 168,
+      "sha256": "033c6f10e997241f851e27da59fc7e9474c515a7c176756d66038e83ba1481d5"
+    },
+    "started": {
+      "bytes": 21,
+      "sha256": "332fcf584f57be6ae69aa6dcc40e755bbb4da2223a5d680be1663d10e1fe64aa"
+    },
+    "DONE": {
+      "bytes": 21,
+      "sha256": "0c4a89c4f16a902061fea1f2e1823f8fefe35c8ad924ac40e73981d888267e88"
+    },
+    "probe.exit": {
+      "bytes": 13,
+      "sha256": "4e8c5c1e848054e4714d3b69f8dcbf7d3fc755d0c8b31dbdd5076a41c06dbaf3"
+    },
+    "probe.err": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "probes": {
+    "gamma_v4": {
+      "events": 3600,
+      "gaps": 0,
+      "longest_gap_s": 9.826878070831299,
+      "first_receipt_utc": "2026-10-26T12:57:11.714008+00:00",
+      "last_receipt_utc": "2026-10-26T14:57:09.615213+00:00",
+      "closes": 0,
+      "close_reasons": {},
+      "failures": 0,
+      "event_counts": {
+        "http_ok": 3600
+      },
+      "connection_families": {},
+      "http_status_counts": {
+        "200": 3600
+      },
+      "gap_windows": []
+    },
+    "gamma_v6": {
+      "events": 3581,
+      "gaps": 4,
+      "longest_gap_s": 77.3599739074707,
+      "first_receipt_utc": "2026-10-26T12:57:11.702527+00:00",
+      "last_receipt_utc": "2026-10-26T14:57:09.656364+00:00",
+      "closes": 0,
+      "close_reasons": {},
+      "failures": 19,
+      "event_counts": {
+        "http_ok": 3581,
+        "http_failed": 19
+      },
+      "connection_families": {},
+      "http_status_counts": {
+        "200": 3581
+      },
+      "gap_windows": [
+        {
+          "start": 1793019623.915241,
+          "end": 1793019701.275215,
+          "start_utc": "2026-10-26T13:00:23.915241+00:00",
+          "end_utc": "2026-10-26T13:01:41.275215+00:00",
+          "duration_s": 77.3599739074707
+        },
+        {
+          "start": 1793022479.840801,
+          "end": 1793022517.676405,
+          "start_utc": "2026-10-26T13:47:59.840801+00:00",
+          "end_utc": "2026-10-26T13:48:37.676405+00:00",
+          "duration_s": 37.83560395240784
+        },
+        {
+          "start": 1793024519.663235,
+          "end": 1793024569.244975,
+          "start_utc": "2026-10-26T14:21:59.663235+00:00",
+          "end_utc": "2026-10-26T14:22:49.244975+00:00",
+          "duration_s": 49.58174014091492
+        },
+        {
+          "start": 1793025575.65525,
+          "end": 1793025613.484381,
+          "start_utc": "2026-10-26T14:39:35.655250+00:00",
+          "end_utc": "2026-10-26T14:40:13.484381+00:00",
+          "duration_s": 37.82913088798523
+        }
+      ]
+    },
+    "icmp_v4": {
+      "events": 7053,
+      "gaps": 0,
+      "longest_gap_s": 2.4339849948883057,
+      "first_receipt_utc": "2026-10-26T12:57:11.567967+00:00",
+      "last_receipt_utc": "2026-10-26T14:57:10.787219+00:00",
+      "closes": 0,
+      "close_reasons": {},
+      "failures": 0,
+      "event_counts": {},
+      "connection_families": {},
+      "http_status_counts": {},
+      "gap_windows": []
+    },
+    "icmp_v6": {
+      "events": 6851,
+      "gaps": 4,
+      "longest_gap_s": 77.0372679233551,
+      "first_receipt_utc": "2026-10-26T12:57:11.562285+00:00",
+      "last_receipt_utc": "2026-10-26T14:57:10.806461+00:00",
+      "closes": 0,
+      "close_reasons": {},
+      "failures": 0,
+      "event_counts": {},
+      "connection_families": {},
+      "http_status_counts": {},
+      "gap_windows": [
+        {
+          "start": 1793019624.456697,
+          "end": 1793019701.493965,
+          "start_utc": "2026-10-26T13:00:24.456697+00:00",
+          "end_utc": "2026-10-26T13:01:41.493965+00:00",
+          "duration_s": 77.0372679233551
+        },
+        {
+          "start": 1793022479.827889,
+          "end": 1793022517.578997,
+          "start_utc": "2026-10-26T13:47:59.827889+00:00",
+          "end_utc": "2026-10-26T13:48:37.578997+00:00",
+          "duration_s": 37.751107931137085
+        },
+        {
+          "start": 1793024520.822519,
+          "end": 1793024569.114753,
+          "start_utc": "2026-10-26T14:22:00.822519+00:00",
+          "end_utc": "2026-10-26T14:22:49.114753+00:00",
+          "duration_s": 48.29223394393921
+        },
+        {
+          "start": 1793025575.82067,
+          "end": 1793025613.460225,
+          "start_utc": "2026-10-26T14:39:35.820670+00:00",
+          "end_utc": "2026-10-26T14:40:13.460225+00:00",
+          "duration_s": 37.63955521583557
+        }
+      ]
+    },
+    "kraken": {
+      "events": 15577,
+      "gaps": 0,
+      "longest_gap_s": 5.367390871047974,
+      "first_receipt_utc": "2026-10-26T12:57:12.871303+00:00",
+      "last_receipt_utc": "2026-10-26T14:57:11.537447+00:00",
+      "closes": 2,
+      "close_reasons": {
+        "ResetWithoutClosingHandshake": 2
+      },
+      "failures": 0,
+      "event_counts": {
+        "connected": 3,
+        "frame": 15577,
+        "closed": 2
+      },
+      "connection_families": {
+        "v4": 3
+      },
+      "http_status_counts": {},
+      "gap_windows": []
+    },
+    "polymarket_v4_a": {
+      "events": 26890,
+      "gaps": 1,
+      "longest_gap_s": 1030.128779888153,
+      "first_receipt_utc": "2026-10-26T12:57:11.915619+00:00",
+      "last_receipt_utc": "2026-10-26T14:57:07.602337+00:00",
+      "closes": 1,
+      "close_reasons": {
+        "TimedOut": 1
+      },
+      "failures": 0,
+      "event_counts": {
+        "connected": 2,
+        "ping_sent": 1440,
+        "frame": 25655,
+        "pong": 1235,
+        "closed": 1
+      },
+      "connection_families": {
+        "v4": 2
+      },
+      "http_status_counts": {},
+      "gap_windows": [
+        {
+          "start": 1793021931.975145,
+          "end": 1793022962.103925,
+          "start_utc": "2026-10-26T13:38:51.975145+00:00",
+          "end_utc": "2026-10-26T13:56:02.103925+00:00",
+          "duration_s": 1030.128779888153,
+          "tcp_sessions": [
+            {
+              "session": 1,
+              "samples": 875,
+              "first_sample_utc": "2026-10-26T13:38:53.373751+00:00",
+              "last_sample_utc": "2026-10-26T13:56:01.090059+00:00",
+              "deltas": {
+                "bytes_sent": 544,
+                "bytes_acked": 0,
+                "bytes_received": 0,
+                "retrans_total": 16
+              },
+              "max_unacked_segments": 1
+            }
+          ]
+        }
+      ]
+    },
+    "polymarket_v4_b_nodelay": {
+      "events": 27046,
+      "gaps": 1,
+      "longest_gap_s": 937.0596351623535,
+      "first_receipt_utc": "2026-10-26T12:57:11.786034+00:00",
+      "last_receipt_utc": "2026-10-26T14:57:09.143495+00:00",
+      "closes": 3,
+      "close_reasons": {
+        "TimedOut": 1,
+        "ConnectionReset": 2
+      },
+      "failures": 0,
+      "event_counts": {
+        "connected": 4,
+        "ping_sent": 1441,
+        "frame": 25791,
+        "pong": 1255,
+        "closed": 3
+      },
+      "connection_families": {
+        "v4": 4
+      },
+      "http_status_counts": {},
+      "gap_windows": [
+        {
+          "start": 1793021931.807664,
+          "end": 1793022868.867299,
+          "start_utc": "2026-10-26T13:38:51.807664+00:00",
+          "end_utc": "2026-10-26T13:54:28.867299+00:00",
+          "duration_s": 937.0596351623535,
+          "tcp_sessions": [
+            {
+              "session": 1,
+              "samples": 789,
+              "first_sample_utc": "2026-10-26T13:38:53.373751+00:00",
+              "last_sample_utc": "2026-10-26T13:54:23.161829+00:00",
+              "deltas": {
+                "bytes_sent": 512,
+                "bytes_acked": 0,
+                "bytes_received": 0,
+                "retrans_total": 15
+              },
+              "max_unacked_segments": 1
+            }
+          ]
+        }
+      ]
+    },
+    "polymarket_v6_a": {
+      "events": 29975,
+      "gaps": 4,
+      "longest_gap_s": 112.54213619232178,
+      "first_receipt_utc": "2026-10-26T12:57:11.914132+00:00",
+      "last_receipt_utc": "2026-10-26T14:57:08.461105+00:00",
+      "closes": 12,
+      "close_reasons": {
+        "ConnectionReset": 12
+      },
+      "failures": 1,
+      "event_counts": {
+        "connected": 14,
+        "frame": 28531,
+        "ping_sent": 1445,
+        "pong": 1444,
+        "closed": 12,
+        "send_failed": 1
+      },
+      "connection_families": {
+        "v6": 14
+      },
+      "http_status_counts": {},
+      "gap_windows": [
+        {
+          "start": 1793019624.431918,
+          "end": 1793019736.974054,
+          "start_utc": "2026-10-26T13:00:24.431918+00:00",
+          "end_utc": "2026-10-26T13:02:16.974054+00:00",
+          "duration_s": 112.54213619232178,
+          "tcp_sessions": [
+            {
+              "session": 1,
+              "samples": 89,
+              "first_sample_utc": "2026-10-26T13:00:25.623891+00:00",
+              "last_sample_utc": "2026-10-26T13:02:16.453387+00:00",
+              "deltas": {
+                "bytes_sent": 288,
+                "bytes_acked": 0,
+                "bytes_received": 0,
+                "retrans_total": 8
+              },
+              "max_unacked_segments": 1
+            }
+          ]
+        },
+        {
+          "start": 1793022479.315375,
+          "end": 1793022535.790716,
+          "start_utc": "2026-10-26T13:47:59.315375+00:00",
+          "end_utc": "2026-10-26T13:48:55.790716+00:00",
+          "duration_s": 56.475340843200684,
+          "tcp_sessions": [
+            {
+              "session": 3,
+              "samples": 46,
+              "first_sample_utc": "2026-10-26T13:48:01.600530+00:00",
+              "last_sample_utc": "2026-10-26T13:48:54.826823+00:00",
+              "deltas": {
+                "bytes_sent": 288,
+                "bytes_acked": 0,
+                "bytes_received": 0,
+                "retrans_total": 8
+              },
+              "max_unacked_segments": 1
+            }
+          ]
+        },
+        {
+          "start": 1793024519.907591,
+          "end": 1793024579.144552,
+          "start_utc": "2026-10-26T14:21:59.907591+00:00",
+          "end_utc": "2026-10-26T14:22:59.144552+00:00",
+          "duration_s": 59.236960887908936,
+          "tcp_sessions": [
+            {
+              "session": 7,
+              "samples": 47,
+              "first_sample_utc": "2026-10-26T14:22:01.181154+00:00",
+              "last_sample_utc": "2026-10-26T14:22:58.654198+00:00",
+              "deltas": {
+                "bytes_sent": 288,
+                "bytes_acked": 0,
+                "bytes_received": 0,
+                "retrans_total": 8
+              },
+              "max_unacked_segments": 1
+            }
+          ]
+        },
+        {
+          "start": 1793025576.470165,
+          "end": 1793025633.346935,
+          "start_utc": "2026-10-26T14:39:36.470165+00:00",
+          "end_utc": "2026-10-26T14:40:33.346935+00:00",
+          "duration_s": 56.87677001953125,
+          "tcp_sessions": [
+            {
+              "session": 10,
+              "samples": 47,
+              "first_sample_utc": "2026-10-26T14:39:37.630507+00:00",
+              "last_sample_utc": "2026-10-26T14:40:32.436092+00:00",
+              "deltas": {
+                "bytes_sent": 800,
+                "bytes_acked": 352,
+                "bytes_received": 0,
+                "retrans_total": 9
+              },
+              "max_unacked_segments": 1
+            }
+          ]
+        }
+      ]
+    },
+    "polymarket_v6_b_nodelay": {
+      "events": 29920,
+      "gaps": 5,
+      "longest_gap_s": 116.1857841014862,
+      "first_receipt_utc": "2026-10-26T12:57:11.798824+00:00",
+      "last_receipt_utc": "2026-10-26T14:57:10.773395+00:00",
+      "closes": 13,
+      "close_reasons": {
+        "ConnectionReset": 13
+      },
+      "failures": 0,
+      "event_counts": {
+        "connected": 14,
+        "ping_sent": 1445,
+        "frame": 28499,
+        "pong": 1421,
+        "closed": 13
+      },
+      "connection_families": {
+        "v6": 14
+      },
+      "http_status_counts": {},
+      "gap_windows": [
+        {
+          "start": 1793019624.432118,
+          "end": 1793019740.617902,
+          "start_utc": "2026-10-26T13:00:24.432118+00:00",
+          "end_utc": "2026-10-26T13:02:20.617902+00:00",
+          "duration_s": 116.1857841014862,
+          "tcp_sessions": [
+            {
+              "session": 1,
+              "samples": 92,
+              "first_sample_utc": "2026-10-26T13:00:25.623891+00:00",
+              "last_sample_utc": "2026-10-26T13:02:19.785522+00:00",
+              "deltas": {
+                "bytes_sent": 288,
+                "bytes_acked": 0,
+                "bytes_received": 0,
+                "retrans_total": 8
+              },
+              "max_unacked_segments": 1
+            }
+          ]
+        },
+        {
+          "start": 1793020330.099393,
+          "end": 1793020358.68432,
+          "start_utc": "2026-10-26T13:12:10.099393+00:00",
+          "end_utc": "2026-10-26T13:12:38.684320+00:00",
+          "duration_s": 28.584927082061768,
+          "tcp_sessions": [
+            {
+              "session": 5,
+              "samples": 25,
+              "first_sample_utc": "2026-10-26T13:12:11.135678+00:00",
+              "last_sample_utc": "2026-10-26T13:12:37.974422+00:00",
+              "deltas": {
+                "bytes_sent": 160,
+                "bytes_acked": 160,
+                "bytes_received": 0,
+                "retrans_total": 0
+              },
+              "max_unacked_segments": 0
+            }
+          ]
+        },
+        {
+          "start": 1793022479.335605,
+          "end": 1793022536.296379,
+          "start_utc": "2026-10-26T13:47:59.335605+00:00",
+          "end_utc": "2026-10-26T13:48:56.296379+00:00",
+          "duration_s": 56.960774183273315,
+          "tcp_sessions": [
+            {
+              "session": 6,
+              "samples": 47,
+              "first_sample_utc": "2026-10-26T13:48:01.600530+00:00",
+              "last_sample_utc": "2026-10-26T13:48:55.911001+00:00",
+              "deltas": {
+                "bytes_sent": 224,
+                "bytes_acked": 0,
+                "bytes_received": 0,
+                "retrans_total": 7
+              },
+              "max_unacked_segments": 1
+            }
+          ]
+        },
+        {
+          "start": 1793024520.143706,
+          "end": 1793024579.063426,
+          "start_utc": "2026-10-26T14:22:00.143706+00:00",
+          "end_utc": "2026-10-26T14:22:59.063426+00:00",
+          "duration_s": 58.9197199344635,
+          "tcp_sessions": [
+            {
+              "session": 7,
+              "samples": 47,
+              "first_sample_utc": "2026-10-26T14:22:01.181154+00:00",
+              "last_sample_utc": "2026-10-26T14:22:58.654198+00:00",
+              "deltas": {
+                "bytes_sent": 288,
+                "bytes_acked": 0,
+                "bytes_received": 0,
+                "retrans_total": 8
+              },
+              "max_unacked_segments": 1
+            }
+          ]
+        },
+        {
+          "start": 1793025576.470192,
+          "end": 1793025631.367971,
+          "start_utc": "2026-10-26T14:39:36.470192+00:00",
+          "end_utc": "2026-10-26T14:40:31.367971+00:00",
+          "duration_s": 54.89777898788452,
+          "tcp_sessions": [
+            {
+              "session": 11,
+              "samples": 46,
+              "first_sample_utc": "2026-10-26T14:39:37.630507+00:00",
+              "last_sample_utc": "2026-10-26T14:40:31.365476+00:00",
+              "deltas": {
+                "bytes_sent": 512,
+                "bytes_acked": 352,
+                "bytes_received": 228098,
+                "retrans_total": 6
+              },
+              "max_unacked_segments": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "pauses": [
+    {
+      "start": 1793019624.431918,
+      "end": 1793019740.617902,
+      "start_utc": "2026-10-26T13:00:24.431918+00:00",
+      "end_utc": "2026-10-26T13:02:20.617902+00:00",
+      "silence_s": {
+        "gamma_v4": 2.6898000240325928,
+        "gamma_v6": 76.8432970046997,
+        "icmp_v4": 1.560096025466919,
+        "icmp_v6": 77.0372679233551,
+        "kraken": 1.3407230377197266,
+        "polymarket_v4_a": 5.285473823547363,
+        "polymarket_v4_b_nodelay": 5.058283805847168,
+        "polymarket_v6_a": 112.54213619232178,
+        "polymarket_v6_b_nodelay": 116.1857841014862
+      },
+      "events": [
+        {
+          "probe": "gamma_v6",
+          "kind": "failure",
+          "count": 8
+        },
+        {
+          "probe": "polymarket_v6_b_nodelay",
+          "kind": "close",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "start": 1793020330.099393,
+      "end": 1793020358.68432,
+      "start_utc": "2026-10-26T13:12:10.099393+00:00",
+      "end_utc": "2026-10-26T13:12:38.684320+00:00",
+      "silence_s": {
+        "gamma_v4": 2.028357982635498,
+        "gamma_v6": 2.0237948894500732,
+        "icmp_v4": 1.4510819911956787,
+        "icmp_v6": 1.43520188331604,
+        "kraken": 1.1281020641326904,
+        "polymarket_v4_a": 2.401608943939209,
+        "polymarket_v4_b_nodelay": 2.4067909717559814,
+        "polymarket_v6_a": 2.4013121128082275,
+        "polymarket_v6_b_nodelay": 28.584927082061768
+      },
+      "events": []
+    },
+    {
+      "start": 1793021931.807664,
+      "end": 1793022962.103925,
+      "start_utc": "2026-10-26T13:38:51.807664+00:00",
+      "end_utc": "2026-10-26T13:56:02.103925+00:00",
+      "silence_s": {
+        "gamma_v4": 2.755966901779175,
+        "gamma_v6": 37.83560395240784,
+        "icmp_v4": 1.6646840572357178,
+        "icmp_v6": 37.751107931137085,
+        "kraken": 4.329002857208252,
+        "polymarket_v4_a": 1030.128779888153,
+        "polymarket_v4_b_nodelay": 937.0596351623535,
+        "polymarket_v6_a": 56.475340843200684,
+        "polymarket_v6_b_nodelay": 56.960774183273315
+      },
+      "events": [
+        {
+          "probe": "gamma_v6",
+          "kind": "failure",
+          "count": 3
+        },
+        {
+          "probe": "polymarket_v6_a",
+          "kind": "failure",
+          "count": 1
+        },
+        {
+          "probe": "kraken",
+          "kind": "close",
+          "count": 1
+        },
+        {
+          "probe": "polymarket_v4_a",
+          "kind": "close",
+          "count": 1
+        },
+        {
+          "probe": "polymarket_v4_b_nodelay",
+          "kind": "close",
+          "count": 1
+        },
+        {
+          "probe": "polymarket_v6_a",
+          "kind": "close",
+          "count": 2
+        },
+        {
+          "probe": "polymarket_v6_b_nodelay",
+          "kind": "close",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "start": 1793024519.907591,
+      "end": 1793024579.144552,
+      "start_utc": "2026-10-26T14:21:59.907591+00:00",
+      "end_utc": "2026-10-26T14:22:59.144552+00:00",
+      "silence_s": {
+        "gamma_v4": 2.370774984359741,
+        "gamma_v6": 49.33738398551941,
+        "icmp_v4": 1.369739055633545,
+        "icmp_v6": 48.29223394393921,
+        "kraken": 1.2930879592895508,
+        "polymarket_v4_a": 3.01761794090271,
+        "polymarket_v4_b_nodelay": 2.793231964111328,
+        "polymarket_v6_a": 59.236960887908936,
+        "polymarket_v6_b_nodelay": 58.9197199344635
+      },
+      "events": [
+        {
+          "probe": "gamma_v6",
+          "kind": "failure",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "start": 1793025576.470165,
+      "end": 1793025633.346935,
+      "start_utc": "2026-10-26T14:39:36.470165+00:00",
+      "end_utc": "2026-10-26T14:40:33.346935+00:00",
+      "silence_s": {
+        "gamma_v4": 2.329085111618042,
+        "gamma_v6": 37.01421594619751,
+        "icmp_v4": 1.5111920833587646,
+        "icmp_v6": 36.99006009101868,
+        "kraken": 1.3888959884643555,
+        "polymarket_v4_a": 1.3615219593048096,
+        "polymarket_v4_b_nodelay": 1.3620030879974365,
+        "polymarket_v6_a": 56.87677001953125,
+        "polymarket_v6_b_nodelay": 54.89777898788452
+      },
+      "events": [
+        {
+          "probe": "gamma_v6",
+          "kind": "failure",
+          "count": 3
+        }
+      ]
+    }
+  ],
+  "cpu_steal_delta_jiffies": 0,
+  "cpu_samples": 7200,
+  "cpu_longest_sample_gap_s": 1.9896631240844727,
+  "packet_capture_counts": {
+    "captured": 4464,
+    "received by filter": 4464,
+    "dropped by kernel": 0
+  },
+  "analysis_source_files": {
+    "examples/pause_probe_family.rs": "517588b66c24bf5f3d7a7d1b7f6b0be20e1fd484effbd28e1d23925c411bd8bb",
+    "research/experiments/pause-probe-family-analyze.py": "8485f791ebcc4edfd40d9d0152c09087be2e2491245fccb2848d5a3494b13237"
+  }
+}

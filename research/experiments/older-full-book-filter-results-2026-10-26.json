@@ -1,0 +1,163 @@
+{
+  "production_source_sha256": {
+    "Cargo.toml": "88e1d5323db591355aa3460bedce45925bd21f3e793c834ca7ac254300980f40",
+    "Cargo.lock": "390be61ae12018d860cd53b96553ed7ab55f7a5449d2644df755c7d39206f753",
+    "src/core/app.rs": "9df45c6281680fecfd0891c745177c00907063271e6605586dd59164cfcb4823",
+    "src/core/book_connection.rs": "cd09ad6531447f1708a5b7ea3dd0fb27498504f1858bf83e4ee6732603b3a498",
+    "src/core/capture.rs": "276f656a0f461ca5a148d55a7867b96f61979b3fe44d5da6e124f5146da5ee1f",
+    "src/core/config.rs": "c8ed1591cf113a18bd496c98c63dcf48c8814b4895664df4bc1cf5e31adfaf7f",
+    "src/core/connection.rs": "86ad69a1407a10d9e628d973f42512d07a74fc89846fa1d9752f253fbb066360",
+    "src/core/decode_log.rs": "aa6c65646543994978a4dc28685b5bf00eaa4d8d29fd4e31d453bc09bd4aa658",
+    "src/core/discovery.rs": "66358f482bf94051a6e46aeccd06855a7ce840f97487ce00d28a4a95c4c37327",
+    "src/core/fixture.rs": "d670437dd6182edad0ad4b6a6a6d3e7be29156a4ca6c9fb1647d5f73098dfd09",
+    "src/core/lifecycle.rs": "b9b80370496dad0b7cd6d095ade523dd30c2d3518bcc671b5a2ee08c7699989f",
+    "src/core/metrics.rs": "98a9bb0ec96811a9d80e53da472eae776b356a7f6b51f81e6422cf04324d5730",
+    "src/core/metrics_http.rs": "34fd14b4d8f0f595e4ea50c0d8b8ee1cc9835597b231dcf825020805ebc193fa",
+    "src/core/mod.rs": "77f62e04310b182cb823fd8c8432e3ec804b9d046be6e6ac3e66ef2cba1c4c40",
+    "src/core/order_book.rs": "77486d64f12591a261e77524ddb7ea2c8cdc8c72cfc458ee42e656f6fc5ec819",
+    "src/core/pipeline.rs": "56de82abd92807021c787860738a9bc210ad1602a6e1166b38c3931f50e80190",
+    "src/core/rate_limit.rs": "e9c08650324acb6feab537ee1555c527b6746acac526efd8efd15edae0abed2d",
+    "src/core/reconnect_backoff.rs": "19f5251d3edd414544269ca5ad4e4e45cb8c5ab12d293d1234801dd2e70b7a45",
+    "src/core/registry.rs": "c27999c1f6f41feed15e7189e27d5a84c779fbdf4593aed70e2d7430e9c0b4fb",
+    "src/core/routing.rs": "b9ec2378703fe6c7a92f065a154964ae65414bc947c5abb760c59a86bfbf0dce",
+    "src/core/subscriptions.rs": "a53866ae106370b8289ce7b86295a5a33a0b72d697258ebb4a7a6cb1830d06be",
+    "src/core/telemetry.rs": "7155fcee92aecbf596f4edae999c988328e2444e4b9d077940d3e1dffba99362",
+    "src/core/worker.rs": "98d1ce22131a9c61757bded6500886d8f054c34022e98eff19a0f9a8e9562c51",
+    "src/core/writer.rs": "b7662cc6b4e75cf6913e932d83bbca2d6dcc6c83f43faff3b668b4c8fd7e18c2",
+    "src/exchange/mod.rs": "d99e4da4b00cf277a0308adf448e732aa63d0c186a3a46b28fb23cde235ab69a",
+    "src/exchange/polymarket/decode.rs": "851c990f029c85402f61ae9e962457c92dbaf21628ccc4b88a4ea8f5373025ef",
+    "src/exchange/polymarket/gamma.rs": "0998096f33c13a946af309143bff937775af81b40eef596d7b5434d898b67d1c",
+    "src/exchange/polymarket/mod.rs": "a91e600e6b3f4d6def0f2450c291f1b9cdb0660f022b491c5d0ee4cec12bbee1",
+    "src/exchange/polymarket/number.rs": "3f56ef470ccfd12033ca7acf60f798280c03bb2d64ca0ad220f134603e9645d1",
+    "src/exchange/polymarket/ws.rs": "177af3ae401050cebb52041ca7b4760c54892217a399a80a9ec1c6f05fca82c6",
+    "src/lib.rs": "2bf3a827e879533dfa63b38d11b654b621cb51f77c8d50e845c30524db90aaff",
+    "src/main.rs": "1330cffdfd6fb19bc7e86bbcb9ab4f7a34efb8134e5a85904e73418b3d92687c",
+    "src/model.rs": "c8ccf62970ea338a849406fa0d5e16ac236bdb38f634be580ecc8a3d63f06109",
+    "src/side.rs": "83dca6f9e4db06dd1d486aa21f07d1ddec2cab1cc430b0f2c4fdbb857e6ae667",
+    "src/util/aligned_sbe_reader.rs": "7ae471368523d1d4b0240a5375d42d483caf9ba33c233c63c0b74f6509045e87",
+    "src/util/aligned_sbe_writer.rs": "b66bd32394cb5a26e891b152d523d155260040ab2e8746131f26ae7f265d4cf4",
+    "src/util/build.rs": "2c860b5b575b2399704a2d4ed9e9df51b27bf7c38a6167cdc6945a543bec7310",
+    "src/util/dtos.rs": "3e4edb85ae4a308943c33847a7601ba40a1edebc31dec23361e36ebf8c60bad9",
+    "src/util/mod.rs": "685716aecbe602ecbb9c0689d2741f7e75671437e4a51e09aa168b10c604b853",
+    "src/util/orderbook_schema.rs": "9462a5167cf1627cbb82e068ab87f7022121e5a15b243c6d3e3a740b8932a7cd",
+    "src/util/sbe_yaml.rs": "af749044c88dc6e9c959b29ac7dbf18be5eb7e542c0b46d8be11bc34b3545442",
+    "sbe_schemas/engineering_challenge/challenge_orderbook.yaml": "59e49c430f6d3fce80c40c76c5884039d797cd9273ec87e6a2e901bc63822b2a",
+    "sbe_schemas/includes/common-types.xml": "2f1a8c7b300fa7f50f9568a7e57c54669ad225158ce3b08a747c1c5719753c70"
+  },
+  "binary_sha256": "b845de35b64db52824e5ffafca2a398cb267c11cf666c2831224daedab24c39d",
+  "base_commit": "9400fff1b1dac4496264192c24b271cb773076d3",
+  "rust_test_sha256": "b0a827180e444e9fc55b68df630b4b00b6d90aa0ce0a4a5e20fb3e3e255ba9a1",
+  "source_archive_sha256": "545bfa522a98c51092227e01e5f80ce867bd48f2a030b7914a2ce46e7e34448c",
+  "validation": {
+    "full_suite": {
+      "passed": 85
+    },
+    "retained_incident": {
+      "frames": 9572,
+      "baseline_flags": 4,
+      "filtered_flags": 0,
+      "skipped": 2,
+      "lag_ms": 8,
+      "workers": [
+        1,
+        2,
+        4
+      ],
+      "rust_run_on_aws": true
+    },
+    "aws_rust": {
+      "started_at": "2026-10-26T22:17:29.428029+00:00",
+      "ended_at": "2026-10-26T22:32:29.772131+00:00",
+      "elapsed_s": 900.3357382499998,
+      "exit_code": 0,
+      "raw_bytes": 113173808,
+      "raw_sha256": "e4f7fa9cffb270705f65d58e805e7bb99b3c57f1fff03688628fe8d3d286f767",
+      "sbe_sha256": "1c2e09a4e28b288aecd5ae68f62b79120ecc015ff27c68c354a4be2abe26d111",
+      "sbe_padded_bytes": 67108864,
+      "baseline": {
+        "counts": {
+          "frames": 77528,
+          "pongs": 94,
+          "updates": 127868,
+          "ignored": 4496,
+          "accepted_comparisons": 8998,
+          "mismatches": 13,
+          "older_timestamp_mismatches": 7,
+          "equal_timestamp_mismatches": 6
+        },
+        "skipped_lag_ms": {},
+        "initialized_books": 12
+      },
+      "filtered": {
+        "counts": {
+          "frames": 77528,
+          "pongs": 94,
+          "updates": 127868,
+          "ignored": 4496,
+          "accepted_comparisons": 8991,
+          "skipped": 7,
+          "mismatches": 2,
+          "equal_timestamp_mismatches": 2
+        },
+        "skipped_lag_ms": {
+          "5": 1,
+          "6": 2,
+          "11": 2,
+          "19": 2
+        },
+        "initialized_books": 12
+      },
+      "decode_errors": 0,
+      "independently_verified_periodic_snapshots": 176,
+      "replay_workers": [
+        1,
+        2,
+        4
+      ],
+      "peak_rss_kb": 27732,
+      "telemetry_skip_events": 7,
+      "telemetry_mismatch_events": 2
+    },
+    "aws_control": {
+      "baseline": {
+        "counts": {
+          "frames": 80310,
+          "updates": 131412,
+          "accepted_comparisons": 9378,
+          "ignored": 4686,
+          "pongs": 534,
+          "mismatches": 11,
+          "older_timestamp_mismatches": 5,
+          "equal_timestamp_mismatches": 6
+        },
+        "skipped_lag_ms": {},
+        "initialized_books": 12
+      },
+      "filtered": {
+        "counts": {
+          "frames": 80310,
+          "updates": 131412,
+          "accepted_comparisons": 9373,
+          "ignored": 4686,
+          "pongs": 534,
+          "skipped": 5,
+          "mismatches": 4,
+          "equal_timestamp_mismatches": 4
+        },
+        "skipped_lag_ms": {
+          "5": 1,
+          "6": 2,
+          "19": 2
+        },
+        "initialized_books": 12
+      }
+    }
+  },
+  "limits": [
+    "Equal-timestamp books and older deltas remain arrival-ordered.",
+    "Two accepted equal-timestamp book disagreements remain in the Rust live capture.",
+    "No upstream completeness or universal exchange timestamp ordering claim.",
+    "Rust used production PING 60s; independent control used PING 10s.",
+    "No performance comparison or general trade-to-depth completeness claim."
+  ]
+}

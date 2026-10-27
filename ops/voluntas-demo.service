@@ -1,0 +1,22 @@
+[Unit]
+Description=Voluntas metrics demo API
+After=network-online.target voluntas-prometheus.service
+Wants=network-online.target voluntas-prometheus.service
+
+[Service]
+Type=simple
+DynamicUser=yes
+ExecStart=/usr/bin/python3 /opt/voluntas-demo/server.py --prometheus-url http://127.0.0.1:9091 --bind 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+MemoryMax=256M
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+
+[Install]
+WantedBy=multi-user.target

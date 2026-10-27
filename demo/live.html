@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live - Voluntas demo</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/vendor/uPlot.min.css">
+<link rel="stylesheet" href="/site.css">
+<script src="/vendor/uPlot.iife.min.js" defer></script>
+<script src="/status.js" defer></script>
+<script src="/charts.js" defer></script>
+<script src="/chart-help.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="site-name" href="/">Voluntas demo</a>
+  <nav class="site-nav" aria-label="Pages">
+    <a href="/">Overview</a>
+    <a href="/live" aria-current="page">Live</a>
+  </nav>
+  <p class="status" id="status" role="status"><span class="status-dot" aria-hidden="true"></span><span class="status-text">Connecting</span></p>
+</header>
+<main id="main">
+  <h1 class="visually-hidden">Live measurements</h1>
+  <p class="notice" id="notice" hidden><span class="notice-text"></span></p>
+  <div class="toolbar">
+    <div class="range" role="group" aria-label="Time range">
+      <button type="button" data-range="15m" aria-pressed="true">15m</button>
+      <button type="button" data-range="1h" aria-pressed="false">1h</button>
+      <button type="button" data-range="6h" aria-pressed="false">6h</button>
+    </div>
+    <p class="small muted" id="history-status" aria-live="polite">Loading history</p>
+  </div>
+  <div class="charts" id="charts">
+    <section class="panel chart big" data-chart="internal" aria-labelledby="h-internal">
+      <div class="chart-head">
+        <h2 id="h-internal"><button class="chart-help" type="button" aria-describedby="help-internal" aria-expanded="false">Time inside the collector</button></h2>
+        <div class="chart-tooltip" id="help-internal" role="tooltip" popover="auto">
+          <p>Monotonic time from receiving a WebSocket frame to finishing the SBE encoding of each emitted price-level record. Only the publishing copy counts. Snapshots, source switches and later file writes are excluded. A message with 50 changed levels gives 50 observations.</p>
+          <p>p50 and p99 are histogram estimates over five-minute windows. Bucket bounds near the median are 10, 25, 50 and 100 µs, then 250 µs, 500 µs, 1 ms and 2.5 ms, so small differences are not meaningful. A percentile above the largest bucket shows as more than 60 s.</p>
+          <p>When no updates arrive, there are no new latency observations. The five-minute window can keep earlier samples visible; idle time does not count as zero latency. A failed scrape is shown as a gap.</p>
+          <p>The chart uses a logarithmic scale.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_receive_to_encode_seconds</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Time inside the collector, p50 and p99, log scale"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note>Log scale.</p>
+    </section>
+    <section class="panel chart big" data-chart="exchange" aria-labelledby="h-exchange">
+      <div class="chart-head">
+        <h2 id="h-exchange"><button class="chart-help" type="button" aria-describedby="help-exchange" aria-expanded="false">Time from Polymarket to collector</button></h2>
+        <div class="chart-tooltip" id="help-exchange" role="tooltip" popover="auto">
+          <p>UTC time our socket read the frame, before parsing, minus Polymarket's timestamp in the message. Recorded once per accepted price-change message on each pool. It includes clock offset, upstream delay and buffering. Negative ages are counted separately and excluded. This and time inside the collector cover different populations; do not add or subtract them.</p>
+          <p>p50 and p99 are histogram estimates over five-minute windows. The chart uses a logarithmic scale.</p>
+          <p>When no price-change messages arrive, there are no new age observations. The five-minute window can keep earlier samples visible; idle time does not count as zero latency. A failed scrape is shown as a gap.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_exchange_to_receive_seconds</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Exchange event age at receipt, p50 and p99, log scale"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note>Log scale.</p>
+    </section>
+    <section class="panel chart" data-chart="updates" aria-labelledby="h-updates">
+      <div class="chart-head">
+        <h2 id="h-updates"><button class="chart-help" type="button" aria-describedby="help-updates" aria-expanded="false">Book updates per second</button></h2>
+        <div class="chart-tooltip" id="help-updates" role="tooltip" popover="auto">
+          <p>Encoded price-level records per second over one minute, from the latency histogram's count. Messages received counts decoded data events on both pools, so each exchange message is counted about twice. Heartbeats are excluded.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_receive_to_encode_seconds</code>, <code>collector_events_total</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Book updates per second and messages received per second, with a new deployment marker when its approximate time is in view" aria-describedby="deployment-note"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note id="deployment-note"></p>
+    </section>
+    <section class="panel chart" data-chart="gaps" aria-labelledby="h-gaps">
+      <div class="chart-head">
+        <h2 id="h-gaps"><button class="chart-help" type="button" aria-describedby="help-gaps" aria-expanded="false">Markets without a book or standby</button></h2>
+        <div class="chart-tooltip" id="help-gaps" role="tooltip" popover="auto">
+          <p>Without a current book is desired minus synchronized markets. A market is synchronized when its publishing copy has both outcome books on its current connection. Without a ready standby is desired minus markets whose other copy is also ready. A ready standby requires a publishing copy and a second copy with both outcome books synchronized, so markets without a current book count in both lines. These counts do not prove that every book is still receiving updates, or that discovery found every market on the exchange.</p>
+          <p>Polymarket sometimes lists markets as active before their order books are available, which may explain small persistent gaps.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_markets</code>, <code>collector_books</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Markets without a current book and markets without a ready standby"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note></p>
+    </section>
+    <section class="panel chart" data-chart="disconnects" aria-labelledby="h-disconnects">
+      <div class="chart-head">
+        <h2 id="h-disconnects"><button class="chart-help" type="button" aria-describedby="help-disconnects" aria-expanded="false">Order-book disconnects by reason</button></h2>
+        <div class="chart-tooltip" id="help-disconnects" role="tooltip" popover="auto">
+          <p>Disconnects are established order-book sessions that ended, by reason. <code>emptied</code> (the collector closed a socket after its last market was removed) and <code>shutdown</code> are planned and listed separately. Failed connection attempts are not counted.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_session_ends_total</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Order-book session ends per interval, stacked by reason"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note></p>
+    </section>
+    <section class="panel chart" data-chart="switches" aria-labelledby="h-switches">
+      <div class="chart-head">
+        <h2 id="h-switches"><button class="chart-help" type="button" aria-describedby="help-switches" aria-expanded="false">Publisher switches by reason</button></h2>
+        <div class="chart-tooltip" id="help-switches" role="tooltip" popover="auto">
+          <p>Publisher switches count markets that actually moved to the other pool's copy after a failure. A standby-only failure, initial selection and recovery on the same connection do not count. A market counts once per switch; one failed socket can move up to 256 markets.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_publisher_switches_total</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Markets switching publisher per interval, stacked by reason"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note></p>
+    </section>
+    <section class="panel chart" data-chart="workers" aria-labelledby="h-workers">
+      <div class="chart-head">
+        <h2 id="h-workers"><button class="chart-help" type="button" aria-describedby="help-workers" aria-expanded="false">Worker busy time</button></h2>
+        <div class="chart-tooltip" id="help-workers" role="tooltip" popover="auto">
+          <p>Worker busy time is elapsed time handling input, as a share of wall time. It excludes idle waits, output waits and snapshot timers, and is not CPU use.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_worker_busy_seconds_total</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Share of wall time each worker spends handling input"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note></p>
+    </section>
+    <section class="panel chart" data-chart="writer_busy" aria-labelledby="h-writer-busy">
+      <div class="chart-head">
+        <h2 id="h-writer-busy"><button class="chart-help" type="button" aria-describedby="help-writer-busy" aria-expanded="false">Writer busy time</button></h2>
+        <div class="chart-tooltip" id="help-writer-busy" role="tooltip" popover="auto">
+          <p>Share of wall time the single writer spends converting and encoding records and writing or flushing output. Includes snapshots and chunk rotation, excludes idle waits, and is not CPU use. Sustained values near 100% indicate little writer headroom; compare with waiting on the writer and internal latency.</p>
+          <p>Values use a one-minute rate. Missing or stale periods are left blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_writer_busy_seconds_total</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Share of wall time the writer spends encoding and writing output"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note></p>
+    </section>
+    <section class="panel chart" data-chart="writer" aria-labelledby="h-writer">
+      <div class="chart-head">
+        <h2 id="h-writer"><button class="chart-help" type="button" aria-describedby="help-writer" aria-expanded="false">Waiting on the writer</button></h2>
+        <div class="chart-tooltip" id="help-writer" role="tooltip" popover="auto">
+          <p>Waiting on the writer sums the time all workers spend blocked on a full writer channel. Values are worker-seconds per second and can exceed 1 when several workers wait at once.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_writer_blocked_seconds_total</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Worker time blocked on the writer channel"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note></p>
+    </section>
+    <section class="panel chart" data-chart="connections" aria-labelledby="h-connections">
+      <div class="chart-head">
+        <h2 id="h-connections"><button class="chart-help" type="button" aria-describedby="help-connections" aria-expanded="false">Sockets not open</button></h2>
+        <div class="chart-tooltip" id="help-connections" role="tooltip" popover="auto">
+          <p>Expected sockets minus open sockets, for order-book and discovery connections. Reconnecting sockets count as expected.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_connections</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Expected sockets that are not open, order-book and discovery"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note></p>
+    </section>
+    <section class="panel chart" data-chart="checks" aria-labelledby="h-checks">
+      <div class="chart-head">
+        <h2 id="h-checks"><button class="chart-help" type="button" aria-describedby="help-checks" aria-expanded="false">Full books out of order from Polymarket</button></h2>
+        <div class="chart-tooltip" id="help-checks" role="tooltip" popover="auto">
+          <p>Full books Polymarket sent out of order with its own price changes. Mismatched counts accepted full books differing from the book built from that source's updates. Skipped as older counts full books older than price changes already applied. Decode errors counts messages that could not be decoded. Hover or focus a legend label for more detail.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_book_mismatches_total</code>, <code>collector_older_full_books_skipped_total</code>, <code>collector_decode_errors_total</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Full books from Polymarket that differed from the book built from its updates, older full books skipped, and decode errors per interval"></div>
+      <div class="legend" data-legend></div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  <a class="icon-link" href="https://github.com/itzlambda/voluntas-challenge" target="_blank" rel="noopener noreferrer" aria-label="Source code on GitHub" title="Source code"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.31.76-1.61-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .32.21.69.82.57A12 12 0 0 0 12 .3"/></svg></a>
+  <a class="icon-link" href="https://x.com/itzlambda" target="_blank" rel="noopener noreferrer" aria-label="itzlambda on Twitter" title="Twitter"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.4l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.6l5.24 6.93zm-1.3 19.5h2.04L6.49 3.24H4.3z"/></svg></a>
+</footer>
+</body>
+</html>

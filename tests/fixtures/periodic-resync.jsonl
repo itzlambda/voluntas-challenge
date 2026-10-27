@@ -1,0 +1,12 @@
+{"type":"add_market","market":"0xa1","order_books":["101","102"],"connection":1}
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:01.000123Z","text":"[{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"101\",\"bids\":[{\"price\":\"0.4\",\"size\":\"1\"}],\"asks\":[{\"price\":\"0.6\",\"size\":\"2\"}],\"timestamp\":\"1100\"},{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"102\",\"bids\":[],\"asks\":[],\"timestamp\":\"1100\"}]"}
+{"type":"advance","millis":10010}
+{"type":"mark_unsynced","connection":1,"reason":"disconnected"}
+# Skip two ticks while unsynced, retaining the original 60-second cadence.
+{"type":"advance","millis":120000}
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:02.000123Z","text":"{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"101\",\"bids\":[{\"price\":\"0.4\",\"size\":\"5\"}],\"asks\":[{\"price\":\"0.6\",\"size\":\"2\"}],\"timestamp\":\"1200\"}"}
+# Only 101 is synced again; 102 continues skipping periodic ticks.
+{"type":"advance","millis":50000}
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:03.000123Z","text":"{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"102\",\"bids\":[],\"asks\":[{\"price\":\"0.8\",\"size\":\"6\"}],\"timestamp\":\"1300\"}"}
+{"type":"advance","millis":60000}
+{"type":"advance","millis":1000}

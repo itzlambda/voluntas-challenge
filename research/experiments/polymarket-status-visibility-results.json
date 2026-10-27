@@ -1,0 +1,169 @@
+{
+  "checked_at": "2026-10-25T02:27:02.664021+00:00",
+  "probes": [
+    {
+      "params": {
+        "version": "v1",
+        "closed": "false",
+        "limit": "3",
+        "order": "active,id",
+        "ascending": "true"
+      },
+      "rows": [
+        {
+          "id": "559651",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:26:38.010876Z",
+          "acceptingOrdersTimestamp": "2025-07-03T20:36:33Z"
+        },
+        {
+          "id": "559652",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:26:38.010876Z",
+          "acceptingOrdersTimestamp": "2025-07-11T18:35:34Z"
+        },
+        {
+          "id": "559653",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:26:38.010876Z",
+          "acceptingOrdersTimestamp": "2025-07-11T18:35:36Z"
+        }
+      ]
+    },
+    {
+      "params": {
+        "version": "v1",
+        "closed": "false",
+        "limit": "3",
+        "order": "archived,id",
+        "ascending": "false"
+      },
+      "rows": [
+        {
+          "id": "559651",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:26:38.010876Z",
+          "acceptingOrdersTimestamp": "2025-07-03T20:36:33Z"
+        },
+        {
+          "id": "559652",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:26:38.010876Z",
+          "acceptingOrdersTimestamp": "2025-07-11T18:35:34Z"
+        },
+        {
+          "id": "559653",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "enableOrderBook": true,
+          "updatedAt": "2026-10-25T02:26:38.010876Z",
+          "acceptingOrdersTimestamp": "2025-07-11T18:35:36Z"
+        }
+      ]
+    },
+    {
+      "params": {
+        "version": "v1",
+        "closed": "false",
+        "limit": "3",
+        "order": "enableOrderBook,id",
+        "ascending": "true"
+      },
+      "rows": [
+        {
+          "id": "964332",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": null,
+          "enableOrderBook": false,
+          "updatedAt": "2026-04-28T11:04:22.250504Z",
+          "acceptingOrdersTimestamp": null
+        },
+        {
+          "id": "964334",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": null,
+          "enableOrderBook": false,
+          "updatedAt": "2026-04-28T11:04:22.250504Z",
+          "acceptingOrdersTimestamp": null
+        },
+        {
+          "id": "964335",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": null,
+          "enableOrderBook": false,
+          "updatedAt": "2026-04-28T11:04:22.250504Z",
+          "acceptingOrdersTimestamp": null
+        }
+      ]
+    },
+    {
+      "params": {
+        "version": "v1",
+        "closed": "false",
+        "limit": "3",
+        "order": "acceptingOrders,id",
+        "ascending": "true"
+      },
+      "rows": [
+        {
+          "id": "3358951",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-08-05T12:00:10.444105Z",
+          "acceptingOrdersTimestamp": null
+        },
+        {
+          "id": "3358952",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-08-05T12:00:10.426788Z",
+          "acceptingOrdersTimestamp": null
+        },
+        {
+          "id": "3358953",
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true,
+          "updatedAt": "2026-08-05T12:00:10.395359Z",
+          "acceptingOrdersTimestamp": null
+        }
+      ]
+    }
+  ]
+}

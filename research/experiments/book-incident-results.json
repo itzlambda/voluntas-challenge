@@ -1,0 +1,492 @@
+{
+  "method": "Unmodified raw frame strings; all per-connection events and arrays retain arrival order. Before each singleton repeated full-book frame, advance the paused clock by 60001ms and read the worker's ordinary periodic snapshot through the supplied SBE reader. Compare both complete sides and freshness timestamps before applying the incoming full book.",
+  "restrictions": "No trade subtraction, event sorting, event deduplication, complementary inference, or warmup exclusion. Map keys are canonicalized only for comparing complete book contents.",
+  "limitations": [
+    "Only saved prefixes; cannot identify exchange intent or prove absence of upstream/capture loss.",
+    "Duplicate feeds replay independently because the base collector has one connection per market.",
+    "Two bulk-4 subscription assets have no book or price change in the prefix; no market can be mapped for them. All 1798 observed books and every raw received frame are retained.",
+    "Virtual checkpoints change periodic output cadence, not source events or their receive/exchange timestamps. This is a correctness check, not a latency measurement.",
+    "Raw recordings are local and untracked; the raw test is explicitly ignored by default. The compact synthetic regression runs by default."
+  ],
+  "windows": [
+    {
+      "source": "research/recordings/subscription-behavior-20261025/frames.jsonl",
+      "connection": "bulk-4",
+      "end_line": 76,
+      "source_prefix_sha256": "9b56d5be2369d94a09531a3b452c1e9cf0990d414d13a7ed5557001988127859",
+      "fixture": "bulk-4.jsonl",
+      "fixture_sha256": "9611a6f939059a161ab908f86b7c3d8ffce3ad14f7b34715692e18ec3d77f7b1",
+      "counts": {
+        "subscription_assets_without_window_book": 2,
+        "subscriptions": 1,
+        "markets": 899,
+        "book": 1800,
+        "frames": 43,
+        "price_change": 38,
+        "applied_level_updates": 76
+      },
+      "books": 1798,
+      "repeat_books": 2,
+      "different_books": 2,
+      "incidents": [
+        {
+          "ordinal": 1,
+          "line": 74,
+          "event_index": 0,
+          "asset": "60439878158528690068732587238646919914982640715378138780095969649181440667514",
+          "refresh_number": 1,
+          "initial": {
+            "line": 36,
+            "event_index": 203,
+            "received_at": "2026-10-25T14:55:20.057Z",
+            "exchange_ms": 1792940118629,
+            "hash": "0b5705ed20b0542afc0977ca7e4609cd0e794b98"
+          },
+          "subscription": {
+            "line": 23,
+            "received_at": "2026-10-25T14:55:18.672Z",
+            "assets": 1800
+          },
+          "before_received_us": 1792940120087000,
+          "before_exchange_us": 1792940119338000,
+          "incoming_received_us": 1792940120087000,
+          "incoming_exchange_us": 1792940119338000,
+          "incoming_hash": "f10680edadd4c85565d001289174240f9c76ce1c",
+          "differences": [
+            {
+              "side": "ask",
+              "price": 970000,
+              "held": 5100000000,
+              "incoming": 6100000000
+            }
+          ]
+        },
+        {
+          "ordinal": 2,
+          "line": 76,
+          "event_index": 0,
+          "asset": "41021206714580239746813054711419721306446523118398329746357160802261679058815",
+          "refresh_number": 1,
+          "initial": {
+            "line": 36,
+            "event_index": 275,
+            "received_at": "2026-10-25T14:55:20.057Z",
+            "exchange_ms": 1792940118629,
+            "hash": "e3ccc15d8795b7f6c8603e481ae087b8f5bca577"
+          },
+          "subscription": {
+            "line": 23,
+            "received_at": "2026-10-25T14:55:18.672Z",
+            "assets": 1800
+          },
+          "before_received_us": 1792940120087000,
+          "before_exchange_us": 1792940119338000,
+          "incoming_received_us": 1792940120087000,
+          "incoming_exchange_us": 1792940119338000,
+          "incoming_hash": "87af1ca661709dc1332e469b86ab603f9f561d53",
+          "differences": [
+            {
+              "side": "bid",
+              "price": 30000,
+              "held": 5100000000,
+              "incoming": 6100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "research/recordings/subscription-behavior-format-20261025/frames.jsonl",
+      "connection": "bulk-format-2",
+      "end_line": 3680,
+      "source_prefix_sha256": "66b0007f22bd596c75c4fbadbf53746f0c75a272a900c3d74efca5194a16936b",
+      "fixture": "bulk-format-2.jsonl",
+      "fixture_sha256": "21788065d2ed6e371ce56ef4a5d4adbf62f8f14bb24c1fa4cb0b44ac069544cf",
+      "counts": {
+        "subscriptions": 1,
+        "markets": 900,
+        "book": 1820,
+        "frames": 1820,
+        "price_change": 1788,
+        "applied_level_updates": 3576,
+        "last_trade_price": 9
+      },
+      "books": 1800,
+      "repeat_books": 20,
+      "different_books": 2,
+      "incidents": [
+        {
+          "ordinal": 19,
+          "line": 3679,
+          "event_index": 0,
+          "asset": "108456264239031514288349092154900311669737695126714294292073692623811849531540",
+          "refresh_number": 1,
+          "initial": {
+            "line": 168,
+            "event_index": 546,
+            "received_at": "2026-10-25T14:58:29.731Z",
+            "exchange_ms": 1792940309388,
+            "hash": "7a123a89fe402ca2875f62e2cf75bf983b39760b"
+          },
+          "subscription": {
+            "line": 16,
+            "received_at": "2026-10-25T14:58:29.463Z",
+            "assets": 1800
+          },
+          "before_received_us": 1792940311418000,
+          "before_exchange_us": 1792940311406000,
+          "incoming_received_us": 1792940311418000,
+          "incoming_exchange_us": 1792940311406000,
+          "incoming_hash": "a124b41858f8252363910e1e94bb11d819b4bc1a",
+          "differences": [
+            {
+              "side": "bid",
+              "price": 180000,
+              "held": 6887750000,
+              "incoming": 7443300000
+            }
+          ]
+        },
+        {
+          "ordinal": 20,
+          "line": 3680,
+          "event_index": 0,
+          "asset": "23344609277608629661394718286862958013114892767053580860403706069160748995639",
+          "refresh_number": 1,
+          "initial": {
+            "line": 168,
+            "event_index": 265,
+            "received_at": "2026-10-25T14:58:29.731Z",
+            "exchange_ms": 1792940309388,
+            "hash": "bc119eb07246a0925e545ec966ca56992da13ceb"
+          },
+          "subscription": {
+            "line": 16,
+            "received_at": "2026-10-25T14:58:29.463Z",
+            "assets": 1800
+          },
+          "before_received_us": 1792940311418000,
+          "before_exchange_us": 1792940311406000,
+          "incoming_received_us": 1792940311418000,
+          "incoming_exchange_us": 1792940311406000,
+          "incoming_hash": "d5b2d1e17c01b52ad3941222c017cb0e65f552d7",
+          "differences": [
+            {
+              "side": "ask",
+              "price": 820000,
+              "held": 6887750000,
+              "incoming": 7443300000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source": "research/recordings/subscription-behavior-format-20261025/frames.jsonl",
+      "connection": "bulk-format-1",
+      "end_line": 3685,
+      "source_prefix_sha256": "524a15cf97c2de74ba748906ad1855ce7944fb7713cb3e14455323fb9a7b18d0",
+      "fixture": "bulk-format-1.jsonl",
+      "fixture_sha256": "743f0c402acd3f1ee7e2da2536668360b05813366e5804a96f95ac06137ae0f5",
+      "counts": {
+        "subscriptions": 1,
+        "markets": 900,
+        "book": 1820,
+        "frames": 1849,
+        "price_change": 1817,
+        "applied_level_updates": 3634,
+        "last_trade_price": 9
+      },
+      "books": 1800,
+      "repeat_books": 20,
+      "different_books": 2,
+      "incidents": [
+        {
+          "ordinal": 19,
+          "line": 3684,
+          "event_index": 0,
+          "asset": "108456264239031514288349092154900311669737695126714294292073692623811849531540",
+          "refresh_number": 1,
+          "initial": {
+            "line": 19,
+            "event_index": 723,
+            "received_at": "2026-10-25T14:58:29.638Z",
+            "exchange_ms": 1792940309388,
+            "hash": "7a123a89fe402ca2875f62e2cf75bf983b39760b"
+          },
+          "subscription": {
+            "line": 14,
+            "received_at": "2026-10-25T14:58:29.448Z",
+            "assets": 1800
+          },
+          "before_received_us": 1792940311419000,
+          "before_exchange_us": 1792940311406000,
+          "incoming_received_us": 1792940311419000,
+          "incoming_exchange_us": 1792940311406000,
+          "incoming_hash": "a124b41858f8252363910e1e94bb11d819b4bc1a",
+          "differences": [
+            {
+              "side": "bid",
+              "price": 180000,
+              "held": 6887750000,
+              "incoming": 7443300000
+            }
+          ]
+        },
+        {
+          "ordinal": 20,
+          "line": 3685,
+          "event_index": 0,
+          "asset": "23344609277608629661394718286862958013114892767053580860403706069160748995639",
+          "refresh_number": 1,
+          "initial": {
+            "line": 19,
+            "event_index": 537,
+            "received_at": "2026-10-25T14:58:29.638Z",
+            "exchange_ms": 1792940309388,
+            "hash": "bc119eb07246a0925e545ec966ca56992da13ceb"
+          },
+          "subscription": {
+            "line": 14,
+            "received_at": "2026-10-25T14:58:29.448Z",
+            "assets": 1800
+          },
+          "before_received_us": 1792940311419000,
+          "before_exchange_us": 1792940311406000,
+          "incoming_received_us": 1792940311419000,
+          "incoming_exchange_us": 1792940311406000,
+          "incoming_hash": "d5b2d1e17c01b52ad3941222c017cb0e65f552d7",
+          "differences": [
+            {
+              "side": "ask",
+              "price": 820000,
+              "held": 6887750000,
+              "incoming": 7443300000
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rust_runs": [
+    {
+      "absolute_updates": 76,
+      "books": 1798,
+      "complete_before_books_compared": 2,
+      "connection": "bulk-4",
+      "different_from_incoming": 2,
+      "dropped_before_baseline": 0,
+      "first_snapshots": 1798,
+      "frames": 43,
+      "periodic_snapshots": 3596,
+      "rust_decimal_disagreements": 0,
+      "sbe_message_bytes": 2944846,
+      "sbe_padded_bytes": 67108864,
+      "sbe_records": 5472,
+      "workers": 1
+    },
+    {
+      "absolute_updates": 3576,
+      "books": 1800,
+      "complete_before_books_compared": 20,
+      "connection": "bulk-format-2",
+      "different_from_incoming": 2,
+      "dropped_before_baseline": 0,
+      "first_snapshots": 1800,
+      "frames": 1820,
+      "periodic_snapshots": 36000,
+      "rust_decimal_disagreements": 0,
+      "sbe_message_bytes": 21079396,
+      "sbe_padded_bytes": 67108864,
+      "sbe_records": 41378,
+      "workers": 1
+    },
+    {
+      "absolute_updates": 3634,
+      "books": 1800,
+      "complete_before_books_compared": 20,
+      "connection": "bulk-format-1",
+      "different_from_incoming": 2,
+      "dropped_before_baseline": 0,
+      "first_snapshots": 1800,
+      "frames": 1849,
+      "periodic_snapshots": 36000,
+      "rust_decimal_disagreements": 0,
+      "sbe_message_bytes": 21086549,
+      "sbe_padded_bytes": 67108864,
+      "sbe_records": 41436,
+      "workers": 1
+    },
+    {
+      "absolute_updates": 76,
+      "books": 1798,
+      "complete_before_books_compared": 2,
+      "connection": "bulk-4",
+      "different_from_incoming": 2,
+      "dropped_before_baseline": 0,
+      "first_snapshots": 1798,
+      "frames": 43,
+      "periodic_snapshots": 3596,
+      "rust_decimal_disagreements": 0,
+      "sbe_message_bytes": 2944846,
+      "sbe_padded_bytes": 67108864,
+      "sbe_records": 5472,
+      "workers": 2
+    },
+    {
+      "absolute_updates": 3576,
+      "books": 1800,
+      "complete_before_books_compared": 20,
+      "connection": "bulk-format-2",
+      "different_from_incoming": 2,
+      "dropped_before_baseline": 0,
+      "first_snapshots": 1800,
+      "frames": 1820,
+      "periodic_snapshots": 36000,
+      "rust_decimal_disagreements": 0,
+      "sbe_message_bytes": 21079396,
+      "sbe_padded_bytes": 67108864,
+      "sbe_records": 41378,
+      "workers": 2
+    },
+    {
+      "absolute_updates": 3634,
+      "books": 1800,
+      "complete_before_books_compared": 20,
+      "connection": "bulk-format-1",
+      "different_from_incoming": 2,
+      "dropped_before_baseline": 0,
+      "first_snapshots": 1800,
+      "frames": 1849,
+      "periodic_snapshots": 36000,
+      "rust_decimal_disagreements": 0,
+      "sbe_message_bytes": 21086549,
+      "sbe_padded_bytes": 67108864,
+      "sbe_records": 41436,
+      "workers": 2
+    },
+    {
+      "absolute_updates": 76,
+      "books": 1798,
+      "complete_before_books_compared": 2,
+      "connection": "bulk-4",
+      "different_from_incoming": 2,
+      "dropped_before_baseline": 0,
+      "first_snapshots": 1798,
+      "frames": 43,
+      "periodic_snapshots": 3596,
+      "rust_decimal_disagreements": 0,
+      "sbe_message_bytes": 2944846,
+      "sbe_padded_bytes": 67108864,
+      "sbe_records": 5472,
+      "workers": 4
+    },
+    {
+      "absolute_updates": 3576,
+      "books": 1800,
+      "complete_before_books_compared": 20,
+      "connection": "bulk-format-2",
+      "different_from_incoming": 2,
+      "dropped_before_baseline": 0,
+      "first_snapshots": 1800,
+      "frames": 1820,
+      "periodic_snapshots": 36000,
+      "rust_decimal_disagreements": 0,
+      "sbe_message_bytes": 21079396,
+      "sbe_padded_bytes": 67108864,
+      "sbe_records": 41378,
+      "workers": 4
+    },
+    {
+      "absolute_updates": 3634,
+      "books": 1800,
+      "complete_before_books_compared": 20,
+      "connection": "bulk-format-1",
+      "different_from_incoming": 2,
+      "dropped_before_baseline": 0,
+      "first_snapshots": 1800,
+      "frames": 1849,
+      "periodic_snapshots": 36000,
+      "rust_decimal_disagreements": 0,
+      "sbe_message_bytes": 21086549,
+      "sbe_padded_bytes": 67108864,
+      "sbe_records": 41436,
+      "workers": 4
+    }
+  ],
+  "comparisons": [
+    {
+      "workers": 1,
+      "complete_before_books": 42,
+      "rust_decimal_disagreements": 0,
+      "before_book_sha256": "96fa13bf4bb3c691137519c4f0af0a9a94056cd399b08f511fa131bef82f62c3"
+    },
+    {
+      "workers": 2,
+      "complete_before_books": 42,
+      "rust_decimal_disagreements": 0,
+      "before_book_sha256": "96fa13bf4bb3c691137519c4f0af0a9a94056cd399b08f511fa131bef82f62c3"
+    },
+    {
+      "workers": 4,
+      "complete_before_books": 42,
+      "rust_decimal_disagreements": 0,
+      "before_book_sha256": "96fa13bf4bb3c691137519c4f0af0a9a94056cd399b08f511fa131bef82f62c3"
+    }
+  ],
+  "totals": {
+    "complete_before_comparisons": 126,
+    "distinct_repeat_books": 42,
+    "exact_to_incoming": 36,
+    "divergent_to_incoming": 6,
+    "divergent_levels": 6,
+    "distinct_exchange_timestamps": 2,
+    "rust_decimal_disagreements": 0
+  },
+  "source_code_sha256": {
+    "src/core/app.rs": "82e20b9f26a7c62a90fbf94fe8ac28e9a472e1126dafc575b5a2898d19b2f82d",
+    "src/core/book_connection.rs": "37e86b9ee7b467766a6f5e10b13594ef182f43b447818f2b01f153c0d8c15f89",
+    "src/core/capture.rs": "276f656a0f461ca5a148d55a7867b96f61979b3fe44d5da6e124f5146da5ee1f",
+    "src/core/config.rs": "25af6a96e2d10ca85dc93a96d441955a9343d865a2c1235ebd2ba0ab0792647c",
+    "src/core/connection.rs": "59b84109b879e7bc91d9df4019414e04a0cbaacd5534b2ef8192faa6d4c2a6fe",
+    "src/core/decode_log.rs": "aa6c65646543994978a4dc28685b5bf00eaa4d8d29fd4e31d453bc09bd4aa658",
+    "src/core/discovery.rs": "e3062ced2d37862663249397239521b89dedd81a19c27ab8bd9f6190c4deceaf",
+    "src/core/fixture.rs": "d670437dd6182edad0ad4b6a6a6d3e7be29156a4ca6c9fb1647d5f73098dfd09",
+    "src/core/latency.rs": "ce7479ace70ddf6b0cc0be0efdc72fee9d365bfe8ceb1b6c0befcbf6e05e738e",
+    "src/core/lifecycle.rs": "aca2cc23c0b3c92171b40fd33465a470f0f6fcd5606a5bb67c660101456b3263",
+    "src/core/mod.rs": "32ff087780c4e9b8346ab090f390cf0a005f294ee78b63444968ac9b436fdafd",
+    "src/core/order_book.rs": "77486d64f12591a261e77524ddb7ea2c8cdc8c72cfc458ee42e656f6fc5ec819",
+    "src/core/pipeline.rs": "244fb44204fec7db26092c08b954db1a4131829ed726920648374399472dcc09",
+    "src/core/rate_limit.rs": "e9c08650324acb6feab537ee1555c527b6746acac526efd8efd15edae0abed2d",
+    "src/core/reconnect_backoff.rs": "19f5251d3edd414544269ca5ad4e4e45cb8c5ab12d293d1234801dd2e70b7a45",
+    "src/core/registry.rs": "4f9bcd6ed7e681ea306670523a78a51cfbe9c55f269ea552e3c65b0d2bbd16d9",
+    "src/core/routing.rs": "9cac0edbcf8faede47077ad1707bdde48b52b6ff23de77f7b9166157488328fb",
+    "src/core/subscriptions.rs": "256479270b792f4758a4010e64dcf4e86e68b309648000f4fcddf5bf978e1200",
+    "src/core/telemetry.rs": "7155fcee92aecbf596f4edae999c988328e2444e4b9d077940d3e1dffba99362",
+    "src/core/worker.rs": "6044c8e2b639fa24d615c6a74501fc9b9dbc2294aa42fe9c03f7b8c90c2a4ec2",
+    "src/core/writer.rs": "89bf65bb8dc18300125fe87b7adbba7dfd1f46b6587ce54b9567553a13801d0c",
+    "src/exchange/mod.rs": "d99e4da4b00cf277a0308adf448e732aa63d0c186a3a46b28fb23cde235ab69a",
+    "src/exchange/polymarket/decode.rs": "546b98262a0c0e6e13c3ac881f743f6e3d260e5ae6a3828f1a41cd9257a7d2f4",
+    "src/exchange/polymarket/gamma.rs": "168efa7bc6f2f0b64de676c88b4899a3fab3e2b15c8efa448a10a54769db6bab",
+    "src/exchange/polymarket/mod.rs": "a91e600e6b3f4d6def0f2450c291f1b9cdb0660f022b491c5d0ee4cec12bbee1",
+    "src/exchange/polymarket/number.rs": "3f56ef470ccfd12033ca7acf60f798280c03bb2d64ca0ad220f134603e9645d1",
+    "src/exchange/polymarket/ws.rs": "08192efa5814d41fe91d1d0700520f5ac39eed167929becc3b7e5fa97c7b6dbd",
+    "src/lib.rs": "2bf3a827e879533dfa63b38d11b654b621cb51f77c8d50e845c30524db90aaff",
+    "src/main.rs": "1330cffdfd6fb19bc7e86bbcb9ab4f7a34efb8134e5a85904e73418b3d92687c",
+    "src/model.rs": "dfe7d70437b6ec78212cb5afff5467d7c46e372ffb8309370c6be56429f3ca8c",
+    "src/side.rs": "83dca6f9e4db06dd1d486aa21f07d1ddec2cab1cc430b0f2c4fdbb857e6ae667",
+    "src/util/aligned_sbe_reader.rs": "7ae471368523d1d4b0240a5375d42d483caf9ba33c233c63c0b74f6509045e87",
+    "src/util/aligned_sbe_writer.rs": "b66bd32394cb5a26e891b152d523d155260040ab2e8746131f26ae7f265d4cf4",
+    "src/util/build.rs": "2c860b5b575b2399704a2d4ed9e9df51b27bf7c38a6167cdc6945a543bec7310",
+    "src/util/dtos.rs": "3e4edb85ae4a308943c33847a7601ba40a1edebc31dec23361e36ebf8c60bad9",
+    "src/util/mod.rs": "685716aecbe602ecbb9c0689d2741f7e75671437e4a51e09aa168b10c604b853",
+    "src/util/orderbook_schema.rs": "9462a5167cf1627cbb82e068ab87f7022121e5a15b243c6d3e3a740b8932a7cd",
+    "src/util/sbe_yaml.rs": "af749044c88dc6e9c959b29ac7dbf18be5eb7e542c0b46d8be11bc34b3545442"
+  },
+  "harness_sha256": {
+    "tests/book_incidents.rs": "de36716e63bebf5a59080a324f37bd6d3033f7e70c1e0d195664c68b17128568",
+    "tests/fixtures/book-incidents-regression.jsonl": "3304b6d6e9b3ba7135975a55f0191e5f11f4fdc8de4ac517bb6d3301b4f4c3de",
+    "tests/fixtures/book-incidents-windows.json": "8ea5ef202be4b7973c84de50a6075df7a9622000d05416f406c21bcb723ac6bf",
+    "research/experiments/book-incident-replay.py": "ae36c16ec0cc99c21dbcccd8ee80e31043354d2aa6a03c7d89c0dba9fa222800"
+  }
+}

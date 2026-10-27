@@ -1,0 +1,402 @@
+{
+  "source_hashes": {
+    "frames.jsonl": "f6240bd21d4d73b3049f105620ed8cffa44e07bb48d7be41a9833767a46ce4fc",
+    "collector.jsonl": "78254b7a3477eac939729e0bd73ad9e72ba7dd74a99377ddc6d09b9e38a9b6d8",
+    "samples.jsonl": "3142a839d95c90f19bb865083602398624ca77ad9a637dbb707b3b8c8be4334d"
+  },
+  "run": {
+    "started_utc": "2026-10-26T11:36:06.509025+00:00",
+    "binary_sha256": "f3eb29887cab869134a02fd425febd5449b3e39dda3378d2c7e550b7152681c3",
+    "limits": {
+      "max_seconds": 1500,
+      "steady_seconds": 300,
+      "max_gib": 12.0,
+      "min_free_gib": 8
+    },
+    "scan_completed_elapsed_s": 713.6733428969746,
+    "elapsed_s": 1019.5708778999979,
+    "exit_code": 0,
+    "stop_reason": "steady_window_complete",
+    "completed_utc": "2026-10-26T11:53:06.079790+00:00"
+  },
+  "scope": "One bounded current full-catalog run. Capture mode adds serialization and an unbounded development-only queue. No cross-run speedup claim.",
+  "counts": {
+    "capture_add_market": 240025,
+    "capture_frame": 9341122,
+    "event_book": 788965,
+    "pongs": 27758,
+    "event_price_change": 9278972,
+    "event_last_trade_price": 9592,
+    "event_tick_size_change": 624,
+    "capture_mark_unsynced": 1561,
+    "older_book_than_prior_update": 1889,
+    "capture_remove_market": 100
+  },
+  "scans": [
+    {
+      "completed": true,
+      "event": "scan_completed",
+      "lasted_s": 713.340685464,
+      "pages": 2397,
+      "provisional": 0,
+      "registered": 239905,
+      "ts": "2026-10-26T11:47:59.948742928+00:00",
+      "unseen_to_look_up": 0
+    }
+  ],
+  "steady_seconds": 300,
+  "steady_events_per_s": {
+    "mean": 16103.016666666666,
+    "p99_1s": 36842,
+    "max_1s": 41687
+  },
+  "steady_frames_per_s": {
+    "mean": 15685.276666666667,
+    "p99_1s": 35011,
+    "max_1s": 41784
+  },
+  "active_markets_in_capture": 239925,
+  "assets_ever_baselined": 479832,
+  "active_assets_with_any_book": 479832,
+  "active_assets": 479850,
+  "first_book_depth_per_side": {
+    "sides": 959664,
+    "mean": 5.940593791160239,
+    "p50": 2,
+    "p99": 48,
+    "max": 207
+  },
+  "steady_active_markets": 103533,
+  "top_1pct_catalog_market_count": 2400,
+  "top_1pct_catalog_market_event_share": 0.5734010071787659,
+  "worker_steady_event_counts": {
+    "1": 1404485,
+    "3": 1166961,
+    "0": 1106467,
+    "2": 1165120
+  },
+  "worker_busiest_to_mean": 1.1600044847928974,
+  "rss_bytes": {
+    "peak": 1510592512,
+    "last": 1331486720
+  },
+  "output_chunk_arrival_interval_s": {
+    "p50": 10.161559978034347,
+    "p99": 55.26446313998895,
+    "max": 55.26446313998895,
+    "samples": 81,
+    "note": "1s polling; intervals between size growths, not per-record visibility latency or fsync"
+  },
+  "session_end_reasons": {
+    "error: IO error: Connection reset by peer (os error 104)": 1474,
+    "closed 1013: slow consumer: send buffer full": 10,
+    "error: connect failed": 58,
+    "error: WebSocket protocol error: Connection reset without closing handshake": 5,
+    "stalled: silent 207 s, ping unanswered 177 s": 1,
+    "stalled: silent 210 s, ping unanswered 177 s": 1,
+    "stalled: silent 192 s, ping unanswered 187 s": 1,
+    "error: ping send failed": 1,
+    "stalled: silent 184 s, ping unanswered 124 s": 1,
+    "stalled: silent 202 s, ping unanswered 142 s": 1,
+    "stalled: silent 182 s, ping unanswered 155 s": 1,
+    "stalled: silent 203 s, ping unanswered 151 s": 1,
+    "stalled: silent 191 s, ping unanswered 150 s": 1,
+    "stalled: silent 188 s, ping unanswered 154 s": 1,
+    "stalled: silent 190 s, ping unanswered 130 s": 1,
+    "stalled: silent 196 s, ping unanswered 153 s": 1,
+    "stalled: silent 202 s, ping unanswered 191 s": 1,
+    "stalled: silent 212 s, ping unanswered 198 s": 1
+  },
+  "telemetry_dropped_max": 0,
+  "worker_summaries": [
+    {
+      "apply_s": 43.306997372,
+      "event": "worker_summary",
+      "input_queue_peak": 13415,
+      "messages": 2537276,
+      "receive_to_apply": {
+        "max_ms": 4305.208,
+        "mean_ms": 103.87484146250345,
+        "negative_samples": 0,
+        "overflow_samples": 235147,
+        "p50_upper_ms": 9.0,
+        "p99_upper_ms": 4305.208,
+        "samples": 2476001
+      },
+      "ts": "2026-10-26T11:53:02.178158946+00:00",
+      "worker": 0,
+      "writer_blocked_s": 2.224127009
+    },
+    {
+      "apply_s": 46.412887306,
+      "event": "worker_summary",
+      "input_queue_peak": 13616,
+      "messages": 2855806,
+      "receive_to_apply": {
+        "max_ms": 4504.578,
+        "mean_ms": 114.05174917338557,
+        "negative_samples": 0,
+        "overflow_samples": 306363,
+        "p50_upper_ms": 10.0,
+        "p99_upper_ms": 4504.578,
+        "samples": 2794229
+      },
+      "ts": "2026-10-26T11:53:02.574568839+00:00",
+      "worker": 1,
+      "writer_blocked_s": 2.225358592
+    },
+    {
+      "apply_s": 41.794585953,
+      "event": "worker_summary",
+      "input_queue_peak": 16406,
+      "messages": 2558870,
+      "receive_to_apply": {
+        "max_ms": 4854.319,
+        "mean_ms": 111.27613359079884,
+        "negative_samples": 0,
+        "overflow_samples": 258726,
+        "p50_upper_ms": 9.0,
+        "p99_upper_ms": 4854.319,
+        "samples": 2497163
+      },
+      "ts": "2026-10-26T11:53:02.586927210+00:00",
+      "worker": 3,
+      "writer_blocked_s": 2.214493225
+    },
+    {
+      "apply_s": 43.651783123,
+      "event": "worker_summary",
+      "input_queue_peak": 11604,
+      "messages": 2362354,
+      "receive_to_apply": {
+        "max_ms": 3668.981,
+        "mean_ms": 106.02308765318116,
+        "negative_samples": 0,
+        "overflow_samples": 241942,
+        "p50_upper_ms": 9.0,
+        "p99_upper_ms": 3668.981,
+        "samples": 2300544
+      },
+      "ts": "2026-10-26T11:53:02.602283133+00:00",
+      "worker": 2,
+      "writer_blocked_s": 2.213986943
+    }
+  ],
+  "writer_summary": {
+    "bytes": 3894046714,
+    "encode_and_chunk_write_s": 112.783493914,
+    "event": "writer_summary",
+    "final_flush_s": 0.529155609,
+    "level_updates": 18660563,
+    "queue_peak": 65536,
+    "receive_to_encode": {
+      "max_ms": 5060.492,
+      "mean_ms": 145.60103783776512,
+      "negative_samples": 0,
+      "overflow_samples": 2440430,
+      "p50_upper_ms": 17.0,
+      "p99_upper_ms": 5060.492,
+      "samples": 18660563
+    },
+    "snapshots": 5532094,
+    "ts": "2026-10-26T11:53:03.561313187+00:00"
+  },
+  "run_summary": {
+    "books_held": 479850,
+    "books_synced": 478511,
+    "bytes_written": 3894046714,
+    "catch_up_levels": 102615,
+    "connection_splits": 3,
+    "connections": 2403,
+    "coverage_pct": 99.72095446493697,
+    "decode_errors": 0,
+    "delivery_latency_ms_max": 146846.602,
+    "delivery_latency_ms_mean": 4304.47755588841,
+    "event": "run_summary",
+    "events": 10067937,
+    "frames": 9341122,
+    "hints": 1143,
+    "level_updates_written": 18660563,
+    "mismatched_books": 60,
+    "provisional_markets": 0,
+    "receive_to_encode": {
+      "max_ms": 5060.492,
+      "mean_ms": 145.60103783776512,
+      "negative_samples": 0,
+      "overflow_samples": 2440430,
+      "p50_upper_ms": 17.0,
+      "p99_upper_ms": 5060.492,
+      "samples": 18660563
+    },
+    "registered_markets": 239925,
+    "scans_completed": 1,
+    "snapshots_written": 5532094,
+    "subscribed_markets": 239925,
+    "telemetry_dropped": 0,
+    "ts": "2026-10-26T11:53:05.077351037+00:00",
+    "unsync_marks": 6244,
+    "writer_queue_peak": 65536
+  },
+  "older_books_examples": [
+    {
+      "connection": 117,
+      "asset": "63465137580276693223102666671227972149791338770302985889062375144244276287563",
+      "book_ts": 1793014617103,
+      "prior_update_ts": 1793014617104,
+      "received_at": "2026-10-26T11:36:58.903116127Z"
+    },
+    {
+      "connection": 117,
+      "asset": "12812588352976442134998183024670523855286715149502611436636915971267558955500",
+      "book_ts": 1793014617103,
+      "prior_update_ts": 1793014617104,
+      "received_at": "2026-10-26T11:36:58.903116127Z"
+    },
+    {
+      "connection": 141,
+      "asset": "107986316093533556889376752984014335660266079578698902473777921053902700958962",
+      "book_ts": 1793014628584,
+      "prior_update_ts": 1793014628585,
+      "received_at": "2026-10-26T11:37:12.325959400Z"
+    },
+    {
+      "connection": 141,
+      "asset": "67366758721818801880894740110757032889851432652514196135964240509547298521648",
+      "book_ts": 1793014628584,
+      "prior_update_ts": 1793014628585,
+      "received_at": "2026-10-26T11:37:12.325959400Z"
+    },
+    {
+      "connection": 28,
+      "asset": "30014279060990502244976826525211209751626975547151324652380397463727076509092",
+      "book_ts": 1793014577789,
+      "prior_update_ts": 1793014577795,
+      "received_at": "2026-10-26T11:37:13.131889930Z"
+    },
+    {
+      "connection": 28,
+      "asset": "20749679268927833253307452318956161597399806097521803011341329021978586304536",
+      "book_ts": 1793014577789,
+      "prior_update_ts": 1793014577795,
+      "received_at": "2026-10-26T11:37:13.131889930Z"
+    },
+    {
+      "connection": 123,
+      "asset": "81692571176342047568271887644139167729326071295536971387242299471446867935202",
+      "book_ts": 1793014619431,
+      "prior_update_ts": 1793014619438,
+      "received_at": "2026-10-26T11:37:34.318836581Z"
+    },
+    {
+      "connection": 123,
+      "asset": "100334265745024449945802755052550784291258925238139706737154808826255801167185",
+      "book_ts": 1793014619431,
+      "prior_update_ts": 1793014619438,
+      "received_at": "2026-10-26T11:37:34.318836581Z"
+    },
+    {
+      "connection": 123,
+      "asset": "7790337828790703990179257849685900393020836077430514816130961166101288036699",
+      "book_ts": 1793014641573,
+      "prior_update_ts": 1793014641576,
+      "received_at": "2026-10-26T11:37:34.318836581Z"
+    },
+    {
+      "connection": 123,
+      "asset": "79775835796008167354668860350648282869100408014611969314576058833485424864984",
+      "book_ts": 1793014641573,
+      "prior_update_ts": 1793014641576,
+      "received_at": "2026-10-26T11:37:34.318836581Z"
+    },
+    {
+      "connection": 125,
+      "asset": "20621923619577807126294352551023704583162501347311884411239584761907330088912",
+      "book_ts": 1793014614464,
+      "prior_update_ts": 1793014614465,
+      "received_at": "2026-10-26T11:37:34.513084489Z"
+    },
+    {
+      "connection": 125,
+      "asset": "65323596313896098362835475472807319709803782898590746375546212985841603171217",
+      "book_ts": 1793014604936,
+      "prior_update_ts": 1793014604937,
+      "received_at": "2026-10-26T11:37:34.513084489Z"
+    },
+    {
+      "connection": 174,
+      "asset": "107313235206532572770173855222635531578666014427338794840701749177545259680781",
+      "book_ts": 1793014653630,
+      "prior_update_ts": 1793014653632,
+      "received_at": "2026-10-26T11:37:34.817155218Z"
+    },
+    {
+      "connection": 174,
+      "asset": "103629314811046572972602993063570421602589537543285740842341375100100906880938",
+      "book_ts": 1793014653630,
+      "prior_update_ts": 1793014653632,
+      "received_at": "2026-10-26T11:37:34.817155218Z"
+    },
+    {
+      "connection": 29,
+      "asset": "11646202479692248083313729417262425059384909601087781034458796630089678730941",
+      "book_ts": 1793014653559,
+      "prior_update_ts": 1793014653560,
+      "received_at": "2026-10-26T11:37:35.391091503Z"
+    },
+    {
+      "connection": 29,
+      "asset": "59083752303030268664852146374358160683812318033475535609167655935830661972062",
+      "book_ts": 1793014653559,
+      "prior_update_ts": 1793014653560,
+      "received_at": "2026-10-26T11:37:35.391091503Z"
+    },
+    {
+      "connection": 33,
+      "asset": "50748256295668435346767157466596290083212762863210943798345607342331193003825",
+      "book_ts": 1793014650141,
+      "prior_update_ts": 1793014650142,
+      "received_at": "2026-10-26T11:37:35.787292831Z"
+    },
+    {
+      "connection": 33,
+      "asset": "3039199175892734787426486040616613161149003863624810290011188328317010057852",
+      "book_ts": 1793014646611,
+      "prior_update_ts": 1793014646613,
+      "received_at": "2026-10-26T11:37:35.787292831Z"
+    },
+    {
+      "connection": 33,
+      "asset": "43207933564918386945974898709892390574218815072465498515536511156007915593332",
+      "book_ts": 1793014646612,
+      "prior_update_ts": 1793014646613,
+      "received_at": "2026-10-26T11:37:35.787292831Z"
+    },
+    {
+      "connection": 33,
+      "asset": "25401850463943077217100727190065347890243157960213541621381844602301083520864",
+      "book_ts": 1793014650141,
+      "prior_update_ts": 1793014650142,
+      "received_at": "2026-10-26T11:37:35.787292831Z"
+    }
+  ],
+  "limits": [
+    "Coverage is against the captured desired population, not an independent exchange-wide oracle.",
+    "A newer full book does not prove all earlier changes arrived.",
+    "Receive-to-encode measures SBE buffer completion, not persistence or per-record file visibility.",
+    "No day-long discovery study or exact allocator category profile is implied."
+  ],
+  "units": {
+    "steady_events_per_s": "decoded book or price_change messages per second; each price_change normally contains two level changes",
+    "rss_bytes": "bytes",
+    "depth": "nonzero levels per side",
+    "latency": "milliseconds; per-level-record samples; percentile upper bounds"
+  },
+  "actual_limits_evidence": {
+    "observed_utc": "2026-10-26T11:51:38.749109+00:00",
+    "nofile_soft": 65536,
+    "nofile_hard": 65536,
+    "open_descriptors": 2417,
+    "emfile_errors": 0,
+    "scope": "Observed while collector was running; launch script was edited after launch and reconstructed, not independently hashed at launch."
+  }
+}

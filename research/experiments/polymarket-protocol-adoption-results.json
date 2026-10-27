@@ -1,0 +1,147 @@
+{
+  "v1_cached_seed": {
+    "source": "data/markets.json",
+    "seed": {
+      "started_at": "2026-10-25T01:32:44.139911662Z",
+      "completed_at": "2026-10-25T01:37:15.386885288Z",
+      "pages": 2539,
+      "received_markets": 253847,
+      "skipped_markets": 107
+    },
+    "versions": {
+      "v1": 253740
+    },
+    "tradable": {
+      "markets": 253740,
+      "reported_volume24hr_usd": "70093456.4120020003194277",
+      "reported_lifetime_volume_usd": "5018164545.7403630063945356",
+      "nonzero_volume24hr_markets": 20107,
+      "missing_volume24hr": 233627,
+      "missing_lifetime_volume": 206213,
+      "volume24hr_exceeds_lifetime": 709,
+      "earliest_created_at": "2025-07-03T20:25:56.889606Z"
+    }
+  },
+  "v2_live": {
+    "source": "https://gamma-api.polymarket.com/markets/keyset",
+    "version": "v2",
+    "started_at": "2026-10-25T01:54:18.401907+00:00",
+    "open": {
+      "markets": 123,
+      "reported_volume24hr_usd": "232",
+      "reported_lifetime_volume_usd": "19886.348663",
+      "nonzero_volume24hr_markets": 6,
+      "missing_volume24hr": 117,
+      "missing_lifetime_volume": 113,
+      "volume24hr_exceeds_lifetime": 0,
+      "earliest_created_at": "2026-10-19T17:07:01.849299Z"
+    },
+    "tradable": {
+      "markets": 123,
+      "reported_volume24hr_usd": "232",
+      "reported_lifetime_volume_usd": "19886.348663",
+      "nonzero_volume24hr_markets": 6,
+      "missing_volume24hr": 117,
+      "missing_lifetime_volume": 113,
+      "volume24hr_exceeds_lifetime": 0,
+      "earliest_created_at": "2026-10-19T17:07:01.849299Z"
+    },
+    "closed": {
+      "markets": 4427,
+      "reported_volume24hr_usd": "153",
+      "reported_lifetime_volume_usd": "21017.9004659999999989",
+      "nonzero_volume24hr_markets": 6,
+      "missing_volume24hr": 4421,
+      "missing_lifetime_volume": 4227,
+      "volume24hr_exceeds_lifetime": 0,
+      "earliest_created_at": "2026-10-13T17:30:52.354787Z"
+    },
+    "requests": 47,
+    "errors": 0,
+    "samples": [
+      {
+        "id": "5931598",
+        "question": "Bahcesehir Koleji vs. Besiktas",
+        "version": "v2",
+        "closed": false,
+        "active": true,
+        "archived": false,
+        "acceptingOrders": true,
+        "enableOrderBook": true,
+        "volumeNum": 3965,
+        "volume": "3965",
+        "volume24hr": 45,
+        "createdAt": "2026-10-19T17:07:01.849299Z",
+        "acceptingOrdersTimestamp": "2026-10-19T17:07:08Z",
+        "slug": "polyv2bkbsl-bah-bes-2026-10-24"
+      },
+      {
+        "id": "5931604",
+        "question": "Anadolu Efes vs. Korfez Basket",
+        "version": "v2",
+        "closed": false,
+        "active": true,
+        "archived": false,
+        "acceptingOrders": true,
+        "enableOrderBook": true,
+        "volumeNum": 3965,
+        "volume": "3965",
+        "volume24hr": 45,
+        "createdAt": "2026-10-19T17:07:04.005341Z",
+        "acceptingOrdersTimestamp": "2026-10-19T17:07:10Z",
+        "slug": "polyv2bkbsl-ana-man-2026-10-25"
+      },
+      {
+        "id": "5931605",
+        "question": "Galatasaray vs. Bandirma Bordo",
+        "version": "v2",
+        "closed": false,
+        "active": true,
+        "archived": false,
+        "acceptingOrders": true,
+        "enableOrderBook": true,
+        "volumeNum": 3975,
+        "volume": "3975",
+        "volume24hr": 45,
+        "createdAt": "2026-10-19T17:07:04.709873Z",
+        "acceptingOrdersTimestamp": "2026-10-19T17:07:10Z",
+        "slug": "polyv2bkbsl-gal-ban-2026-10-25"
+      },
+      {
+        "id": "5931606",
+        "question": "Karsiyaka vs. Fenerbahce",
+        "version": "v2",
+        "closed": false,
+        "active": true,
+        "archived": false,
+        "acceptingOrders": true,
+        "enableOrderBook": true,
+        "volumeNum": 3965,
+        "volume": "3965",
+        "volume24hr": 45,
+        "createdAt": "2026-10-19T17:07:05.395753Z",
+        "acceptingOrdersTimestamp": "2026-10-19T17:07:12Z",
+        "slug": "polyv2bkbsl-kar-fen-2026-10-25"
+      },
+      {
+        "id": "5931607",
+        "question": "Tofas vs. Petkim Spor",
+        "version": "v2",
+        "closed": false,
+        "active": true,
+        "archived": false,
+        "acceptingOrders": true,
+        "enableOrderBook": true,
+        "volumeNum": "3876.992942",
+        "volume": "3876.992942",
+        "volume24hr": 45,
+        "createdAt": "2026-10-19T17:07:06.101209Z",
+        "acceptingOrdersTimestamp": "2026-10-19T17:07:12Z",
+        "slug": "polyv2bkbsl-tof-pet-2026-10-25"
+      }
+    ],
+    "completed_at": "2026-10-25T01:54:32.354318+00:00"
+  },
+  "scope": "V1 figures cover tradable markets from the saved seed; v2 open and closed listings were fully traversed. Volume comparison uses tradable markets only, excludes closed markets, and is not total exchange 24h volume.",
+  "volume_definition": "Sum of Gamma volume24hr and volumeNum (fallback volume), as reported; API aggregate statistics may lag or disagree."
+}

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Voluntas demo</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/site.css">
+<script src="/status.js" defer></script>
+<script src="/overview.js" defer></script>
+<script src="/diagram.js" defer></script>
+<script src="/chart-help.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="site-name" href="/">Voluntas demo</a>
+  <nav class="site-nav" aria-label="Pages">
+    <a href="/" aria-current="page">Overview</a>
+    <a href="/live">Live</a>
+  </nav>
+  <p class="status" id="status" role="status"><span class="status-dot" aria-hidden="true"></span><span class="status-text">Connecting</span></p>
+</header>
+<main id="main">
+  <p class="notice" id="notice" hidden><span class="notice-text"></span></p>
+  <section class="intro" aria-labelledby="intro-heading">
+    <h1 id="intro-heading">A live order book for every open Polymarket market, written to an SBE file.</h1>
+    <p>This page shows the collector running right now, then walks through how it is built.</p>
+  </section>
+  <section class="page-section" aria-labelledby="running-heading">
+    <div class="section-head">
+      <div>
+        <h2 id="running-heading">Running now</h2>
+        <p class="section-lead">One collector on an AWS instance in eu-west-2 (London), close to Polymarket's servers. These are its current stats, refreshed every second.</p>
+      </div>
+      <a class="section-action" href="/live">Open live telemetry</a>
+    </div>
+  <div class="figure-rows" id="figures">
+  <section class="figures latency" aria-label="Latency">
+    <div class="figure">
+      <h2 class="figure-label"><button class="chart-help" type="button" aria-describedby="help-figure-exchange" aria-expanded="false">Time from Polymarket to collector</button></h2>
+      <div class="chart-tooltip" id="help-figure-exchange" role="tooltip" popover="auto">
+        <p>Polymarket's message timestamp to when our socket reads the frame, before parsing. Includes clock offset, upstream delay and buffering. Both pools contribute accepted price-change messages; negative ages are excluded. p50 and p99 are histogram estimates over five-minute windows.</p>
+      </div>
+      <p class="figure-value" id="fig-exchange"><span class="unavailable">No data yet</span></p>
+    </div>
+    <div class="figure">
+      <h2 class="figure-label"><button class="chart-help" type="button" aria-describedby="help-figure-latency" aria-expanded="false">Time inside the collector</button></h2>
+      <div class="chart-tooltip" id="help-figure-latency" role="tooltip" popover="auto">
+        <p>Monotonic time from receiving a WebSocket frame to completing SBE encoding, per published price-level record. Only the publishing copy counts. Snapshots, source switches and later file writes are excluded. p50 and p99 are histogram estimates over five-minute windows.</p>
+      </div>
+      <p class="figure-value" id="fig-latency"><span class="unavailable">No data yet</span></p>
+    </div>
+  </section>
+  <section class="figures coverage" aria-label="Coverage and throughput">
+    <div class="figure">
+      <h2 class="figure-label"><button class="chart-help" type="button" aria-describedby="help-figure-markets" aria-expanded="false">Markets with a current book</button></h2>
+      <div class="chart-tooltip" id="help-figure-markets" role="tooltip" popover="auto">
+        <p>A market is current when its publishing copy has both outcome books synchronized on the current connection.</p>
+        <p id="fig-markets-note"></p>
+      </div>
+      <p class="figure-value" id="fig-markets"><span class="unavailable">No data yet</span></p>
+      <p class="figure-note" id="fig-markets-gap"></p>
+    </div>
+    <div class="figure">
+      <h2 class="figure-label"><button class="chart-help" type="button" aria-describedby="help-figure-updates" aria-expanded="false">Book updates per second</button></h2>
+      <div class="chart-tooltip" id="help-figure-updates" role="tooltip" popover="auto">
+        <p>Encoded price-level records per second over one minute. Messages received counts decoded data events on both pools, so each exchange message is counted about twice. Heartbeats are excluded.</p>
+      </div>
+      <p class="figure-value" id="fig-updates"><span class="unavailable">No data yet</span></p>
+      <p class="figure-note" id="fig-updates-note"></p>
+    </div>
+    <div class="figure">
+      <h2 class="figure-label"><button class="chart-help" type="button" aria-describedby="help-figure-standby" aria-expanded="false">Markets with a ready standby</button></h2>
+      <div class="chart-tooltip" id="help-figure-standby" role="tooltip" popover="auto">
+        <p>A ready standby requires a publishing copy and a second copy with both outcome books synchronized. The total shown is markets with a current publishing copy; markets without a current book cannot have a ready standby.</p>
+      </div>
+      <p class="figure-value" id="fig-standby"><span class="unavailable">No data yet</span></p>
+      <p class="figure-note" id="fig-standby-note"></p>
+    </div>
+  </section>
+  </div>
+    <p class="section-foot">Live has charts for latency, throughput, coverage gaps, disconnects, publisher switches, and worker and writer load, over 15 minutes to 6 hours.</p>
+  </section>
+  <section class="page-section" aria-labelledby="architecture-heading">
+    <div class="section-head">
+      <div>
+        <h2 id="architecture-heading">How it's built</h2>
+        <p class="section-lead">Markets are discovered from Gamma and lifecycle sockets, subscribed twice across two WebSocket pools, routed to a single owning worker, and encoded by one writer thread.</p>
+      </div>
+    </div>
+  <div class="architecture">
+    <div>
+      <section class="panel diagram-panel" aria-label="Collector architecture">
+        <p class="diagram-hint">Select a step section for its overview, or a box for component details.</p>
+        <div class="tall" id="diagram">
+          <div class="step-row" data-step="1" role="group" aria-labelledby="step-control-1">
+            <button type="button" class="num" data-num="1" id="step-control-1" aria-controls="detail" aria-label="Step 1 of 7">1</button>
+            <div class="cells two">
+              <button type="button" class="box" data-id="gamma">Gamma REST<small>full scan every 15 min</small></button>
+              <button type="button" class="box" data-id="lifecycle"><span class="live-count" data-live="discovery_sockets">3</span> lifecycle sockets<span class="sockets" aria-hidden="true"><span class="ws">WS</span><span class="ws">WS</span><span class="ws">WS</span></span><small>WebSockets to Polymarket for early notice of new and resolved markets</small></button>
+            </div>
+            <div class="side"></div>
+          </div>
+
+          <div class="link-row" data-link="1"><svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true"><path d="M25 0 V13 H75 V0 M50 13 V26"/></svg></div>
+
+          <div class="step-row" data-step="2" role="group" aria-labelledby="step-control-2">
+            <button type="button" class="num" data-num="2" id="step-control-2" aria-controls="detail" aria-label="Step 2 of 7">2</button>
+            <div class="cells single"><button type="button" class="box" data-id="discovery">Discovery and registry</button></div>
+            <div class="side"></div>
+          </div>
+
+          <div class="link-row" data-link="2"><svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0 V26"/></svg></div>
+
+          <div class="step-row" data-step="3" role="group" aria-labelledby="step-control-3">
+            <button type="button" class="num" data-num="3" id="step-control-3" aria-controls="detail" aria-label="Step 3 of 7">3</button>
+            <div class="cells single"><button type="button" class="box" data-id="subscriptions">Subscription manager</button></div>
+            <div class="side"></div>
+          </div>
+
+          <div class="link-row" data-link="3"><svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0 V13 H25 V26 M50 13 H75 V26"/></svg></div>
+
+          <div class="step-row" data-step="4" role="group" aria-labelledby="step-control-4">
+            <button type="button" class="num" data-num="4" id="step-control-4" aria-controls="detail" aria-label="Step 4 of 7">4</button>
+            <div class="cells two">
+              <button type="button" class="box pool-a" data-id="pool-a"><span class="pool-title">Pool A</span><span class="sockets" aria-hidden="true"><span class="ws">256</span><span class="ws">256</span><span class="ws more">…</span><span class="ws">256</span></span><small>WebSockets to Polymarket, 256 markets each</small></button>
+              <button type="button" class="box pool-b" data-id="pool-b"><span class="pool-title">Pool B</span><span class="sockets" aria-hidden="true"><span class="ws">256</span><span class="ws">256</span><span class="ws more">…</span><span class="ws">256</span></span><small>WebSockets to Polymarket, 256 markets each</small></button>
+            </div>
+            <div class="side"></div>
+          </div>
+
+          <div class="link-row tall-label" data-link="4"><svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true"><path d="M25 0 V13 H75 V0 M50 13 V26"/></svg><p class="label"><span id="pool-caption">every market is subscribed in both pools</span></p></div>
+
+          <div class="step-row" data-step="5" role="group" aria-labelledby="step-control-5">
+            <button type="button" class="num" data-num="5" id="step-control-5" aria-controls="detail" aria-label="Step 5 of 7">5</button>
+            <div class="cells single"><button type="button" class="box" data-id="route">Pick the market's worker<small>always the same worker, markets spread evenly</small></button></div>
+            <div class="side"></div>
+          </div>
+
+          <div class="link-row" data-link="5"><svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0 V26"/></svg></div>
+
+          <div class="worker-output-group">
+          <div class="step-row" data-step="6" role="group" aria-labelledby="step-control-6">
+            <button type="button" class="num" data-num="6" id="step-control-6" aria-controls="detail" aria-label="Step 6 of 7">6</button>
+            <div class="cells single"><button type="button" class="box" data-id="workers">Book workers<span class="worker-chips mono" aria-label="Workers zero through n minus one"><span>W0</span><span>W1</span><span class="ellipsis">…</span><span>W(n−1)</span></span><small>n defaults to available CPU threads, configurable with --workers</small><small>two copies of every book: one published, one on standby</small></button></div>
+            <div class="side"></div>
+          </div>
+
+          <div class="link-row" data-link="6"><svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0 V26"/></svg></div>
+
+          <div class="step-row" data-step="7" role="group" aria-labelledby="step-control-7">
+            <button type="button" class="num" data-num="7" id="step-control-7" aria-controls="detail" aria-label="Step 7 of 7">7</button>
+            <div class="cells single"><button type="button" class="box" data-id="writer">Writer thread<small>encodes SBE and writes the file</small></button></div>
+            <div class="side"></div>
+
+            <div class="link-row" data-link="7"><svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0 V26"/></svg></div>
+
+            <span class="num empty" aria-hidden="true"></span>
+            <div class="cells single file-cell"><button type="button" class="box file" data-id="output">books.sbe</button></div>
+            <div class="side"></div>
+          </div>
+          <aside class="worker-design-note" aria-label="Worker and writer design trade-off">
+            <svg viewBox="0 0 32 100" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="design-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L6 3 L0 6"/></marker></defs><path d="M2 16 H14 V50 H32 M14 50 V78 H2" marker-start="url(#design-arrow)" marker-end="url(#design-arrow)"/></svg>
+            <h3>Why multiple workers?</h3>
+            <p>I planned to move SBE encoding into the workers, but that required changing the supplied encoding path. I kept encoding in the writer.</p>
+            <p>Markets are independent, yet current CPU usage suggests one book worker may suffice. The pool may be premature optimization. I kept it due to time constraints.</p>
+          </aside>
+          </div>
+        </div>
+        <p class="small muted counts-note" id="counts-note">Workers are schematic. Socket counts show configured values until live metrics arrive.</p>
+      </section>
+      <section class="panel rules" aria-labelledby="rules-heading">
+        <h2 id="rules-heading">Ownership rules</h2>
+        <ul>
+          <li>A market stays with one worker for the life of the process</li>
+          <li>Only that worker reads or changes its books</li>
+          <li>Only the writer touches the output file</li>
+          <li>Connections hold no book state</li>
+          <li>Pools only keep a market's two copies on different sockets</li>
+        </ul>
+      </section>
+    </div>
+    <aside class="panel detail" id="detail" aria-labelledby="detail-title" tabindex="-1">
+      <button type="button" class="control sheet-close" id="detail-close">Close</button>
+      <h2 id="detail-title">1. A market is found</h2>
+      <div id="detail-body">
+        <p class="lead">A full Gamma scan lists every open market. A lifecycle socket can announce a new one sooner; Gamma then confirms it accepts orders.</p>
+      </div>
+    </aside>
+  </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <a class="icon-link" href="https://github.com/itzlambda/voluntas-challenge" target="_blank" rel="noopener noreferrer" aria-label="Source code on GitHub" title="Source code"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.31.76-1.61-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .32.21.69.82.57A12 12 0 0 0 12 .3"/></svg></a>
+  <a class="icon-link" href="https://x.com/itzlambda" target="_blank" rel="noopener noreferrer" aria-label="itzlambda on Twitter" title="Twitter"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.4l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.6l5.24 6.93zm-1.3 19.5h2.04L6.49 3.24H4.3z"/></svg></a>
+</footer>
+</body>
+</html>

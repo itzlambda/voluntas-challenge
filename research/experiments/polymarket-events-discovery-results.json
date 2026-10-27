@@ -1,0 +1,842 @@
+{
+  "started_at": "2026-10-26T10:18:42.906889+00:00",
+  "scope": "Oldest/newest bounded samples, not a full-catalog coverage proof or speed benchmark.",
+  "pages_per_direction": 3,
+  "samples": [
+    {
+      "kind": "markets",
+      "ascending": "false",
+      "pages": 3,
+      "exhausted": false,
+      "rows": 300,
+      "desired": 300
+    },
+    {
+      "kind": "events",
+      "ascending": "false",
+      "pages": 3,
+      "exhausted": false,
+      "rows": 300,
+      "events": 300,
+      "nested_market_occurrences": 979,
+      "distinct_market_ids": 979,
+      "desired_v1_market_ids": 979,
+      "closed_child_occurrences": 0,
+      "child_versions": {
+        "v1": 979
+      },
+      "max_children_per_event": 46,
+      "desired_children_in_closed_events": 0
+    },
+    {
+      "kind": "markets",
+      "ascending": "true",
+      "pages": 3,
+      "exhausted": false,
+      "rows": 300,
+      "desired": 300
+    },
+    {
+      "kind": "events",
+      "ascending": "true",
+      "pages": 3,
+      "exhausted": false,
+      "rows": 300,
+      "events": 300,
+      "nested_market_occurrences": 2872,
+      "distinct_market_ids": 2872,
+      "desired_v1_market_ids": 1161,
+      "closed_child_occurrences": 365,
+      "child_versions": {
+        "v1": 2872
+      },
+      "max_children_per_event": 128,
+      "desired_children_in_closed_events": 0
+    }
+  ],
+  "independent_market_check": {
+    "desired_market_ids": 600,
+    "referenced_parent_ids": 90,
+    "returned_parent_ids": 90,
+    "desired_markets_without_parent_ids": [],
+    "parent_ids_not_returned": [],
+    "desired_market_ids_missing_from_all_parent_payloads": [],
+    "desired_market_ids_missing_from_open_parent_payloads": [],
+    "desired_market_ids_missing_or_ineligible_in_open_parent_payloads": [],
+    "condition_or_token_ids_differ": [],
+    "parent_summary": {
+      "events": 90,
+      "nested_market_occurrences": 1252,
+      "distinct_market_ids": 1252,
+      "desired_v1_market_ids": 647,
+      "closed_child_occurrences": 53,
+      "child_versions": {
+        "v1": 1252
+      },
+      "max_children_per_event": 128,
+      "desired_children_in_closed_events": 0
+    }
+  },
+  "deep_offset_probe": {
+    "status": 422,
+    "body": {
+      "type": "validation error",
+      "error": "offset too large, use /markets/keyset for deeper pagination"
+    }
+  },
+  "deterministic_offset_example": {
+    "original": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "first_page": [
+      "A",
+      "B"
+    ],
+    "after_removing_A": [
+      "B",
+      "C",
+      "D"
+    ],
+    "next_offset_page": [
+      "D"
+    ],
+    "cursor_after_B_page": [
+      "C",
+      "D"
+    ]
+  },
+  "finished_at": "2026-10-26T10:18:48.087771+00:00",
+  "requests": [
+    {
+      "path": "/markets/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "false"
+        ],
+        [
+          "version",
+          "v1"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": false,
+      "status": 200,
+      "response_bytes": 707526
+    },
+    {
+      "path": "/markets/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "false"
+        ],
+        [
+          "version",
+          "v1"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": true,
+      "status": 200,
+      "response_bytes": 708379
+    },
+    {
+      "path": "/markets/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "false"
+        ],
+        [
+          "version",
+          "v1"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": true,
+      "status": 200,
+      "response_bytes": 671746
+    },
+    {
+      "path": "/events/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "false"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": false,
+      "status": 200,
+      "response_bytes": 1658128
+    },
+    {
+      "path": "/events/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "false"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": true,
+      "status": 200,
+      "response_bytes": 737347
+    },
+    {
+      "path": "/events/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "false"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": true,
+      "status": 200,
+      "response_bytes": 2346404
+    },
+    {
+      "path": "/markets/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "true"
+        ],
+        [
+          "version",
+          "v1"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": false,
+      "status": 200,
+      "response_bytes": 548386
+    },
+    {
+      "path": "/markets/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "true"
+        ],
+        [
+          "version",
+          "v1"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": true,
+      "status": 200,
+      "response_bytes": 595943
+    },
+    {
+      "path": "/markets/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "true"
+        ],
+        [
+          "version",
+          "v1"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": true,
+      "status": 200,
+      "response_bytes": 598341
+    },
+    {
+      "path": "/events/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "true"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": false,
+      "status": 200,
+      "response_bytes": 4842772
+    },
+    {
+      "path": "/events/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "true"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": true,
+      "status": 200,
+      "response_bytes": 3238771
+    },
+    {
+      "path": "/events/keyset",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "order",
+          "id"
+        ],
+        [
+          "ascending",
+          "true"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": true,
+      "status": 200,
+      "response_bytes": 3558562
+    },
+    {
+      "path": "/events/keyset",
+      "params": [
+        [
+          "closed",
+          "any"
+        ],
+        [
+          "id",
+          "1253036"
+        ],
+        [
+          "id",
+          "1254072"
+        ],
+        [
+          "id",
+          "1254074"
+        ],
+        [
+          "id",
+          "1258438"
+        ],
+        [
+          "id",
+          "1258439"
+        ],
+        [
+          "id",
+          "1258440"
+        ],
+        [
+          "id",
+          "1258443"
+        ],
+        [
+          "id",
+          "1258444"
+        ],
+        [
+          "id",
+          "1258445"
+        ],
+        [
+          "id",
+          "1258446"
+        ],
+        [
+          "id",
+          "1258447"
+        ],
+        [
+          "id",
+          "1258448"
+        ],
+        [
+          "id",
+          "1258449"
+        ],
+        [
+          "id",
+          "1258450"
+        ],
+        [
+          "id",
+          "1258451"
+        ],
+        [
+          "id",
+          "1258452"
+        ],
+        [
+          "id",
+          "1258453"
+        ],
+        [
+          "id",
+          "1258454"
+        ],
+        [
+          "id",
+          "1258455"
+        ],
+        [
+          "id",
+          "1258456"
+        ],
+        [
+          "id",
+          "1258457"
+        ],
+        [
+          "id",
+          "1258458"
+        ],
+        [
+          "id",
+          "1258459"
+        ],
+        [
+          "id",
+          "1258460"
+        ],
+        [
+          "id",
+          "1258463"
+        ],
+        [
+          "id",
+          "1258464"
+        ],
+        [
+          "id",
+          "1258465"
+        ],
+        [
+          "id",
+          "1258466"
+        ],
+        [
+          "id",
+          "1258467"
+        ],
+        [
+          "id",
+          "1258468"
+        ],
+        [
+          "id",
+          "1258469"
+        ],
+        [
+          "id",
+          "1258470"
+        ],
+        [
+          "id",
+          "1258471"
+        ],
+        [
+          "id",
+          "1258472"
+        ],
+        [
+          "id",
+          "1258473"
+        ],
+        [
+          "id",
+          "1258474"
+        ],
+        [
+          "id",
+          "1258475"
+        ],
+        [
+          "id",
+          "1258476"
+        ],
+        [
+          "id",
+          "1258477"
+        ],
+        [
+          "id",
+          "1258478"
+        ],
+        [
+          "id",
+          "1258479"
+        ],
+        [
+          "id",
+          "1258480"
+        ],
+        [
+          "id",
+          "1258481"
+        ],
+        [
+          "id",
+          "27831"
+        ],
+        [
+          "id",
+          "30828"
+        ],
+        [
+          "id",
+          "30829"
+        ],
+        [
+          "id",
+          "31195"
+        ],
+        [
+          "id",
+          "31552"
+        ],
+        [
+          "id",
+          "31875"
+        ],
+        [
+          "id",
+          "32224"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": false,
+      "status": 200,
+      "response_bytes": 2894548
+    },
+    {
+      "path": "/events/keyset",
+      "params": [
+        [
+          "closed",
+          "any"
+        ],
+        [
+          "id",
+          "32225"
+        ],
+        [
+          "id",
+          "32228"
+        ],
+        [
+          "id",
+          "33228"
+        ],
+        [
+          "id",
+          "33705"
+        ],
+        [
+          "id",
+          "34044"
+        ],
+        [
+          "id",
+          "34051"
+        ],
+        [
+          "id",
+          "34052"
+        ],
+        [
+          "id",
+          "34053"
+        ],
+        [
+          "id",
+          "34348"
+        ],
+        [
+          "id",
+          "34349"
+        ],
+        [
+          "id",
+          "36173"
+        ],
+        [
+          "id",
+          "43347"
+        ],
+        [
+          "id",
+          "43352"
+        ],
+        [
+          "id",
+          "48292"
+        ],
+        [
+          "id",
+          "48361"
+        ],
+        [
+          "id",
+          "48802"
+        ],
+        [
+          "id",
+          "51456"
+        ],
+        [
+          "id",
+          "52130"
+        ],
+        [
+          "id",
+          "57096"
+        ],
+        [
+          "id",
+          "57111"
+        ],
+        [
+          "id",
+          "57141"
+        ],
+        [
+          "id",
+          "57154"
+        ],
+        [
+          "id",
+          "57155"
+        ],
+        [
+          "id",
+          "57156"
+        ],
+        [
+          "id",
+          "57159"
+        ],
+        [
+          "id",
+          "57160"
+        ],
+        [
+          "id",
+          "57161"
+        ],
+        [
+          "id",
+          "57162"
+        ],
+        [
+          "id",
+          "57163"
+        ],
+        [
+          "id",
+          "57164"
+        ],
+        [
+          "id",
+          "57169"
+        ],
+        [
+          "id",
+          "57172"
+        ],
+        [
+          "id",
+          "57173"
+        ],
+        [
+          "id",
+          "57174"
+        ],
+        [
+          "id",
+          "57175"
+        ],
+        [
+          "id",
+          "57176"
+        ],
+        [
+          "id",
+          "57177"
+        ],
+        [
+          "id",
+          "57178"
+        ],
+        [
+          "id",
+          "57181"
+        ],
+        [
+          "id",
+          "57182"
+        ],
+        [
+          "limit",
+          "100"
+        ]
+      ],
+      "has_input_cursor": false,
+      "status": 200,
+      "response_bytes": 2025875
+    },
+    {
+      "path": "/markets",
+      "params": [
+        [
+          "closed",
+          "false"
+        ],
+        [
+          "limit",
+          "1"
+        ],
+        [
+          "offset",
+          "100000"
+        ]
+      ],
+      "has_input_cursor": false,
+      "status": 422,
+      "response_bytes": 98,
+      "error": {
+        "type": "validation error",
+        "error": "offset too large, use /markets/keyset for deeper pagination"
+      }
+    }
+  ]
+}

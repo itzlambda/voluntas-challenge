@@ -1,0 +1,206 @@
+{
+  "date": "2026-10-24",
+  "claim": "Polymarket admitted at least 4,000 concurrent market sockets from the observed egress under measured live traffic; absolute IP cap undetermined.",
+  "market_selection": "Eligible binary markets ranked by observed Gamma volume24hr descending, plus ranked reserves for resolved/unavailable markets.",
+  "worst_case_established": false,
+  "measurements": {
+    "2000": {
+      "target": 2000,
+      "seconds": 300.0,
+      "initialized_population": {
+        "minimum": 1996,
+        "maximum": 2000,
+        "seconds_at_or_above_target": 297.12607878899996,
+        "fraction_at_or_above_target": 0.9904202626299998,
+        "longest_below_target_seconds": 0.9066022150000208,
+        "seconds_by_population": {
+          "1996": 0.06650501299998723,
+          "1997": 0.30169455500005277,
+          "1998": 0.7734479460000293,
+          "1999": 1.732273696999997,
+          "2000": 297.12607878899996
+        }
+      },
+      "timely_heartbeat_population": {
+        "minimum": 1996,
+        "maximum": 2000,
+        "seconds_at_or_above_target": 246.76243359899996,
+        "fraction_at_or_above_target": 0.8225414453299998,
+        "longest_below_target_seconds": 51.132715479000005,
+        "seconds_by_population": {
+          "1996": 0.06650501299998723,
+          "1997": 0.30169455500005277,
+          "1998": 1.0316218230000231,
+          "1999": 51.83774501000001,
+          "2000": 246.76243359899996
+        }
+      },
+      "heartbeat_stale_connections": [
+        {
+          "connection": 1840,
+          "market": "5542463",
+          "seconds_without_fresh_pong": 50.621819067000004
+        }
+      ],
+      "transport_errors": [],
+      "non_lifecycle_closes": [],
+      "interior_traffic": {
+        "seconds": 270.022230867,
+        "buckets": 9,
+        "bytes_per_second": 2592920.5403518085,
+        "market_updates_per_second": 4181.652284515083,
+        "minimum_bytes_per_second": 2348499.5775648123,
+        "maximum_bytes_per_second": 2811016.52512274
+      },
+      "observed_public_ipv4_unchanged": true,
+      "distinct_local_websocket_addresses": 1,
+      "all_upgrade_statuses": [
+        101
+      ],
+      "recording_directory": "recordings/subscription-capacity-connections-active-20261024-final",
+      "script_sha256": "1fa9ccf10272e5d43d51702060ceedb034469dabc0bc26b462d757a31c9e65dc"
+    },
+    "4000": {
+      "target": 4000,
+      "seconds": 300.000445727,
+      "initialized_population": {
+        "minimum": 3992,
+        "maximum": 4000,
+        "seconds_at_or_above_target": 292.9136703990001,
+        "fraction_at_or_above_target": 0.9763774506706938,
+        "longest_below_target_seconds": 1.6279062249999843,
+        "seconds_by_population": {
+          "3992": 0.16156064400001197,
+          "3993": 0.18878070999996271,
+          "3994": 0.3053726340000285,
+          "3995": 0.4328400680000195,
+          "3996": 0.6878136029999005,
+          "3997": 0.9760196459999424,
+          "3998": 0.8089036330000963,
+          "3999": 3.5254843899999395,
+          "4000": 292.9136703990001
+        }
+      },
+      "timely_heartbeat_population": {
+        "minimum": 3992,
+        "maximum": 4000,
+        "seconds_at_or_above_target": 292.9136703990001,
+        "fraction_at_or_above_target": 0.9763774506706938,
+        "longest_below_target_seconds": 1.6279062249999843,
+        "seconds_by_population": {
+          "3992": 0.16156064400001197,
+          "3993": 0.18878070999996271,
+          "3994": 0.3053726340000285,
+          "3995": 0.4328400680000195,
+          "3996": 0.6878136029999005,
+          "3997": 0.9760196459999424,
+          "3998": 0.8089036330000963,
+          "3999": 3.5254843899999395,
+          "4000": 292.9136703990001
+        }
+      },
+      "heartbeat_stale_connections": [],
+      "transport_errors": [],
+      "non_lifecycle_closes": [],
+      "interior_traffic": {
+        "seconds": 270.025593646,
+        "buckets": 9,
+        "bytes_per_second": 3643142.0167928324,
+        "market_updates_per_second": 5876.653938364979,
+        "minimum_bytes_per_second": 3397310.8132663337,
+        "maximum_bytes_per_second": 4102616.12117991
+      },
+      "observed_public_ipv4_unchanged": true,
+      "distinct_local_websocket_addresses": 1,
+      "all_upgrade_statuses": [
+        101
+      ],
+      "recording_directory": "recordings/subscription-capacity-connections-active-20261024-4000-repeat",
+      "script_sha256": "4d49d90958e156270fcb5b32885a2635507147af332ffed54aa0dc0c9b24317c"
+    }
+  },
+  "first_4000_attempt": {
+    "recording_directory": "recordings/subscription-capacity-connections-active-20261024-4000",
+    "observation_seconds": 181.35584790600004,
+    "stop_reason": "socket_error",
+    "diagnostic_errors": [
+      {
+        "name": "Error",
+        "code": "ECONNRESET",
+        "message": "read ECONNRESET",
+        "cause": null
+      },
+      {
+        "name": "Error",
+        "code": "ECONNRESET",
+        "message": "read ECONNRESET",
+        "cause": null
+      }
+    ],
+    "conclusion": "An ECONNRESET interrupted the first long hold; no explicit IP-limit rejection."
+  },
+  "heartbeat_audit_2000": {
+    "connection": 1840,
+    "market": "5542463",
+    "longest_open_interval_without_pong_seconds": 65.621819067,
+    "interval_start_ms": 298978.763661,
+    "interval_end_ms": 364600.582728,
+    "ended_by_close": true,
+    "sampled_non_pong_frames_during_interval": 0,
+    "retired": true,
+    "closes": [
+      {
+        "mono_ms": 364600.582728,
+        "code": 1000,
+        "reason": "all subscribed assets resolved",
+        "wasClean": true,
+        "expected": false
+      }
+    ],
+    "metadata": {
+      "active": true,
+      "closed": true,
+      "archived": false,
+      "acceptingOrders": false,
+      "agrees_with_stream": true
+    }
+  },
+  "four_thousand_full_hold": {
+    "payload_bytes_per_second": 3636458.297107842,
+    "market_update_events": 1760246,
+    "market_updates_per_second": 5867.477949022187,
+    "price_change_entries": 3502512,
+    "final_population_members_with_updates": 3744,
+    "cpu_cores": 0.8366571202644392,
+    "peak_rss_mib": 923.33203125,
+    "event_loop_ms": {
+      "p50": 5.316607,
+      "p99": 44.597247,
+      "max": 664.272895
+    },
+    "open_file_descriptors": 4024
+  },
+  "measurement_notes": {
+    "ramp_descriptor_correction": {
+      "recorded_in_protocol": {
+        "opens_per_second_maximum": 10,
+        "maximum_initializations_in_flight": 8
+      },
+      "effective_in_captured_source": {
+        "opens_per_second_maximum": 20,
+        "maximum_initializations_in_flight": 16
+      },
+      "explanation": "The active profile overwrote the descriptor after initialization; the running scheduling code still uses 50 ms pacing and a 16-in-flight guard. Original protocol and result are retained unchanged. The rerunnable harness corrects the descriptor."
+    },
+    "hold_policy": "Fixed five-minute wall-clock observation. Lifecycle replacements and up to eight code-1006 transport replacements are counted and reported, not treated as an error-free fixed cohort."
+  },
+  "limitations": [
+    "One completed observation per target, with a failed 4,000-socket attempt retained.",
+    "Lifecycle replacements cause measured population dips; these are maintained targets, not uninterrupted fixed cohorts.",
+    "Trading volume is a proxy for activity; instantaneous quote-rate ranking and a true worst case are unproven.",
+    "Raw update payloads are sampled; all frame bytes and update events are counted.",
+    "No redundant-feed coverage or relative delivery-latency comparison in these connection-count trials.",
+    "No extrapolation to 200,000 live markets or production Rust throughput."
+  ],
+  "production_changes": false
+}

@@ -1,0 +1,35 @@
+{
+  "method": "Independently reread raw JSONL, reconcile every frame and event counter, compare canonical full lifecycle payloads preserving multiplicity, and inspect cleanup/errors. This is not a global completeness test.",
+  "runs": [
+    {
+      "evidence_directory": "research/recordings/empty-assets-20261024",
+      "observation_seconds": 120.002,
+      "new_market_occurrences_per_enabled_empty_feed": 332,
+      "unique_new_market_ids_per_enabled_empty_feed": 332,
+      "empty_feeds_full_payload_multiplicities_equal": true,
+      "control_occurrences_all_in_empty_feed": 58,
+      "control_full_window_match": false,
+      "disabled_empty_feed_metadata_events": 0,
+      "all_sockets_closed": true,
+      "transport_failures": [
+        "control-one-asset"
+      ],
+      "harness_sha256": "5f20bc83c92ae9d1f82f8c3f78933942b93554351b04ac88e9f6f9b41add2058",
+      "raw_frames_sha256": "f26985158be3c4419fc6283b6a151eda46671ca642d4bb0c7067d63b437251ef"
+    },
+    {
+      "evidence_directory": "research/recordings/empty-assets-20261024-repeat",
+      "observation_seconds": 60.002,
+      "new_market_occurrences_per_enabled_empty_feed": 263,
+      "unique_new_market_ids_per_enabled_empty_feed": 263,
+      "empty_feeds_full_payload_multiplicities_equal": true,
+      "control_occurrences_all_in_empty_feed": 263,
+      "control_full_window_match": true,
+      "disabled_empty_feed_metadata_events": 0,
+      "all_sockets_closed": true,
+      "transport_failures": [],
+      "harness_sha256": "ad4cc54d06b86911bfb25b861cede029a4d66029571ec44c0c6c9cba6359f57f",
+      "raw_frames_sha256": "cd4956fb8cf7300212c6c9812e3784099969ef5ec5cb6ca55a8fc2b5011e1bd4"
+    }
+  ]
+}

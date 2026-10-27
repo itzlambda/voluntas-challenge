@@ -1,0 +1,338 @@
+{
+  "date": "2026-10-24",
+  "claim": "16,000 simultaneous market sockets admitted on one observed IPv4 egress; the five-minute 16,000 stage had transport resets and failed its final heartbeat health gate. No hard per-IP cap established.",
+  "runs": [
+    {
+      "evidence_file": "polymarket-subscription-capacity-connections-scale-first-results.json",
+      "recording_directory": "recordings/subscription-capacity-connections-scale-20261024",
+      "started_at": "2026-10-24T19:38:58.794Z",
+      "finished_at": "2026-10-24T20:00:36.124Z",
+      "stop_reason": "initialization_timeout_inconclusive",
+      "maximum_final_gate_passed": 8000,
+      "peak_upgraded_connections": 14995,
+      "peak_initialized_connections": 14991,
+      "peak_rss_bytes": 3029360640,
+      "egress": {
+        "source": "https://ws-subscriptions-clob.polymarket.com/cdn-cgi/trace",
+        "before_status": 200,
+        "after_status": 200,
+        "public_ip_observed_before": true,
+        "public_ip_observed_after": true,
+        "public_ip_unchanged": true,
+        "public_ip_family_before": 4,
+        "public_ip_family_after": 4,
+        "distinct_local_transport_addresses": 1,
+        "distinct_local_websocket_addresses": 1,
+        "distinct_remote_transport_addresses": 2,
+        "websocket_remote_families": [
+          "IPv4"
+        ],
+        "websocket_handshake_diagnostics": 15252,
+        "handshake_statuses": [
+          101
+        ],
+        "addresses_retained": false
+      },
+      "stages": [
+        {
+          "target_markets": 8000,
+          "outcome_assets": 16000,
+          "seconds": 300.10168915800006,
+          "final_health_gate_passed": true,
+          "final_healthy": 8000,
+          "payload_bytes": 1418758817,
+          "payload_bytes_per_second": 4727593.573300549,
+          "market_updates": 2301444,
+          "market_updates_per_second": 7668.880526654805,
+          "price_change_entries": 4585646,
+          "cpu_cores": 0.9013724806379982,
+          "event_loop_ms": {
+            "p50": 5.496831,
+            "p99": 93.126655,
+            "max": 2000.683007
+          },
+          "rss_bytes": 1584787456,
+          "initialized_population": {
+            "minimum": 7992,
+            "maximum": 8000,
+            "seconds_at_or_above_target": 292.00529295200005,
+            "fraction_at_or_above_target": 0.973021157499259,
+            "longest_below_target_seconds": 1.5717850510000717,
+            "seconds_by_population": {
+              "7992": 0.4536009639999829,
+              "7993": 0.16961683600005928,
+              "7994": 0.5176613750000252,
+              "7995": 0.30383121900004334,
+              "7996": 0.46252704399992944,
+              "7997": 0.09948308799992082,
+              "7998": 3.0977231779999563,
+              "7999": 2.991952502000087,
+              "8000": 292.00529295200005
+            }
+          },
+          "timely_heartbeat_population": {
+            "minimum": 7967,
+            "maximum": 8000,
+            "seconds_at_or_above_target": 269.0417682610001,
+            "fraction_at_or_above_target": 0.8965020124207055,
+            "longest_below_target_seconds": 11.784051182999974,
+            "seconds_by_population": {
+              "7967": 0.16082930899993517,
+              "7968": 0.10349273000005632,
+              "7969": 0.3028448169999756,
+              "7970": 0.2711635450000176,
+              "7971": 0.42567004999995695,
+              "7972": 0.8537940510001499,
+              "7973": 1.14461732199986,
+              "7974": 0.9467658960000844,
+              "7975": 0.02779386199999135,
+              "7976": 0.004077140999957919,
+              "7977": 0.0015143629999365658,
+              "7978": 0.009760256000095979,
+              "7979": 0.002616435999982059,
+              "7980": 0.0033061270000180228,
+              "7981": 0.0009749190000584349,
+              "7982": 0.07709431599988602,
+              "7983": 0.0005867180000059307,
+              "7984": 0.0003210390000604093,
+              "7985": 0.0030974099999293687,
+              "7986": 0.15742233800003305,
+              "7987": 0.06585445800004527,
+              "7988": 0.011893327999976463,
+              "7989": 0.004429110000026412,
+              "7990": 0.0015766459999140353,
+              "7991": 0.006812289000023156,
+              "7992": 0.458161499000038,
+              "7993": 0.17380488800007152,
+              "7994": 0.5202364789999556,
+              "7995": 0.3275535150001524,
+              "7996": 0.482916389999853,
+              "7997": 2.9221141140000544,
+              "7998": 9.260564586999942,
+              "7999": 12.326260948999959,
+              "8000": 269.0417682610001
+            }
+          },
+          "stale_heartbeat_connections": 53,
+          "transport_reset_events": 0,
+          "non_lifecycle_closes": 0,
+          "interior_traffic_buckets": {
+            "seconds": 270.2464327619999,
+            "buckets": 9,
+            "bytes_per_second": 4698578.161618027,
+            "market_updates_per_second": 7620.472039434843,
+            "minimum_bytes_per_second": 4379143.130822351,
+            "maximum_bytes_per_second": 4951350.276043133
+          }
+        }
+      ]
+    },
+    {
+      "evidence_file": "polymarket-subscription-capacity-connections-scale-validation-results.json",
+      "recording_directory": "recordings/subscription-capacity-connections-scale-validation-20261024",
+      "started_at": "2026-10-24T20:14:05.241Z",
+      "finished_at": "2026-10-24T20:53:25.333Z",
+      "stop_reason": "health_check_failed_inconclusive",
+      "maximum_final_gate_passed": 14000,
+      "peak_upgraded_connections": 16000,
+      "peak_initialized_connections": 16000,
+      "peak_rss_bytes": 3556687872,
+      "egress": {
+        "source": "https://ws-subscriptions-clob.polymarket.com/cdn-cgi/trace",
+        "before_status": 200,
+        "after_status": 200,
+        "public_ip_observed_before": true,
+        "public_ip_observed_after": true,
+        "public_ip_unchanged": true,
+        "public_ip_family_before": 4,
+        "public_ip_family_after": 4,
+        "distinct_local_transport_addresses": 1,
+        "distinct_local_websocket_addresses": 1,
+        "distinct_remote_transport_addresses": 2,
+        "websocket_remote_families": [
+          "IPv4"
+        ],
+        "websocket_handshake_diagnostics": 16556,
+        "handshake_statuses": [
+          101
+        ],
+        "addresses_retained": false
+      },
+      "stages": [
+        {
+          "target_markets": 14000,
+          "outcome_assets": 28000,
+          "seconds": 300.05004612299985,
+          "final_health_gate_passed": true,
+          "final_healthy": 14000,
+          "payload_bytes": 1791743591,
+          "payload_bytes_per_second": 5971482.471512464,
+          "market_updates": 2903253,
+          "market_updates_per_second": 9675.895863085008,
+          "price_change_entries": 5784074,
+          "cpu_cores": 0.9786305344530044,
+          "event_loop_ms": {
+            "p50": 5.545983,
+            "p99": 151.257087,
+            "max": 1646.264319
+          },
+          "rss_bytes": 3104600064,
+          "initialized_population": {
+            "minimum": 13990,
+            "maximum": 14000,
+            "seconds_at_or_above_target": 284.6470699220004,
+            "fraction_at_or_above_target": 0.9486653096707564,
+            "longest_below_target_seconds": 4.492086799999932,
+            "seconds_by_population": {
+              "13990": 0.408209264999954,
+              "13991": 0.031719729000004006,
+              "13992": 2.0406286679999903,
+              "13993": 2.908839939000318,
+              "13994": 0.5239869539998472,
+              "13995": 1.4573096720001195,
+              "13996": 1.2080880589999725,
+              "13997": 2.419182931999676,
+              "13998": 2.287075955000473,
+              "13999": 2.117935027999105,
+              "14000": 284.6470699220004
+            }
+          },
+          "timely_heartbeat_population": {
+            "minimum": 13977,
+            "maximum": 14000,
+            "seconds_at_or_above_target": 277.7089110690006,
+            "fraction_at_or_above_target": 0.9255419709389382,
+            "longest_below_target_seconds": 8.471502398999874,
+            "seconds_by_population": {
+              "13977": 0.09284860199992545,
+              "13978": 0.10101425899984315,
+              "13979": 0.655550859000301,
+              "13980": 0.19997222199989484,
+              "13981": 0.31476764400000684,
+              "13982": 0.014807246000040323,
+              "13983": 0.004921200999990106,
+              "13984": 0.0093406889999751,
+              "13985": 0.03088998100021854,
+              "13986": 0.10061551199969836,
+              "13987": 0.15747175000002608,
+              "13988": 0.4784235360000748,
+              "13989": 0.017890314999967814,
+              "13990": 0.4504121269998141,
+              "13991": 0.10179137100023218,
+              "13992": 1.2013346529998816,
+              "13993": 1.9023042240003123,
+              "13994": 0.3916800729997922,
+              "13995": 1.801060250000097,
+              "13996": 1.3540975589998998,
+              "13997": 3.0113174040000885,
+              "13998": 3.5494013710005676,
+              "13999": 6.399222205998609,
+              "14000": 277.7089110690006
+            }
+          },
+          "stale_heartbeat_connections": 30,
+          "transport_reset_events": 0,
+          "non_lifecycle_closes": 0,
+          "interior_traffic_buckets": {
+            "seconds": 271.1609634810002,
+            "buckets": 9,
+            "bytes_per_second": 5980951.5240657525,
+            "market_updates_per_second": 9693.100020921114,
+            "minimum_bytes_per_second": 5575220.461406657,
+            "maximum_bytes_per_second": 6629335.710089429
+          }
+        },
+        {
+          "target_markets": 16000,
+          "outcome_assets": 32000,
+          "seconds": 300.04081709000025,
+          "final_health_gate_passed": false,
+          "final_healthy": 15999,
+          "payload_bytes": 1750116637,
+          "payload_bytes_per_second": 5832928.5127730975,
+          "market_updates": 2837669,
+          "market_updates_per_second": 9457.609892952707,
+          "price_change_entries": 5654956,
+          "cpu_cores": 0.9956789409435204,
+          "event_loop_ms": {
+            "p50": 5.349375,
+            "p99": 162.267135,
+            "max": 1830.813695
+          },
+          "rss_bytes": 3545010176,
+          "initialized_population": {
+            "minimum": 15989,
+            "maximum": 16000,
+            "seconds_at_or_above_target": 262.3394676610006,
+            "fraction_at_or_above_target": 0.8743459313480979,
+            "longest_below_target_seconds": 11.53575120899966,
+            "seconds_by_population": {
+              "15989": 0.3490899910000153,
+              "15990": 1.6420802939999848,
+              "15991": 1.035397887000814,
+              "15992": 0.4243879459989257,
+              "15993": 0.37991543600102884,
+              "15994": 0.4406902769985609,
+              "15995": 1.6381819950002245,
+              "15996": 1.9549324790015816,
+              "15997": 3.718383070997894,
+              "15998": 11.673546173000942,
+              "15999": 14.444743879999733,
+              "16000": 262.3394676610006
+            }
+          },
+          "timely_heartbeat_population": {
+            "minimum": 15989,
+            "maximum": 16000,
+            "seconds_at_or_above_target": 256.99644104500044,
+            "fraction_at_or_above_target": 0.8565382654850983,
+            "longest_below_target_seconds": 11.53575120899966,
+            "seconds_by_population": {
+              "15989": 0.3490899910000153,
+              "15990": 1.6420802939999848,
+              "15991": 1.035397887000814,
+              "15992": 0.4243879459989257,
+              "15993": 0.37991543600102884,
+              "15994": 0.4406902769985609,
+              "15995": 1.6381819950002245,
+              "15996": 1.9549324790015816,
+              "15997": 3.718383070997894,
+              "15998": 13.191774093001383,
+              "15999": 18.269542575999395,
+              "16000": 256.99644104500044
+            }
+          },
+          "stale_heartbeat_connections": 4,
+          "transport_reset_events": 5,
+          "non_lifecycle_closes": 5,
+          "interior_traffic_buckets": {
+            "seconds": 271.13156909299994,
+            "buckets": 9,
+            "bytes_per_second": 5838805.283050026,
+            "market_updates_per_second": 9466.000274967204,
+            "minimum_bytes_per_second": 5451126.539091832,
+            "maximum_bytes_per_second": 6790317.258830023
+          }
+        }
+      ]
+    }
+  ],
+  "classification": {
+    "exchange_cap": "not established",
+    "tested_concurrent_admission_lower_bound": 16000,
+    "last_completed_final_health_gate_pass": 14000,
+    "first_fast_ramp_failure": "Near 15,000, inconclusive 15-second initialization timeout; slower 60-second-deadline run subsequently reached 16,000.",
+    "last_observed_operational_failure": "Five transport resets within the 16,000 five-minute window; one final heartbeat aged 19.3495 seconds exceeded the 15-second threshold.",
+    "target_32000": "Not attempted after the 16,000 health-gate failure; not a tested capacity.",
+    "production_changes": false
+  },
+  "limitations": [
+    "One observation per new target, with a slower validation ramp; not five independent repetitions.",
+    "Historical volume ranking does not prove a current worst case.",
+    "Every target means one binary market and two outcome assets per socket; both assets have bid and ask snapshots.",
+    "Lifecycle and transport replacements produce measured population dips; five-minute observation does not mean an unchanged full cohort.",
+    "No redundant update-control feed in connection-count trials; no lossless-delivery or added-latency proof.",
+    "Approximately one CPU core was consumed; common event-loop stalls may hide network timing. No causal bottleneck or production host capacity established.",
+    "All experimental sockets and processes terminated; cleanup failures are separate from runtime resets."
+  ]
+}

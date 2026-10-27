@@ -1,0 +1,139 @@
+{
+  "source": {
+    "head": "6a0d01ef7a2c9ba8812e3b8d1f64804210e63277",
+    "source_sha256": {
+      "src/core/worker.rs": "6044c8e2b639fa24d615c6a74501fc9b9dbc2294aa42fe9c03f7b8c90c2a4ec2",
+      "src/core/writer.rs": "89bf65bb8dc18300125fe87b7adbba7dfd1f46b6587ce54b9567553a13801d0c",
+      "src/core/telemetry.rs": "7155fcee92aecbf596f4edae999c988328e2444e4b9d077940d3e1dffba99362",
+      "src/core/latency.rs": "ce7479ace70ddf6b0cc0be0efdc72fee9d365bfe8ceb1b6c0befcbf6e05e738e",
+      "tests/m5.rs": "f471e121636a8d9e333b2a816b7c81c6a24be252d1519b0c0d7e99b9f1baffe8",
+      "src/core/pipeline.rs": "244fb44204fec7db26092c08b954db1a4131829ed726920648374399472dcc09",
+      "src/model.rs": "dfe7d70437b6ec78212cb5afff5467d7c46e372ffb8309370c6be56429f3ca8c"
+    },
+    "binary_sha256": "150f4fd0bac4e03384771614c5fc62fa8ed06b340083272d851ffdbf8ddd0686"
+  },
+  "scope": "One pre-generated-template run on a busy shared host, not an isolated maximum-capacity or default-selection comparison. Scheduled receive age includes pacing/backpressure. All frames preserved; offered schedule was not maintained.",
+  "configured_messages_per_s": 125061,
+  "actual_feed_messages_per_s": 69630.57741603073,
+  "observed_live_peak_messages_per_s": 41687,
+  "required_messages_per_s": 125061,
+  "acceptance_pass": false,
+  "legacy_throughput_pass_note": "The result field throughput_pass tests the configured offered rate, not actual achieved throughput. It is not an acceptance pass.",
+  "result": {
+    "books": 100000,
+    "corrections_by_outcome_side": [
+      8553,
+      8487,
+      8476,
+      8546
+    ],
+    "correctness_pass": true,
+    "decode_wall_s": 239.807105669,
+    "deliberate_corrections": 34062,
+    "depth_per_side": 25,
+    "duration_pass": true,
+    "effective_hot_markets": 512,
+    "events": 8754270,
+    "explicit_changes_per_price_change": 2,
+    "feed_s": 125.724506745,
+    "file_bytes": 2348810240,
+    "finish_drain_and_flush_s": 1.024508422,
+    "full_book_every": 32,
+    "full_book_messages": 273610,
+    "generation_wall_s": 7.764459195,
+    "generator_valid": false,
+    "hot_fraction_percent": 1,
+    "hot_selection_percent": 80,
+    "independent_record_oracle_s": 1.52896853,
+    "initial_array_bytes": 183750000,
+    "initial_levels": 5000000,
+    "latency_pass": false,
+    "live_max_messages_per_s": 41687,
+    "markets": 50000,
+    "offered_events_per_s": 125061,
+    "offered_messages_per_s": 125061,
+    "pacing_slot_ms": 1,
+    "periodic_snapshots": 200000,
+    "price_change_messages": 8480660,
+    "producer_lateness": {
+      "max_ms": 63364.612,
+      "mean_ms": 16949.98904392005,
+      "negative_samples": 0,
+      "overflow_samples": 4944899,
+      "p50_upper_ms": 63364.612,
+      "p99_upper_ms": 63364.612,
+      "samples": 8754270
+    },
+    "producers": 64,
+    "readback_and_final_oracle_s": 57.422134622,
+    "receive_to_encode": {
+      "max_ms": 65905.513,
+      "mean_ms": 17990.674653439033,
+      "negative_samples": 0,
+      "overflow_samples": 11553708,
+      "p50_upper_ms": 65905.513,
+      "p99_upper_ms": 65905.513,
+      "samples": 16995382
+    },
+    "reinserted_by_outcome_side": [
+      2111729,
+      2112107,
+      2103752,
+      2103320
+    ],
+    "removed_by_outcome_side": [
+      2136806,
+      2137058,
+      2128699,
+      2128385
+    ],
+    "runtime_threads": 6,
+    "scheduled_arrival_age_includes_generator_lag": true,
+    "seconds": 70,
+    "target_messages_per_s": 125061,
+    "target_pass": false,
+    "template_pool_bytes": 806400000,
+    "template_pool_bytes_are_raw_json_lengths": true,
+    "template_pool_generation_in_timed_region": false,
+    "throughput_pass": true,
+    "total_s": 198.106805109,
+    "validated_books": 100000,
+    "validated_periodic_snapshots": 200000,
+    "validated_scheduled_records": 16995382,
+    "validated_updates": 16995382,
+    "warmup_settle_s": 2,
+    "worker_apply_s": [
+      23.6779878,
+      22.613751656,
+      22.912748598,
+      21.999444641
+    ],
+    "worker_input_peaks": [
+      65528,
+      65536,
+      62393,
+      62722
+    ],
+    "worker_messages": [
+      2225318,
+      2226191,
+      2226622,
+      2226139
+    ],
+    "worker_queue_bound": 65536,
+    "worker_writer_blocked_s": [
+      4.571072911,
+      4.402802493,
+      4.220395955,
+      4.064185954
+    ],
+    "workers": 4,
+    "workload_limits": "two mutable best prices per outcome; quantities 0/100; fixed exchange timestamp; no socket/TLS/discovery; M1 separately covers wide prices/quantities/depth",
+    "workload_seed": 7324878290347098112,
+    "writer_bytes": 2344139852,
+    "writer_encode_and_chunk_write_s": 37.450951014,
+    "writer_final_flush_s": 0.45530509,
+    "writer_queue_bound": 65536,
+    "writer_queue_peak": 65537
+  }
+}

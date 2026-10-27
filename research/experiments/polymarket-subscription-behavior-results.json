@@ -1,0 +1,1526 @@
+{
+  "captures": [
+    {
+      "directory": "research/recordings/subscription-behavior-20261025",
+      "started_at": "2026-10-25T14:55:17.655Z",
+      "finished_at": "2026-10-25T15:00:19.396Z",
+      "eligible_markets": 1200
+    },
+    {
+      "directory": "research/recordings/subscription-behavior-format-20261025",
+      "started_at": "2026-10-25T14:58:29.313Z",
+      "finished_at": "2026-10-25T14:59:00.970Z",
+      "eligible_markets": 1200
+    },
+    {
+      "directory": "research/recordings/subscription-behavior-flow-20261025",
+      "started_at": "2026-10-25T14:58:58.769Z",
+      "finished_at": "2026-10-25T14:59:19.177Z",
+      "eligible_markets": 1200
+    }
+  ],
+  "started_at": "2026-10-25T14:55:17.655Z",
+  "finished_at": "2026-10-25T15:00:19.396Z",
+  "raw_directories": [
+    "research/recordings/subscription-behavior-20261025",
+    "research/recordings/subscription-behavior-format-20261025",
+    "research/recordings/subscription-behavior-flow-20261025"
+  ],
+  "eligible_markets": 1200,
+  "groups": {
+    "busy/new": {
+      "trials": 5,
+      "with_book": 5,
+      "latency_ms": {
+        "min": 22.477011999999377,
+        "median": 28.5999550000015,
+        "p95": 72.26234000000113,
+        "max": 72.26234000000113
+      },
+      "with_intervening_events": 0,
+      "with_prior_updates": 3
+    },
+    "busy/duplicate": {
+      "trials": 5,
+      "with_book": 0,
+      "latency_ms": null,
+      "with_intervening_events": 0,
+      "with_prior_updates": 2
+    },
+    "busy/back_to_back": {
+      "trials": 5,
+      "with_book": 5,
+      "latency_ms": {
+        "min": 23.363380000002508,
+        "median": 25.51912799999991,
+        "p95": 45.94723299999896,
+        "max": 45.94723299999896
+      },
+      "with_intervening_events": 1,
+      "with_prior_updates": 2
+    },
+    "busy/gap_1s": {
+      "trials": 5,
+      "with_book": 5,
+      "latency_ms": {
+        "min": 21.816137000001618,
+        "median": 23.495587000012165,
+        "p95": 24.838201999999,
+        "max": 24.838201999999
+      },
+      "with_intervening_events": 0,
+      "with_prior_updates": 1
+    },
+    "busy/flow": {
+      "trials": 10,
+      "with_book": 10,
+      "latency_ms": {
+        "min": 23.308378999994602,
+        "median": 25.543781000002127,
+        "p95": 80.27309099999911,
+        "max": 80.27309099999911
+      },
+      "with_intervening_events": 5,
+      "with_prior_updates": 9
+    },
+    "quiet/new": {
+      "trials": 5,
+      "with_book": 5,
+      "latency_ms": {
+        "min": 22.0395099999987,
+        "median": 29.54076999999961,
+        "p95": 55.48431100000016,
+        "max": 55.48431100000016
+      },
+      "with_intervening_events": 0,
+      "with_prior_updates": 0
+    },
+    "quiet/duplicate": {
+      "trials": 5,
+      "with_book": 0,
+      "latency_ms": null,
+      "with_intervening_events": 0,
+      "with_prior_updates": 0
+    },
+    "quiet/back_to_back": {
+      "trials": 5,
+      "with_book": 5,
+      "latency_ms": {
+        "min": 26.527382000000216,
+        "median": 34.214546999995946,
+        "p95": 37.07208000001265,
+        "max": 37.07208000001265
+      },
+      "with_intervening_events": 0,
+      "with_prior_updates": 0
+    },
+    "quiet/gap_1s": {
+      "trials": 5,
+      "with_book": 5,
+      "latency_ms": {
+        "min": 21.06220499999472,
+        "median": 25.47488800001156,
+        "p95": 31.916723999995156,
+        "max": 31.916723999995156
+      },
+      "with_intervening_events": 0,
+      "with_prior_updates": 0
+    },
+    "quiet/flow": {
+      "trials": 5,
+      "with_book": 5,
+      "latency_ms": {
+        "min": 24.28003299998818,
+        "median": 29.549897999997484,
+        "p95": 45.60341100000369,
+        "max": 45.60341100000369
+      },
+      "with_intervening_events": 0,
+      "with_prior_updates": 0
+    }
+  },
+  "trials": [
+    {
+      "group": "quiet",
+      "test": "new",
+      "trial": 0,
+      "asset": "11240904681971702622804425829555949963262443092532986286332226343624673535872",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-new-6",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 22.0395099999987,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "new",
+      "trial": 0,
+      "asset": "109876868437950584369987384406356259939519193117253465815665152916226511121427",
+      "prior_price_changes": 1,
+      "connection": "subscription-behavior-20261025/busy-new-5",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 40.76835700000083,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "new",
+      "trial": 1,
+      "asset": "80033086779019420013851248112937785440465838204672449728551430392402447493644",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-new-9",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 23.278181000001496,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "new",
+      "trial": 1,
+      "asset": "30630994248667897740988010928640156931882346081873066002335460180076741328029",
+      "prior_price_changes": 1,
+      "connection": "subscription-behavior-20261025/busy-new-10",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 28.5999550000015,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "new",
+      "trial": 2,
+      "asset": "30018249602860791237779513570813736669844339442652718694082350694750533710955",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-new-12",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 29.54076999999961,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "new",
+      "trial": 2,
+      "asset": "8853465120832778901717717180523314783482724931998595367133108707023926550591",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-new-13",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 22.477011999999377,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "new",
+      "trial": 3,
+      "asset": "96620437098412312101933789366979732101787756270877610872068611349281520191286",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-new-15",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 34.285799000001134,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "new",
+      "trial": 3,
+      "asset": "40220000390489237442666590685171156363211017606636287738930798027342360240862",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-new-16",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 72.26234000000113,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "new",
+      "trial": 4,
+      "asset": "7181024697022325862246747817224889338035155702152360746163617994475091967259",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-new-18",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 55.48431100000016,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "new",
+      "trial": 4,
+      "asset": "28032922121340574564753529975027027359615112054359670441462060501417320722117",
+      "prior_price_changes": 39,
+      "connection": "subscription-behavior-20261025/busy-new-19",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 23.19992099999945,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "duplicate",
+      "trial": 0,
+      "asset": "11240904681971702622804425829555949963262443092532986286332226343624673535872",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-duplicate-20",
+      "fresh_book_observed": false,
+      "first_book_latency_ms": null,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "duplicate",
+      "trial": 0,
+      "asset": "109876868437950584369987384406356259939519193117253465815665152916226511121427",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-duplicate-21",
+      "fresh_book_observed": false,
+      "first_book_latency_ms": null,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "duplicate",
+      "trial": 1,
+      "asset": "80033086779019420013851248112937785440465838204672449728551430392402447493644",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-duplicate-22",
+      "fresh_book_observed": false,
+      "first_book_latency_ms": null,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "duplicate",
+      "trial": 1,
+      "asset": "30630994248667897740988010928640156931882346081873066002335460180076741328029",
+      "prior_price_changes": 3,
+      "connection": "subscription-behavior-20261025/busy-duplicate-23",
+      "fresh_book_observed": false,
+      "first_book_latency_ms": null,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "duplicate",
+      "trial": 2,
+      "asset": "30018249602860791237779513570813736669844339442652718694082350694750533710955",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-duplicate-24",
+      "fresh_book_observed": false,
+      "first_book_latency_ms": null,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "duplicate",
+      "trial": 2,
+      "asset": "8853465120832778901717717180523314783482724931998595367133108707023926550591",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-duplicate-25",
+      "fresh_book_observed": false,
+      "first_book_latency_ms": null,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "duplicate",
+      "trial": 3,
+      "asset": "96620437098412312101933789366979732101787756270877610872068611349281520191286",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-duplicate-26",
+      "fresh_book_observed": false,
+      "first_book_latency_ms": null,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "duplicate",
+      "trial": 3,
+      "asset": "40220000390489237442666590685171156363211017606636287738930798027342360240862",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-duplicate-27",
+      "fresh_book_observed": false,
+      "first_book_latency_ms": null,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "duplicate",
+      "trial": 4,
+      "asset": "7181024697022325862246747817224889338035155702152360746163617994475091967259",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-duplicate-28",
+      "fresh_book_observed": false,
+      "first_book_latency_ms": null,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "duplicate",
+      "trial": 4,
+      "asset": "28032922121340574564753529975027027359615112054359670441462060501417320722117",
+      "prior_price_changes": 1,
+      "connection": "subscription-behavior-20261025/busy-duplicate-29",
+      "fresh_book_observed": false,
+      "first_book_latency_ms": null,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "back_to_back",
+      "trial": 0,
+      "asset": "11240904681971702622804425829555949963262443092532986286332226343624673535872",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-back_to_back-30",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 36.081402000003436,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "back_to_back",
+      "trial": 0,
+      "asset": "109876868437950584369987384406356259939519193117253465815665152916226511121427",
+      "prior_price_changes": 17,
+      "connection": "subscription-behavior-20261025/busy-back_to_back-31",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 26.81333799999993,
+      "intervening_events": {
+        "price_change": 1
+      },
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "back_to_back",
+      "trial": 1,
+      "asset": "80033086779019420013851248112937785440465838204672449728551430392402447493644",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-back_to_back-32",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 27.914714999998978,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "back_to_back",
+      "trial": 1,
+      "asset": "30630994248667897740988010928640156931882346081873066002335460180076741328029",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-back_to_back-33",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 23.363380000002508,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "back_to_back",
+      "trial": 2,
+      "asset": "30018249602860791237779513570813736669844339442652718694082350694750533710955",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-back_to_back-34",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 26.527382000000216,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "back_to_back",
+      "trial": 2,
+      "asset": "8853465120832778901717717180523314783482724931998595367133108707023926550591",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-back_to_back-35",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 45.94723299999896,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "back_to_back",
+      "trial": 3,
+      "asset": "96620437098412312101933789366979732101787756270877610872068611349281520191286",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-back_to_back-36",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 37.07208000001265,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "back_to_back",
+      "trial": 3,
+      "asset": "40220000390489237442666590685171156363211017606636287738930798027342360240862",
+      "prior_price_changes": 3,
+      "connection": "subscription-behavior-20261025/busy-back_to_back-37",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 25.51912799999991,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "back_to_back",
+      "trial": 4,
+      "asset": "7181024697022325862246747817224889338035155702152360746163617994475091967259",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-back_to_back-38",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 34.214546999995946,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "back_to_back",
+      "trial": 4,
+      "asset": "28032922121340574564753529975027027359615112054359670441462060501417320722117",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-back_to_back-39",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 24.18743399999221,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "gap_1s",
+      "trial": 0,
+      "asset": "11240904681971702622804425829555949963262443092532986286332226343624673535872",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-gap_1s-40",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 21.06220499999472,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "gap_1s",
+      "trial": 0,
+      "asset": "109876868437950584369987384406356259939519193117253465815665152916226511121427",
+      "prior_price_changes": 4,
+      "connection": "subscription-behavior-20261025/busy-gap_1s-41",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 23.495587000012165,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "gap_1s",
+      "trial": 1,
+      "asset": "80033086779019420013851248112937785440465838204672449728551430392402447493644",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-gap_1s-42",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 25.47488800001156,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "gap_1s",
+      "trial": 1,
+      "asset": "30630994248667897740988010928640156931882346081873066002335460180076741328029",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-gap_1s-43",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 24.838201999999,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "gap_1s",
+      "trial": 2,
+      "asset": "30018249602860791237779513570813736669844339442652718694082350694750533710955",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-gap_1s-44",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 31.916723999995156,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "gap_1s",
+      "trial": 2,
+      "asset": "8853465120832778901717717180523314783482724931998595367133108707023926550591",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-gap_1s-45",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 22.951714999988326,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "gap_1s",
+      "trial": 3,
+      "asset": "96620437098412312101933789366979732101787756270877610872068611349281520191286",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-gap_1s-46",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 24.18921899999259,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "gap_1s",
+      "trial": 3,
+      "asset": "40220000390489237442666590685171156363211017606636287738930798027342360240862",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-gap_1s-47",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 21.816137000001618,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "gap_1s",
+      "trial": 4,
+      "asset": "7181024697022325862246747817224889338035155702152360746163617994475091967259",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-gap_1s-48",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 31.075744000001578,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "gap_1s",
+      "trial": 4,
+      "asset": "28032922121340574564753529975027027359615112054359670441462060501417320722117",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-gap_1s-49",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 23.67132500000298,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "flow",
+      "trial": 0,
+      "asset": "11240904681971702622804425829555949963262443092532986286332226343624673535872",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-flow-50",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 45.60341100000369,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "flow",
+      "trial": 0,
+      "asset": "109876868437950584369987384406356259939519193117253465815665152916226511121427",
+      "prior_price_changes": 2,
+      "connection": "subscription-behavior-20261025/busy-flow-51",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 24.46430700000201,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "flow",
+      "trial": 1,
+      "asset": "30630994248667897740988010928640156931882346081873066002335460180076741328029",
+      "prior_price_changes": 1,
+      "connection": "subscription-behavior-20261025/busy-flow-52",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 26.63974299999245,
+      "intervening_events": {
+        "last_trade_price": 1
+      },
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "flow",
+      "trial": 2,
+      "asset": "8853465120832778901717717180523314783482724931998595367133108707023926550591",
+      "prior_price_changes": 1,
+      "connection": "subscription-behavior-20261025/busy-flow-53",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 34.1527550000028,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "flow",
+      "trial": 3,
+      "asset": "40220000390489237442666590685171156363211017606636287738930798027342360240862",
+      "prior_price_changes": 4,
+      "connection": "subscription-behavior-20261025/busy-flow-54",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 23.308378999994602,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "flow",
+      "trial": 1,
+      "asset": "80033086779019420013851248112937785440465838204672449728551430392402447493644",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-flow-55",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 29.886970999999903,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "flow",
+      "trial": 4,
+      "asset": "28032922121340574564753529975027027359615112054359670441462060501417320722117",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/busy-flow-56",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 25.796765000006417,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "flow",
+      "trial": 2,
+      "asset": "30018249602860791237779513570813736669844339442652718694082350694750533710955",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-flow-57",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 26.18993799999589,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "flow",
+      "trial": 3,
+      "asset": "96620437098412312101933789366979732101787756270877610872068611349281520191286",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-flow-58",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 29.549897999997484,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "quiet",
+      "test": "flow",
+      "trial": 4,
+      "asset": "7181024697022325862246747817224889338035155702152360746163617994475091967259",
+      "prior_price_changes": 0,
+      "connection": "subscription-behavior-20261025/quiet-flow-59",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 24.28003299998818,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "flow",
+      "trial": 5,
+      "asset": "108456264239031514288349092154900311669737695126714294292073692623811849531540",
+      "prior_price_changes": 3,
+      "connection": "subscription-behavior-flow-20261025/busy-flow-extra-2",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 53.06885499999953,
+      "intervening_events": {
+        "price_change": 1
+      },
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "flow",
+      "trial": 6,
+      "asset": "108456264239031514288349092154900311669737695126714294292073692623811849531540",
+      "prior_price_changes": 2,
+      "connection": "subscription-behavior-flow-20261025/busy-flow-extra-3",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 80.27309099999911,
+      "intervening_events": {
+        "price_change": 5
+      },
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "flow",
+      "trial": 7,
+      "asset": "108456264239031514288349092154900311669737695126714294292073692623811849531540",
+      "prior_price_changes": 2,
+      "connection": "subscription-behavior-flow-20261025/busy-flow-extra-4",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 24.656097999999474,
+      "intervening_events": {
+        "price_change": 2
+      },
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "flow",
+      "trial": 8,
+      "asset": "108456264239031514288349092154900311669737695126714294292073692623811849531540",
+      "prior_price_changes": 2,
+      "connection": "subscription-behavior-flow-20261025/busy-flow-extra-5",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 23.65044300000227,
+      "intervening_events": {
+        "price_change": 3
+      },
+      "before_subscribe_events": 0
+    },
+    {
+      "group": "busy",
+      "test": "flow",
+      "trial": 9,
+      "asset": "108456264239031514288349092154900311669737695126714294292073692623811849531540",
+      "prior_price_changes": 3,
+      "connection": "subscription-behavior-flow-20261025/busy-flow-extra-6",
+      "fresh_book_observed": true,
+      "first_book_latency_ms": 25.290796999997838,
+      "intervening_events": {},
+      "before_subscribe_events": 0
+    }
+  ],
+  "heartbeat": [
+    {
+      "connection": "subscription-behavior-20261025/no-ping-2",
+      "observation_ms": 125043.412351,
+      "remote_or_transport_closed": true,
+      "close_code": 1006,
+      "received_frames": 1
+    },
+    {
+      "connection": "subscription-behavior-20261025/no-ping-3",
+      "observation_ms": 125052.69401199999,
+      "remote_or_transport_closed": true,
+      "close_code": 1006,
+      "received_frames": 1
+    },
+    {
+      "connection": "subscription-behavior-20261025/no-ping-1",
+      "observation_ms": 125052.63360399999,
+      "remote_or_transport_closed": true,
+      "close_code": 1006,
+      "received_frames": 1
+    }
+  ],
+  "candidate_metadata": [],
+  "candidate_trials": [
+    {
+      "connection": "subscription-behavior-20261025/empty-candidate-7",
+      "books": 20,
+      "empty_both": 20,
+      "empty_one_or_both": 20,
+      "asset_ids": [
+        "73882137394429230858792197454719095283116068747306582367276108926555779704773",
+        "38725172248623662949090974581178759803868821730774325297132557958084005040019",
+        "102793432924292366817623873903370776792053348953396885774707440636629591129045",
+        "47501835654034642303871729566440685055131212224992618842118220522759881594388",
+        "25726605338149921895437143665453024328126015534617399331193499948638680548327",
+        "89400490061279519648476072909626692485591140484797509064112306688673395698665",
+        "6817985292954279453550561170957604721782126498493403208970941773609658443668",
+        "89222480426096503493349605704048802594890094989421249134079277922639830033983",
+        "21035291388411556602284937011367126452764849973501162539532980561402651946749",
+        "93898219402301082073817771538721552618218789122071411564173899573538586846789",
+        "29737058931761149784057838484510551769563965249099740188987188967285352812770",
+        "98984498407967452553304996151131907880660436963376482645482853729859965701328",
+        "28853292118428494285697740377607019122032536420987835972725906413321658220",
+        "45414690200920466205646213750772172568365925135920803121766291997534035468687",
+        "24368498722096551538793654430483748088998896402065614415017901092902323281027",
+        "70514551980987890755164707764768090458884858183086373038407462271326068323172",
+        "23873043125486232116338172633251036555543581875424397017003466013034918166670",
+        "69112980105700833856981515186365552936072132201068592636928951177613724163758",
+        "36747272233533014024345280552435244769080743869791295117666681113575629035045",
+        "90861536684846296085434541399759782151486834938887733184366462756888092688558"
+      ]
+    },
+    {
+      "connection": "subscription-behavior-20261025/empty-candidate-8",
+      "books": 20,
+      "empty_both": 20,
+      "empty_one_or_both": 20,
+      "asset_ids": [
+        "47501835654034642303871729566440685055131212224992618842118220522759881594388",
+        "73882137394429230858792197454719095283116068747306582367276108926555779704773",
+        "24368498722096551538793654430483748088998896402065614415017901092902323281027",
+        "89400490061279519648476072909626692485591140484797509064112306688673395698665",
+        "98984498407967452553304996151131907880660436963376482645482853729859965701328",
+        "102793432924292366817623873903370776792053348953396885774707440636629591129045",
+        "36747272233533014024345280552435244769080743869791295117666681113575629035045",
+        "69112980105700833856981515186365552936072132201068592636928951177613724163758",
+        "21035291388411556602284937011367126452764849973501162539532980561402651946749",
+        "29737058931761149784057838484510551769563965249099740188987188967285352812770",
+        "90861536684846296085434541399759782151486834938887733184366462756888092688558",
+        "89222480426096503493349605704048802594890094989421249134079277922639830033983",
+        "70514551980987890755164707764768090458884858183086373038407462271326068323172",
+        "45414690200920466205646213750772172568365925135920803121766291997534035468687",
+        "6817985292954279453550561170957604721782126498493403208970941773609658443668",
+        "25726605338149921895437143665453024328126015534617399331193499948638680548327",
+        "38725172248623662949090974581178759803868821730774325297132557958084005040019",
+        "28853292118428494285697740377607019122032536420987835972725906413321658220",
+        "23873043125486232116338172633251036555543581875424397017003466013034918166670",
+        "93898219402301082073817771538721552618218789122071411564173899573538586846789"
+      ]
+    },
+    {
+      "connection": "subscription-behavior-20261025/empty-candidate-11",
+      "books": 20,
+      "empty_both": 20,
+      "empty_one_or_both": 20,
+      "asset_ids": [
+        "47501835654034642303871729566440685055131212224992618842118220522759881594388",
+        "45414690200920466205646213750772172568365925135920803121766291997534035468687",
+        "25726605338149921895437143665453024328126015534617399331193499948638680548327",
+        "69112980105700833856981515186365552936072132201068592636928951177613724163758",
+        "89222480426096503493349605704048802594890094989421249134079277922639830033983",
+        "70514551980987890755164707764768090458884858183086373038407462271326068323172",
+        "102793432924292366817623873903370776792053348953396885774707440636629591129045",
+        "98984498407967452553304996151131907880660436963376482645482853729859965701328",
+        "23873043125486232116338172633251036555543581875424397017003466013034918166670",
+        "28853292118428494285697740377607019122032536420987835972725906413321658220",
+        "38725172248623662949090974581178759803868821730774325297132557958084005040019",
+        "89400490061279519648476072909626692485591140484797509064112306688673395698665",
+        "6817985292954279453550561170957604721782126498493403208970941773609658443668",
+        "73882137394429230858792197454719095283116068747306582367276108926555779704773",
+        "93898219402301082073817771538721552618218789122071411564173899573538586846789",
+        "24368498722096551538793654430483748088998896402065614415017901092902323281027",
+        "90861536684846296085434541399759782151486834938887733184366462756888092688558",
+        "29737058931761149784057838484510551769563965249099740188987188967285352812770",
+        "36747272233533014024345280552435244769080743869791295117666681113575629035045",
+        "21035291388411556602284937011367126452764849973501162539532980561402651946749"
+      ]
+    },
+    {
+      "connection": "subscription-behavior-20261025/empty-candidate-14",
+      "books": 20,
+      "empty_both": 20,
+      "empty_one_or_both": 20,
+      "asset_ids": [
+        "98984498407967452553304996151131907880660436963376482645482853729859965701328",
+        "25726605338149921895437143665453024328126015534617399331193499948638680548327",
+        "93898219402301082073817771538721552618218789122071411564173899573538586846789",
+        "38725172248623662949090974581178759803868821730774325297132557958084005040019",
+        "90861536684846296085434541399759782151486834938887733184366462756888092688558",
+        "89400490061279519648476072909626692485591140484797509064112306688673395698665",
+        "102793432924292366817623873903370776792053348953396885774707440636629591129045",
+        "6817985292954279453550561170957604721782126498493403208970941773609658443668",
+        "21035291388411556602284937011367126452764849973501162539532980561402651946749",
+        "70514551980987890755164707764768090458884858183086373038407462271326068323172",
+        "29737058931761149784057838484510551769563965249099740188987188967285352812770",
+        "69112980105700833856981515186365552936072132201068592636928951177613724163758",
+        "24368498722096551538793654430483748088998896402065614415017901092902323281027",
+        "89222480426096503493349605704048802594890094989421249134079277922639830033983",
+        "73882137394429230858792197454719095283116068747306582367276108926555779704773",
+        "28853292118428494285697740377607019122032536420987835972725906413321658220",
+        "47501835654034642303871729566440685055131212224992618842118220522759881594388",
+        "36747272233533014024345280552435244769080743869791295117666681113575629035045",
+        "45414690200920466205646213750772172568365925135920803121766291997534035468687",
+        "23873043125486232116338172633251036555543581875424397017003466013034918166670"
+      ]
+    },
+    {
+      "connection": "subscription-behavior-20261025/empty-candidate-17",
+      "books": 20,
+      "empty_both": 20,
+      "empty_one_or_both": 20,
+      "asset_ids": [
+        "47501835654034642303871729566440685055131212224992618842118220522759881594388",
+        "73882137394429230858792197454719095283116068747306582367276108926555779704773",
+        "45414690200920466205646213750772172568365925135920803121766291997534035468687",
+        "36747272233533014024345280552435244769080743869791295117666681113575629035045",
+        "69112980105700833856981515186365552936072132201068592636928951177613724163758",
+        "21035291388411556602284937011367126452764849973501162539532980561402651946749",
+        "90861536684846296085434541399759782151486834938887733184366462756888092688558",
+        "24368498722096551538793654430483748088998896402065614415017901092902323281027",
+        "25726605338149921895437143665453024328126015534617399331193499948638680548327",
+        "38725172248623662949090974581178759803868821730774325297132557958084005040019",
+        "70514551980987890755164707764768090458884858183086373038407462271326068323172",
+        "29737058931761149784057838484510551769563965249099740188987188967285352812770",
+        "28853292118428494285697740377607019122032536420987835972725906413321658220",
+        "93898219402301082073817771538721552618218789122071411564173899573538586846789",
+        "6817985292954279453550561170957604721782126498493403208970941773609658443668",
+        "23873043125486232116338172633251036555543581875424397017003466013034918166670",
+        "102793432924292366817623873903370776792053348953396885774707440636629591129045",
+        "89400490061279519648476072909626692485591140484797509064112306688673395698665",
+        "98984498407967452553304996151131907880660436963376482645482853729859965701328",
+        "89222480426096503493349605704048802594890094989421249134079277922639830033983"
+      ]
+    }
+  ],
+  "event_counts": {
+    "book": 8339,
+    "price_change": 101691,
+    "last_trade_price": 470
+  },
+  "book_format": {
+    "bids": {
+      "books": 8339,
+      "levels": 137904,
+      "ascending": 8339,
+      "descending": 5183,
+      "fewer_than_two_levels": 5183,
+      "duplicate_prices": 0,
+      "zero_sizes": 0,
+      "price_over_6_decimals": 0,
+      "size_over_6_decimals": 0
+    },
+    "asks": {
+      "books": 8339,
+      "levels": 138878,
+      "ascending": 5183,
+      "descending": 8339,
+      "fewer_than_two_levels": 5183,
+      "duplicate_prices": 0,
+      "zero_sizes": 0,
+      "price_over_6_decimals": 0,
+      "size_over_6_decimals": 0
+    }
+  },
+  "book_assets": 1800,
+  "book_markets": 900,
+  "books_per_market_in_same_frame": {
+    "2": 3651,
+    "1": 1037
+  },
+  "both_outcomes_subscribed_books_per_market_in_same_frame": {
+    "2": 3598,
+    "1": 934
+  },
+  "rollback_samples": [],
+  "sample_books": [
+    {
+      "asset_id": "80033086779019420013851248112937785440465838204672449728551430392402447493644",
+      "market": "0x8bde52ad611c2acd60435692c1ff0e6fe30a9803c9b07347799c2898e57c6166",
+      "timestamp": "1792940093363"
+    },
+    {
+      "asset_id": "32690652953882177877390198810699643215667293375197492284238685136211785598035",
+      "market": "0x8bde52ad611c2acd60435692c1ff0e6fe30a9803c9b07347799c2898e57c6166",
+      "timestamp": "1792940093363"
+    },
+    {
+      "asset_id": "30018249602860791237779513570813736669844339442652718694082350694750533710955",
+      "market": "0xe3841bfd6f48109cd6f2b63c1818d72d8d03fde79bcfe70c6a4599de933d7844",
+      "timestamp": "1792940051600"
+    },
+    {
+      "asset_id": "49252013559421217668792682972101977860494459926327888180206743175173077755594",
+      "market": "0xe3841bfd6f48109cd6f2b63c1818d72d8d03fde79bcfe70c6a4599de933d7844",
+      "timestamp": "1792940051600"
+    },
+    {
+      "asset_id": "11240904681971702622804425829555949963262443092532986286332226343624673535872",
+      "market": "0xdbe9d0c1a49b8ba3445722fec806e6eb7b9678acb7c0f566c7977659d79ffe6b",
+      "timestamp": "1792940006200"
+    }
+  ],
+  "market_groups": {
+    "busy": [
+      {
+        "id": "601826",
+        "volume24hr": 1834630.073679,
+        "asset_ids": [
+          "109876868437950584369987384406356259939519193117253465815665152916226511121427",
+          "38310927461258927563020508025396887688249787380193911540547071417200646834355"
+        ]
+      },
+      {
+        "id": "601819",
+        "volume24hr": 1414784.668438,
+        "asset_ids": [
+          "30630994248667897740988010928640156931882346081873066002335460180076741328029",
+          "79191939610100241429039499950443680906623179487184628479206155805558220344190"
+        ]
+      },
+      {
+        "id": "5598481",
+        "volume24hr": 1266800.951222,
+        "asset_ids": [
+          "8853465120832778901717717180523314783482724931998595367133108707023926550591",
+          "90883489004081780618656788559830046738681376889831440455435885082986244302734"
+        ]
+      },
+      {
+        "id": "4824600",
+        "volume24hr": 1127770.1205129998,
+        "asset_ids": [
+          "40220000390489237442666590685171156363211017606636287738930798027342360240862",
+          "27580599101456904267590411630030264757609607532043711182842476051444173220871"
+        ]
+      },
+      {
+        "id": "5598475",
+        "volume24hr": 1063629.7796170001,
+        "asset_ids": [
+          "28032922121340574564753529975027027359615112054359670441462060501417320722117",
+          "53781445402973928381138196330447206332311283276278686884241494610532113968251"
+        ]
+      },
+      {
+        "id": "6153879",
+        "volume24hr": 847384.9228250001,
+        "asset_ids": [
+          "78885029416196705703041493840491165139105057477810080159440283451344308773740",
+          "40570695257360916258442795842561650150330193504929186730569016866792717394677"
+        ]
+      }
+    ],
+    "quiet": [
+      {
+        "id": "6199989",
+        "volume24hr": null,
+        "asset_ids": [
+          "11240904681971702622804425829555949963262443092532986286332226343624673535872",
+          "84189502130770614415310973633647902119146290296614913206127385145985532919693"
+        ]
+      },
+      {
+        "id": "6199987",
+        "volume24hr": 0,
+        "asset_ids": [
+          "80033086779019420013851248112937785440465838204672449728551430392402447493644",
+          "32690652953882177877390198810699643215667293375197492284238685136211785598035"
+        ]
+      },
+      {
+        "id": "6199986",
+        "volume24hr": null,
+        "asset_ids": [
+          "30018249602860791237779513570813736669844339442652718694082350694750533710955",
+          "49252013559421217668792682972101977860494459926327888180206743175173077755594"
+        ]
+      },
+      {
+        "id": "6199984",
+        "volume24hr": null,
+        "asset_ids": [
+          "96620437098412312101933789366979732101787756270877610872068611349281520191286",
+          "114986690626251172707411156272045408380442736460655639952112880288787250202482"
+        ]
+      },
+      {
+        "id": "6199983",
+        "volume24hr": null,
+        "asset_ids": [
+          "7181024697022325862246747817224889338035155702152360746163617994475091967259",
+          "4952138251786291811150025522139351202780625035741094450607033537450981443206"
+        ]
+      },
+      {
+        "id": "6199982",
+        "volume24hr": 0,
+        "asset_ids": [
+          "71004773965036709158240621489221351715666300517928353357578845499499417775849",
+          "104481226122815829306092833203515966148826067041520671848740550494144462583210"
+        ]
+      }
+    ]
+  },
+  "connection_errors": [
+    {
+      "connection": "no-ping-2",
+      "kind": "error",
+      "received_at": "2026-10-25T14:57:22.847Z",
+      "mono_ms": 135016.112004
+    },
+    {
+      "connection": "no-ping-3",
+      "kind": "error",
+      "received_at": "2026-10-25T14:57:22.858Z",
+      "mono_ms": 135028.207805
+    },
+    {
+      "connection": "no-ping-1",
+      "kind": "error",
+      "received_at": "2026-10-25T14:57:22.863Z",
+      "mono_ms": 135031.853599
+    },
+    {
+      "connection": "bulk-4",
+      "kind": "error",
+      "received_at": "2026-10-25T14:56:39.555Z",
+      "mono_ms": 91724.516753
+    },
+    {
+      "connection": "quiet-duplicate-22",
+      "kind": "error",
+      "received_at": "2026-10-25T14:56:42.633Z",
+      "mono_ms": 94802.487377
+    },
+    {
+      "connection": "busy-duplicate-23",
+      "kind": "error",
+      "received_at": "2026-10-25T14:56:45.705Z",
+      "mono_ms": 97874.457728
+    }
+  ],
+  "closes": [
+    {
+      "connection": "subscription-behavior-20261025/no-ping-2",
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/no-ping-3",
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/no-ping-1",
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/bulk-4",
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/empty-candidate-7",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-new-6",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-new-5",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/empty-candidate-8",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-new-9",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-new-10",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/empty-candidate-11",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-new-12",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-new-13",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/empty-candidate-14",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-new-15",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-new-16",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/empty-candidate-17",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-new-18",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-new-19",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-duplicate-20",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-duplicate-21",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-duplicate-22",
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-duplicate-23",
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-duplicate-24",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-duplicate-25",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-duplicate-26",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-duplicate-27",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-duplicate-28",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-duplicate-29",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-back_to_back-30",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-back_to_back-31",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-back_to_back-32",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-back_to_back-33",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-back_to_back-34",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-back_to_back-35",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-back_to_back-36",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-back_to_back-37",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-back_to_back-38",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-back_to_back-39",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-gap_1s-40",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-gap_1s-41",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-gap_1s-42",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-gap_1s-43",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-gap_1s-44",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-gap_1s-45",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-gap_1s-46",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-gap_1s-47",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-gap_1s-48",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-gap_1s-49",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-flow-50",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-flow-51",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-flow-52",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-flow-53",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-flow-54",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-flow-55",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/busy-flow-56",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-flow-57",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-flow-58",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-20261025/quiet-flow-59",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-format-20261025/bulk-format-1",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-format-20261025/bulk-format-2",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-flow-20261025/activity-screen-1",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-flow-20261025/busy-flow-extra-2",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-flow-20261025/busy-flow-extra-3",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-flow-20261025/busy-flow-extra-4",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-flow-20261025/busy-flow-extra-5",
+      "code": 1000,
+      "reason": ""
+    },
+    {
+      "connection": "subscription-behavior-flow-20261025/busy-flow-extra-6",
+      "code": 1000,
+      "reason": ""
+    }
+  ]
+}

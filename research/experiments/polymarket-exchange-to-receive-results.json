@@ -1,0 +1,104 @@
+{
+  "started_utc": "2026-10-26T15:56:51.853259+00:00",
+  "finished_utc": "2026-10-26T15:58:22.639901+00:00",
+  "elapsed_s": 90.78665960102808,
+  "stop": "SIGINT_after_90s",
+  "exit_code": 0,
+  "markets": [
+    2589812,
+    608540,
+    608545
+  ],
+  "capture": false,
+  "workers": 1,
+  "connections_expected": 1,
+  "seconds_requested": 90,
+  "per_file_limit_bytes": 134217728,
+  "files": {
+    "telemetry.jsonl": 3323,
+    "books.sbe": 67108864,
+    "decode-errors.jsonl": 0
+  },
+  "telemetry_event_counts": {
+    "started": 1,
+    "health": 9,
+    "market_added": 3,
+    "session_end": 1,
+    "unsynced": 1,
+    "shutdown_started": 1,
+    "run_summary": 1
+  },
+  "summary": {
+    "books_held": 6,
+    "books_synced": 6,
+    "bytes_written": 340685,
+    "catch_up_levels": 12,
+    "connection_splits": 0,
+    "connections": 1,
+    "coverage_pct": 100.0,
+    "decode_errors": 0,
+    "delivery_latency_ms_max": 508.127,
+    "delivery_latency_ms_mean": 29.946803745928342,
+    "event": "run_summary",
+    "events": 1414,
+    "exchange_to_receive": {
+      "bucket_width_ms": 5,
+      "count": 1228,
+      "max_ms": 508.127,
+      "mean_ms": 29.946803745928342,
+      "negative_count": 0,
+      "nonnegative_count": 1228,
+      "nonnegative_p50_upper_ms": 15,
+      "nonnegative_p95_upper_ms": 120,
+      "nonnegative_p99_upper_ms": 245,
+      "overflow_at_ms": 1000,
+      "overflow_count": 0
+    },
+    "frames": 1494,
+    "hints": 0,
+    "level_updates_written": 2468,
+    "mismatched_books": 0,
+    "registered_markets": 3,
+    "scans_completed": 0,
+    "snapshots_written": 12,
+    "subscribed_markets": 3,
+    "telemetry_dropped": 0,
+    "ts": "2026-10-26T15:58:22.318125628+00:00",
+    "unsync_marks": 1
+  },
+  "reader_exit_code": 0,
+  "reader_stdout": "file: books.sbe\nbooks: 6 (6 with level updates), levels held at end: 1176\nsnapshots: 12, level updates: 2468\nreceived time span: 89.2 s\nsnapshots differing from the rebuilt book: 0\nsnapshot received times going backwards: 0\nbooks whose first snapshot followed updates with no baseline: 0\n",
+  "reader_stderr": "",
+  "observed_incidents": [
+    {
+      "connection": 0,
+      "event": "session_end",
+      "lasted_s": 71.68828705,
+      "markets": 3,
+      "reason": "error: IO error: Connection reset by peer (os error 104)",
+      "session": 1,
+      "ts": "2026-10-26T15:58:03.917408428+00:00"
+    },
+    {
+      "books": 6,
+      "connection": 0,
+      "event": "unsynced",
+      "reason": "disconnected",
+      "ts": "2026-10-26T15:58:03.917455179+00:00",
+      "worker": 0
+    }
+  ],
+  "host_load_before_run": {
+    "load_average_1m": 10.39,
+    "load_average_5m": 7.64,
+    "load_average_15m": 5.05,
+    "available_cpus": 6
+  },
+  "limitations": [
+    "One 90-second observation on three volume-ranked markets; not a feed-wide estimate or a performance comparison.",
+    "One peer-reset disconnect and resync; samples combine both sessions.",
+    "Unverified local/exchange clock offset; receipt age includes upstream delay and local read scheduling.",
+    "Percentiles are exclusive 5 ms bucket upper bounds over nonnegative samples; not exact quantiles.",
+    "Full-book snapshots excluded; samples count decoded subscribed update messages before worker acceptance."
+  ]
+}

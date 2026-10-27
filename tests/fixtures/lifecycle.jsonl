@@ -1,0 +1,19 @@
+{"type":"add_market","market":"0xa1","order_books":["101","102"],"connection":1}
+# Updates cannot construct a book before its first exchange book.
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:01.000123Z","text":"{\"event_type\":\"price_change\",\"market\":\"0xa1\",\"price_changes\":[{\"asset_id\":\"101\",\"side\":\"BUY\",\"price\":\"0.4\",\"size\":\"99\"}],\"timestamp\":\"1100\"}"}
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:02.000123Z","text":"[{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"101\",\"bids\":[{\"price\":\"0.4\",\"size\":\"1\"}],\"asks\":[{\"price\":\"0.6\",\"size\":\"2\"}],\"timestamp\":\"1200\"},{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"102\",\"bids\":[],\"asks\":[],\"timestamp\":\"1200\"}]"}
+{"type":"advance","millis":10010}
+{"type":"remove_market","market":"0xa1"}
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:03.000123Z","text":"{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"101\",\"bids\":[{\"price\":\"0.4\",\"size\":\"999\"}],\"asks\":[{\"price\":\"0.6\",\"size\":\"2\"}],\"timestamp\":\"1300\"}"}
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:04.000123Z","text":"{\"event_type\":\"price_change\",\"market\":\"0xa1\",\"price_changes\":[{\"asset_id\":\"101\",\"side\":\"BUY\",\"price\":\"0.4\",\"size\":\"999\"}],\"timestamp\":\"1400\"}"}
+# Removed timers must not produce a snapshot at their former deadlines.
+{"type":"advance","millis":60000}
+{"type":"add_market","market":"0xa1","order_books":["101","102"],"connection":2}
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:05.000123Z","text":"{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"101\",\"bids\":[{\"price\":\"0.4\",\"size\":\"888\"}],\"asks\":[{\"price\":\"0.6\",\"size\":\"2\"}],\"timestamp\":\"1500\"}"}
+{"type":"frame","connection":1,"received_at":"2026-10-25T12:00:06.000123Z","text":"{\"event_type\":\"price_change\",\"market\":\"0xa1\",\"price_changes\":[{\"asset_id\":\"101\",\"side\":\"BUY\",\"price\":\"0.4\",\"size\":\"888\"}],\"timestamp\":\"1600\"}"}
+{"type":"frame","connection":2,"received_at":"2026-10-25T12:00:07.000123Z","text":"{\"event_type\":\"price_change\",\"market\":\"0xa1\",\"price_changes\":[{\"asset_id\":\"101\",\"side\":\"BUY\",\"price\":\"0.4\",\"size\":\"77\"}],\"timestamp\":\"1700\"}"}
+{"type":"frame","connection":2,"received_at":"2026-10-25T12:00:08.000123Z","text":"[{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"101\",\"bids\":[{\"price\":\"0.2\",\"size\":\"4\"}],\"asks\":[],\"timestamp\":\"1800\"},{\"event_type\":\"book\",\"market\":\"0xa1\",\"asset_id\":\"102\",\"bids\":[],\"asks\":[],\"timestamp\":\"1800\"}]"}
+{"type":"mark_unsynced","connection":1,"reason":"disconnected"}
+# A stale connection unsync must not affect the newly placed market.
+{"type":"frame","connection":2,"received_at":"2026-10-25T12:00:09.000123Z","text":"{\"event_type\":\"price_change\",\"market\":\"0xa1\",\"price_changes\":[{\"asset_id\":\"101\",\"side\":\"BUY\",\"price\":\"0.2\",\"size\":\"5\"}],\"timestamp\":\"1900\"}"}
+{"type":"advance","millis":60010}

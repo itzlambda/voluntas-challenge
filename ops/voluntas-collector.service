@@ -1,0 +1,33 @@
+[Unit]
+Description=Voluntas order book collector
+After=network-online.target
+Wants=network-online.target voluntas-reclaim.timer
+ConditionPathExists=/etc/voluntas/collector-approved
+
+[Service]
+Type=simple
+DynamicUser=yes
+StateDirectory=voluntas-collector
+WorkingDirectory=/var/lib/voluntas-collector
+ExecStartPre=/usr/bin/rm -f /var/lib/voluntas-collector/reclaim.json
+ExecStart=/usr/bin/python3 /opt/voluntas/collector-launch.py /opt/voluntas/collector --output /var/lib/voluntas-collector/books.sbe --metrics-bind 0.0.0.0:19090 --workers 4 --markets-per-connection 256
+LimitNOFILE=65536
+Restart=on-failure
+RestartSec=10
+KillSignal=SIGTERM
+TimeoutStopSec=30
+StandardOutput=journal
+StandardError=journal
+LogNamespace=voluntas
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

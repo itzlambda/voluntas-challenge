@@ -1,0 +1,23 @@
+{
+  "records_per_run": 1000000,
+  "failures": 0,
+  "modes": {
+    "direct": {
+      "runs": 5,
+      "payload_MB_per_s_median": 100.15103607788575,
+      "payload_MB_per_s_range": [
+        85.55021155979726,
+        110.78180996364812
+      ]
+    },
+    "stdout": {
+      "runs": 5,
+      "payload_MB_per_s_median": 73.32161891340226,
+      "payload_MB_per_s_range": [
+        60.47927037970974,
+        100.47040695080644
+      ]
+    }
+  },
+  "scope": "Five alternating runs per path; each1Mupdate plusfirstsnapshot, all10Mupdates checkedagainstcounteroracle. Payload throughput includes drain and final paddedchunk flush, excludesfsync andvalidation. Hostload varied; no isolated speedupclaim."
+}

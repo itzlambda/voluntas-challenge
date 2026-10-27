@@ -1,0 +1,10 @@
+[Unit]
+Description=Periodically reclaim disposable Voluntas output blocks
+PartOf=voluntas-collector.service
+ConditionPathExists=/etc/voluntas/collector-approved
+
+[Timer]
+OnActiveSec=60
+OnUnitActiveSec=60
+AccuracySec=5
+Unit=voluntas-reclaim.service

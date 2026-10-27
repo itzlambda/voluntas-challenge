@@ -1,0 +1,19 @@
+[Unit]
+Description=Order book collector with live metrics
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/orderbook-collector
+ExecStart=/opt/orderbook-collector/target/release/engineering-challenge --output /var/lib/orderbook-collector/books.sbe --metrics-bind 127.0.0.1:9090
+StateDirectory=orderbook-collector
+DynamicUser=yes
+LimitNOFILE=65536
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target

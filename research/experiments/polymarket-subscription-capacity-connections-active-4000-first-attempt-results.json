@@ -1,0 +1,1550 @@
+{
+  "recording_directory": "recordings/subscription-capacity-connections-active-20261024-4000",
+  "measurement": {
+    "started_at": "2026-10-24T18:30:36.504Z",
+    "finished_at": "2026-10-24T18:41:38.847Z",
+    "runtime": "v24.22.1",
+    "protocol": {
+      "claim": "Determine a tested lower bound or reproducible operational boundary for simultaneous market WebSockets from one observed egress; no assumption that a timeout is an IP connection cap.",
+      "endpoint": "wss://ws-subscriptions-clob.polymarket.com/ws/market",
+      "maximum_connections": 4000,
+      "one_market_per_socket": true,
+      "assets_per_socket": 2,
+      "opens_per_second_maximum": 10,
+      "initialization_timeout_seconds": 15,
+      "stage_hold_seconds": 300,
+      "final_hold_seconds": 300,
+      "ping_interval_seconds": 10,
+      "custom_feature_enabled": false,
+      "initial_dump": true,
+      "address_family": "IPv4 first, automatic family selection disabled",
+      "success": "Both valid book snapshots on every requested socket, OPEN state, at least one PONG per socket, PONG age <=15 seconds, no unexpected close or error during hold",
+      "stop_policy": "Stop on non-lifecycle disconnect, error, throttling, failed lifecycle revalidation, or client guard",
+      "client_guards": {
+        "rss_bytes": 2147483648,
+        "queued_output_bytes": 16777216,
+        "total_received_bytes": 17179869184,
+        "retained_evidence_bytes": 4294967296,
+        "wall_seconds": 2400
+      },
+      "host": {
+        "logical_cores": 6,
+        "load_average": [
+          3.25,
+          2.58,
+          2.14
+        ]
+      },
+      "script_sha256": "e98e0cc3b2f4deb416f9741d0e58039146869fb0dae4d167fb65c494b90ff2a5",
+      "hold_policy": "Fixed wall-clock window, replace lifecycle retirements and report population dips",
+      "maximum_initializations_in_flight": 8,
+      "market_selection": "All markets ranked by observed Gamma volume24hr descending, eligible binary only",
+      "lifecycle_policy": "Replace only server-resolved markets, revalidate metadata, and restart the full hold; retain every attempt",
+      "frame_recording": "All initial snapshot frames and PONGs, then at most one update frame per connection per ten seconds"
+    },
+    "stop_reason": "socket_error",
+    "conclusion": "Observed operational failure; inspect evidence before claiming an IP cap",
+    "maximum_requested": 4083,
+    "maximum_passed": 0,
+    "stages": [
+      {
+        "target": 4000,
+        "requested_markets": 4000,
+        "requested_assets": 8000,
+        "open": 3999,
+        "complete_books": 8000,
+        "healthy": 3999,
+        "stage_start_ms": 11784.679178,
+        "hold_start_ms": 477686.669515,
+        "end_ms": 659042.517421,
+        "hold_seconds": 181.35584790600004,
+        "passed": false,
+        "stop_reason": "socket_error",
+        "received_bytes": 621254972,
+        "bytes_per_second": 3425613.120134993,
+        "cpu_ms": {
+          "user": 101932.159,
+          "system": 43470.836
+        },
+        "event_loop_ms": {
+          "p50": 5.185535,
+          "p99": 36.372479,
+          "max": 545.783807
+        },
+        "rss_bytes": 952434688,
+        "open_file_descriptors": 4023,
+        "population_policy": "maintained",
+        "hold_restarts": 0,
+        "market_updates": 1003104,
+        "market_updates_per_second": 5531.136776575998,
+        "price_change_entries": 1995758,
+        "active_markets": 3668,
+        "callback_work_ms": 27648.176514050574,
+        "maximum_callback_ms": 325.4341880000429
+      }
+    ],
+    "egress": {
+      "source": "https://ws-subscriptions-clob.polymarket.com/cdn-cgi/trace",
+      "before_status": 200,
+      "after_status": 200,
+      "public_ip_observed_before": true,
+      "public_ip_observed_after": true,
+      "public_ip_unchanged": true,
+      "public_ip_family_before": 4,
+      "public_ip_family_after": 4,
+      "distinct_local_transport_addresses": 1,
+      "distinct_local_websocket_addresses": 1,
+      "distinct_remote_transport_addresses": 2,
+      "websocket_remote_families": [
+        "IPv4"
+      ],
+      "websocket_handshake_diagnostics": 4083,
+      "handshake_statuses": [
+        101
+      ],
+      "addresses_retained": false
+    },
+    "errors": [
+      {
+        "name": "Error",
+        "code": "ECONNRESET",
+        "message": "read ECONNRESET",
+        "cause": null
+      },
+      {
+        "name": "Error",
+        "code": "ECONNRESET",
+        "message": "read ECONNRESET",
+        "cause": null
+      }
+    ],
+    "bytes_received": 1728436547,
+    "peak_rss_bytes": 1049796608,
+    "maximum_queued_output_bytes": 396830,
+    "cpu_ms": {
+      "user": 384749.209,
+      "system": 150800.568
+    },
+    "sockets_not_closed_after_grace": 0,
+    "retained_payload_bytes": 57023308,
+    "total_market_updates": 2758904,
+    "total_price_change_entries": 5484346
+  },
+  "verification": {
+    "verified_stages": [],
+    "received_frames": 239554,
+    "received_payload_bytes": 57023308,
+    "all_received_payload_bytes": 1728436547,
+    "frame_recording": "All initial snapshot frames and PONGs, then at most one update frame per connection per ten seconds",
+    "total_pongs": 168705,
+    "event_types": {
+      "book": 8109,
+      "price_change": 66744,
+      "last_trade_price": 19,
+      "tick_size_change": 2
+    },
+    "distinct_markets": 4083,
+    "distinct_assets": 8166,
+    "minimum_connection_creation_interval_ms": 99.25696600000083,
+    "snapshot_initialization_ms": {
+      "minimum": 19.541620999982115,
+      "median": 30.41646799999944,
+      "maximum": 2148.051026000001
+    },
+    "close_codes": {
+      "1000": 4081,
+      "1006": 2
+    },
+    "unexpected_closes": [
+      {
+        "connection": 368,
+        "close": {
+          "mono_ms": 658993.553313,
+          "code": 1006,
+          "reason": "",
+          "wasClean": false,
+          "expected": false
+        }
+      }
+    ],
+    "resolved_market_closes": [
+      {
+        "connection": 2,
+        "market": "6102531",
+        "close": {
+          "mono_ms": 245326.171382,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 215,
+        "market": "5538666",
+        "close": {
+          "mono_ms": 360842.486919,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 221,
+        "market": "5538669",
+        "close": {
+          "mono_ms": 360851.000625,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 224,
+        "market": "5538672",
+        "close": {
+          "mono_ms": 360848.366722,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 265,
+        "market": "5534983",
+        "close": {
+          "mono_ms": 360174.434127,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 307,
+        "market": "5535029",
+        "close": {
+          "mono_ms": 552664.608704,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 319,
+        "market": "5548057",
+        "close": {
+          "mono_ms": 552617.169844,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 528,
+        "market": "5503427",
+        "close": {
+          "mono_ms": 598635.201078,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 535,
+        "market": "5542870",
+        "close": {
+          "mono_ms": 598834.805071,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 557,
+        "market": "5503429",
+        "close": {
+          "mono_ms": 372073.700898,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 688,
+        "market": "5548240",
+        "close": {
+          "mono_ms": 372022.117716,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 727,
+        "market": "5503428",
+        "close": {
+          "mono_ms": 360870.63826,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 744,
+        "market": "5548248",
+        "close": {
+          "mono_ms": 372032.985497,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 780,
+        "market": "5542675",
+        "close": {
+          "mono_ms": 523530.188294,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 882,
+        "market": "5909219",
+        "close": {
+          "mono_ms": 372021.18764,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 974,
+        "market": "5503434",
+        "close": {
+          "mono_ms": 373358.458585,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1008,
+        "market": "5538674",
+        "close": {
+          "mono_ms": 372153.343129,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1051,
+        "market": "5548056",
+        "close": {
+          "mono_ms": 552806.972263,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1068,
+        "market": "5538690",
+        "close": {
+          "mono_ms": 372028.802662,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 1184,
+        "market": "5940771",
+        "close": {
+          "mono_ms": 340863.53114,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1197,
+        "market": "6035986",
+        "close": {
+          "mono_ms": 207062.434924,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1332,
+        "market": "5538677",
+        "close": {
+          "mono_ms": 372036.640109,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1432,
+        "market": "5538699",
+        "close": {
+          "mono_ms": 386853.449747,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1543,
+        "market": "5548241",
+        "close": {
+          "mono_ms": 375875.226854,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1626,
+        "market": "5542887",
+        "close": {
+          "mono_ms": 552868.882307,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 1692,
+        "market": "5536954",
+        "close": {
+          "mono_ms": 523475.670648,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1693,
+        "market": "5526228",
+        "close": {
+          "mono_ms": 552893.2686,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 1762,
+        "market": "6013566",
+        "close": {
+          "mono_ms": 523497.160749,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1822,
+        "market": "6094817",
+        "close": {
+          "mono_ms": 340808.310459,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1899,
+        "market": "5538695",
+        "close": {
+          "mono_ms": 375866.128971,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1904,
+        "market": "5548239",
+        "close": {
+          "mono_ms": 386884.13012,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1919,
+        "market": "5534906",
+        "close": {
+          "mono_ms": 598577.560199,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 1993,
+        "market": "5590853",
+        "close": {
+          "mono_ms": 386870.185072,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2161,
+        "market": "5909220",
+        "close": {
+          "mono_ms": 523474.608839,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2240,
+        "market": "5940750",
+        "close": {
+          "mono_ms": 598818.04921,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2376,
+        "market": "5548092",
+        "close": {
+          "mono_ms": 387441.63886,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2495,
+        "market": "5590838",
+        "close": {
+          "mono_ms": 386888.323866,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2522,
+        "market": "5538649",
+        "close": {
+          "mono_ms": 386845.801545,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2523,
+        "market": "5549562",
+        "close": {
+          "mono_ms": 598831.445456,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2544,
+        "market": "5887273",
+        "close": {
+          "mono_ms": 387438.872463,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2558,
+        "market": "5590840",
+        "close": {
+          "mono_ms": 387443.459351,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2560,
+        "market": "5542922",
+        "close": {
+          "mono_ms": 553598.14969,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 2699,
+        "market": "5547920",
+        "close": {
+          "mono_ms": 598562.98665,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2759,
+        "market": "5547921",
+        "close": {
+          "mono_ms": 599582.554169,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2799,
+        "market": "5542920",
+        "close": {
+          "mono_ms": 599580.430539,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 2824,
+        "market": "5548094",
+        "close": {
+          "mono_ms": 388447.951503,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2951,
+        "market": "5535034",
+        "close": {
+          "mono_ms": 568120.783503,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2965,
+        "market": "5542687",
+        "close": {
+          "mono_ms": 388461.326314,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 2973,
+        "market": "5547917",
+        "close": {
+          "mono_ms": 609391.955713,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 3210,
+        "market": "5940754",
+        "close": {
+          "mono_ms": 612723.975694,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 3229,
+        "market": "5548091",
+        "close": {
+          "mono_ms": 387444.989733,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 3299,
+        "market": "5547922",
+        "close": {
+          "mono_ms": 599568.009181,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 3416,
+        "market": "6013593",
+        "close": {
+          "mono_ms": 599561.761365,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      },
+      {
+        "connection": 3713,
+        "market": "5534986",
+        "close": {
+          "mono_ms": 523219.401288,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": false,
+          "archived": false,
+          "acceptingOrders": true,
+          "agrees_with_stream": false
+        }
+      },
+      {
+        "connection": 3866,
+        "market": "5535184",
+        "close": {
+          "mono_ms": 610411.696778,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        },
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "agrees_with_stream": true
+        }
+      }
+    ],
+    "unavailable_initial_markets": [
+      {
+        "connection": 510,
+        "market": "5534981",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 1080,
+        "market": "5534982",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 1187,
+        "market": "6090756",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 1861,
+        "market": "5548103",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 1906,
+        "market": "5548107",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 1930,
+        "market": "5548106",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2012,
+        "market": "6016690",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2080,
+        "market": "5542814",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2128,
+        "market": "5548108",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2182,
+        "market": "5548104",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2202,
+        "market": "5590807",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2534,
+        "market": "6090764",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2688,
+        "market": "5548102",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2702,
+        "market": "5590848",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2744,
+        "market": "5590808",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2767,
+        "market": "5542818",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2934,
+        "market": "6017683",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 2963,
+        "market": "5909218",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 3025,
+        "market": "5548093",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 3075,
+        "market": "5548110",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 3082,
+        "market": "6017894",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 3127,
+        "market": "5548109",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 3314,
+        "market": "5529561",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 3352,
+        "market": "5538739",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 3438,
+        "market": "5590852",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 3527,
+        "market": "5548243",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 4065,
+        "market": "5542417",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      },
+      {
+        "connection": 4068,
+        "market": "6017671",
+        "reason": "metadata_ineligible_before_initial_snapshot",
+        "metadata": {
+          "active": true,
+          "closed": true,
+          "archived": false,
+          "acceptingOrders": false,
+          "enableOrderBook": true
+        },
+        "books": null
+      }
+    ],
+    "maximum_passed_from_raw": 0,
+    "archived_harness_sha256_verified": true
+  },
+  "interpretation": "Observed concurrent admissions; maintained windows report actual population dips and heartbeat freshness separately. No absolute IP cap is established.",
+  "caveats": [
+    "One ramp, not independent repeated saturation trials.",
+    "Observed live traffic does not establish a true worst case.",
+    "Volume24hr ranks historical trading volume, not instantaneous order-book update frequency."
+  ],
+  "sources": [
+    "https://docs.polymarket.com/market-data/realtime-data",
+    "https://docs.polymarket.com/api-reference/rate-limits"
+  ],
+  "compaction": {
+    "note": "Bulky per-item arrays were trimmed to keep the repository readable. Aggregates above are unchanged. The full original file is in Git history.",
+    "full_original": "git show 76e65b8:research/experiments/polymarket-subscription-capacity-connections-active-4000-first-attempt-results.json",
+    "trimmed": {
+      "measurement.connections": "4083 per-connection records removed",
+      "measurement.stages[].connection_indices": "removed (per-connection detail)",
+      "measurement.stages[].per_market_updates": "removed (per-connection detail)"
+    }
+  }
+}

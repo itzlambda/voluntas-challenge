@@ -1,0 +1,534 @@
+{
+  "resource_confounded": true,
+  "reason": "The process reached RLIMIT_NOFILE=1024. Connection failures and coverage are not venue evidence.",
+  "selected_conditions": {
+    "264": "0xbf37c4670d63a250f5837c12636615950a03434219cced86f4da545d8087ebb0",
+    "400": "0x233e4370d16889f614f62a3280887b31e0c381ec3a3e0bb362aefdf0703f6406",
+    "661": "0xd199ca50b6298536efb00a8d0448a3a64bdb78bb1965d394f6ad42ee73a318f4"
+  },
+  "source_sha256": "6e2bfdd41754feaa31b661bcb8201483e903249c9da906b0b763dfcd65f7f086",
+  "source_bytes": 1976955805,
+  "selected_original_bytes": 127962588,
+  "fixture_sha256": "70fbf51b3d8ea25bb2c22ad7f2bad6fff2c71e5205172a61b3fc57dbfaaf103e",
+  "counts": {
+    "markets": 3,
+    "book": 382,
+    "first_snapshots": 6,
+    "frames": 160339,
+    "price_change": 159787,
+    "applied_level_updates": 319574,
+    "checkpoint_frames": 362,
+    "periodic_snapshots": 1568,
+    "last_trade_price": 180,
+    "unsync_marks": 21,
+    "catch_up_books": 14,
+    "catch_up_levels": 446
+  },
+  "repeat_books": 362,
+  "different_books": 6,
+  "different_levels": 20,
+  "quantity_directions": {
+    "increase": 4,
+    "decrease": 16
+  },
+  "telemetry": [
+    {
+      "connection": 264,
+      "event": "mismatch",
+      "levels": 1,
+      "market": "0xbf37c4670d63a250f5837c12636615950a03434219cced86f4da545d8087ebb0",
+      "order_book": "23001311276330546545427794768026847109312351756548331377519186554267433645887",
+      "ts": "2026-10-26T11:30:43.215435782+00:00",
+      "worker": 0
+    },
+    {
+      "connection": 264,
+      "event": "mismatch",
+      "levels": 1,
+      "market": "0xbf37c4670d63a250f5837c12636615950a03434219cced86f4da545d8087ebb0",
+      "order_book": "23855822464570164977909500782660485406950589381969743368244162392681743564238",
+      "ts": "2026-10-26T11:30:43.215536004+00:00",
+      "worker": 0
+    },
+    {
+      "connection": 400,
+      "event": "mismatch",
+      "levels": 8,
+      "market": "0x233e4370d16889f614f62a3280887b31e0c381ec3a3e0bb362aefdf0703f6406",
+      "order_book": "27196517119134419244413701230084893927139306774396711693142384390038900185658",
+      "ts": "2026-10-26T11:32:08.351899838+00:00",
+      "worker": 2
+    },
+    {
+      "connection": 400,
+      "event": "mismatch",
+      "levels": 8,
+      "market": "0x233e4370d16889f614f62a3280887b31e0c381ec3a3e0bb362aefdf0703f6406",
+      "order_book": "101299456170654873918127383744119275806517469112352178593680537277265141247968",
+      "ts": "2026-10-26T11:32:08.351920349+00:00",
+      "worker": 2
+    },
+    {
+      "connection": 661,
+      "event": "mismatch",
+      "levels": 1,
+      "market": "0xd199ca50b6298536efb00a8d0448a3a64bdb78bb1965d394f6ad42ee73a318f4",
+      "order_book": "103932782270729408160603528230548111100805956742930752907736729086449511075879",
+      "ts": "2026-10-26T11:32:10.088213504+00:00",
+      "worker": 0
+    },
+    {
+      "connection": 661,
+      "event": "mismatch",
+      "levels": 1,
+      "market": "0xd199ca50b6298536efb00a8d0448a3a64bdb78bb1965d394f6ad42ee73a318f4",
+      "order_book": "44673247570057163753457271482980153497733105637036623110393930137361923360830",
+      "ts": "2026-10-26T11:32:10.088242574+00:00",
+      "worker": 0
+    }
+  ],
+  "incidents": [
+    {
+      "ordinal": 83,
+      "line": 586358,
+      "event_index": 0,
+      "connection": "264",
+      "market": "0xbf37c4670d63a250f5837c12636615950a03434219cced86f4da545d8087ebb0",
+      "asset": "23001311276330546545427794768026847109312351756548331377519186554267433645887",
+      "initial": {
+        "line": 59057,
+        "event_index": 54,
+        "received_at": "2026-10-26T11:28:12.879433951Z",
+        "exchange_ms": 1793014092744,
+        "hash": "03bccbde5d8386a2cec8424948bbc45c1b6d97a8"
+      },
+      "refresh_number": 10,
+      "session": 2,
+      "session_book_number": 2,
+      "book_number": 12,
+      "before_received_us": 1793014243213618,
+      "before_exchange_us": 1793014243119000,
+      "incoming_received_us": 1793014243213626,
+      "incoming_exchange_us": 1793014243119000,
+      "incoming_hash": "b676842e1f00a70414e234bf8ed990b7fe5b83ad",
+      "differences": [
+        {
+          "side": "ask",
+          "price": 930000,
+          "held": 671720000,
+          "incoming": 771720000
+        }
+      ]
+    },
+    {
+      "ordinal": 84,
+      "line": 586359,
+      "event_index": 0,
+      "connection": "264",
+      "market": "0xbf37c4670d63a250f5837c12636615950a03434219cced86f4da545d8087ebb0",
+      "asset": "23855822464570164977909500782660485406950589381969743368244162392681743564238",
+      "initial": {
+        "line": 59057,
+        "event_index": 27,
+        "received_at": "2026-10-26T11:28:12.879433951Z",
+        "exchange_ms": 1793014092744,
+        "hash": "b18adfe54d396c384bdbb5af41bc97a668990838"
+      },
+      "refresh_number": 10,
+      "session": 2,
+      "session_book_number": 2,
+      "book_number": 12,
+      "before_received_us": 1793014243213618,
+      "before_exchange_us": 1793014243119000,
+      "incoming_received_us": 1793014243213682,
+      "incoming_exchange_us": 1793014243119000,
+      "incoming_hash": "5981c52ccd814e29ff912d93f8b43e066d5ad419",
+      "differences": [
+        {
+          "side": "bid",
+          "price": 70000,
+          "held": 671720000,
+          "incoming": 771720000
+        }
+      ]
+    },
+    {
+      "ordinal": 129,
+      "line": 1108211,
+      "event_index": 0,
+      "connection": "400",
+      "market": "0x233e4370d16889f614f62a3280887b31e0c381ec3a3e0bb362aefdf0703f6406",
+      "asset": "27196517119134419244413701230084893927139306774396711693142384390038900185658",
+      "initial": {
+        "line": 113780,
+        "event_index": 110,
+        "received_at": "2026-10-26T11:28:46.985626743Z",
+        "exchange_ms": 1793014126409,
+        "hash": "d998905a16a4bdcd271774fd1b8aade93da4b50e"
+      },
+      "refresh_number": 56,
+      "session": 4,
+      "session_book_number": 18,
+      "book_number": 60,
+      "before_received_us": 1793014328337364,
+      "before_exchange_us": 1793014328211000,
+      "incoming_received_us": 1793014328337377,
+      "incoming_exchange_us": 1793014328211000,
+      "incoming_hash": "995f3dfd47036b3b8821f8a20c3b134ea5b2c88a",
+      "differences": [
+        {
+          "side": "bid",
+          "price": 10000,
+          "held": 3158450000,
+          "incoming": 2778450000
+        },
+        {
+          "side": "bid",
+          "price": 20000,
+          "held": 1321610000,
+          "incoming": 1141610000
+        },
+        {
+          "side": "bid",
+          "price": 30000,
+          "held": 2781030000,
+          "incoming": 2671030000
+        },
+        {
+          "side": "bid",
+          "price": 50000,
+          "held": 247700000,
+          "incoming": 177700000
+        },
+        {
+          "side": "ask",
+          "price": 950000,
+          "held": 272710000,
+          "incoming": 202710000
+        },
+        {
+          "side": "ask",
+          "price": 970000,
+          "held": 1959920000,
+          "incoming": 1849920000
+        },
+        {
+          "side": "ask",
+          "price": 980000,
+          "held": 1793610000,
+          "incoming": 1613610000
+        },
+        {
+          "side": "ask",
+          "price": 990000,
+          "held": 3623450000,
+          "incoming": 3243450000
+        }
+      ]
+    },
+    {
+      "ordinal": 130,
+      "line": 1108212,
+      "event_index": 0,
+      "connection": "400",
+      "market": "0x233e4370d16889f614f62a3280887b31e0c381ec3a3e0bb362aefdf0703f6406",
+      "asset": "101299456170654873918127383744119275806517469112352178593680537277265141247968",
+      "initial": {
+        "line": 113780,
+        "event_index": 111,
+        "received_at": "2026-10-26T11:28:46.985626743Z",
+        "exchange_ms": 1793014126409,
+        "hash": "caf76bfda57e4898ef03fd85cb884f552f2e40dc"
+      },
+      "refresh_number": 56,
+      "session": 4,
+      "session_book_number": 18,
+      "book_number": 60,
+      "before_received_us": 1793014328337364,
+      "before_exchange_us": 1793014328211000,
+      "incoming_received_us": 1793014328337487,
+      "incoming_exchange_us": 1793014328211000,
+      "incoming_hash": "3db6382fd8bd6fa2bfe5e246e0a8de448a0c8b32",
+      "differences": [
+        {
+          "side": "bid",
+          "price": 10000,
+          "held": 3623450000,
+          "incoming": 3243450000
+        },
+        {
+          "side": "bid",
+          "price": 20000,
+          "held": 1793610000,
+          "incoming": 1613610000
+        },
+        {
+          "side": "bid",
+          "price": 30000,
+          "held": 1959920000,
+          "incoming": 1849920000
+        },
+        {
+          "side": "bid",
+          "price": 50000,
+          "held": 272710000,
+          "incoming": 202710000
+        },
+        {
+          "side": "ask",
+          "price": 950000,
+          "held": 247700000,
+          "incoming": 177700000
+        },
+        {
+          "side": "ask",
+          "price": 970000,
+          "held": 2781030000,
+          "incoming": 2671030000
+        },
+        {
+          "side": "ask",
+          "price": 980000,
+          "held": 1321610000,
+          "incoming": 1141610000
+        },
+        {
+          "side": "ask",
+          "price": 990000,
+          "held": 3158450000,
+          "incoming": 2778450000
+        }
+      ]
+    },
+    {
+      "ordinal": 129,
+      "line": 1125072,
+      "event_index": 0,
+      "connection": "661",
+      "market": "0xd199ca50b6298536efb00a8d0448a3a64bdb78bb1965d394f6ad42ee73a318f4",
+      "asset": "103932782270729408160603528230548111100805956742930752907736729086449511075879",
+      "initial": {
+        "line": 314054,
+        "event_index": 155,
+        "received_at": "2026-10-26T11:29:54.259717435Z",
+        "exchange_ms": 1793014185508,
+        "hash": "23698c191d24d511e3c01ec7650d622c2fe8ff0e"
+      },
+      "refresh_number": 1,
+      "session": 2,
+      "session_book_number": 2,
+      "book_number": 3,
+      "before_received_us": 1793014330086247,
+      "before_exchange_us": 1793014330060000,
+      "incoming_received_us": 1793014330086255,
+      "incoming_exchange_us": 1793014330060000,
+      "incoming_hash": "7127e9478a5db2187aeadb316b76ae0a8e37f56b",
+      "differences": [
+        {
+          "side": "bid",
+          "price": 30000,
+          "held": 0,
+          "incoming": 3333000000
+        }
+      ]
+    },
+    {
+      "ordinal": 130,
+      "line": 1125077,
+      "event_index": 0,
+      "connection": "661",
+      "market": "0xd199ca50b6298536efb00a8d0448a3a64bdb78bb1965d394f6ad42ee73a318f4",
+      "asset": "44673247570057163753457271482980153497733105637036623110393930137361923360830",
+      "initial": {
+        "line": 314054,
+        "event_index": 117,
+        "received_at": "2026-10-26T11:29:54.259717435Z",
+        "exchange_ms": 1793014185508,
+        "hash": "4ad6ce0c5d1b19aee788d56a47e74ef1ba85a05e"
+      },
+      "refresh_number": 1,
+      "session": 2,
+      "session_book_number": 2,
+      "book_number": 3,
+      "before_received_us": 1793014330086247,
+      "before_exchange_us": 1793014330060000,
+      "incoming_received_us": 1793014330086291,
+      "incoming_exchange_us": 1793014330060000,
+      "incoming_hash": "4005f135ba0f7002782216390aa3e6181fe560c1",
+      "differences": [
+        {
+          "side": "ask",
+          "price": 970000,
+          "held": 0,
+          "incoming": 3333000000
+        }
+      ]
+    }
+  ],
+  "original_prefix_complete_before_books": 362,
+  "rust_comparisons": [
+    {
+      "workers": 1,
+      "complete_before_books": 6,
+      "disagreements": 0,
+      "sha256": "a657891a25ea1892c09c5d8d10cdfab3f8b3ba84e5b88b959da44473fd89c1b9"
+    },
+    {
+      "workers": 2,
+      "complete_before_books": 6,
+      "disagreements": 0,
+      "sha256": "a657891a25ea1892c09c5d8d10cdfab3f8b3ba84e5b88b959da44473fd89c1b9"
+    },
+    {
+      "workers": 4,
+      "complete_before_books": 6,
+      "disagreements": 0,
+      "sha256": "a657891a25ea1892c09c5d8d10cdfab3f8b3ba84e5b88b959da44473fd89c1b9"
+    }
+  ],
+  "live_sbe": {
+    "disagreements": 0,
+    "resource_confounded": true,
+    "scanned_records": 5842935,
+    "selected_before_comparisons": 6
+  },
+  "live_before_sha256": "f24a1b664e39ba3b99289b9521b0b840d1a066eee7d3852b30b8b75290710084",
+  "small_windows": [
+    {
+      "connection": "264",
+      "market": "0xbf37c4670d63a250f5837c12636615950a03434219cced86f4da545d8087ebb0",
+      "start": 550496,
+      "end": 586359,
+      "source_lines": [
+        550496,
+        559741,
+        559752,
+        559764,
+        560645,
+        560923,
+        560924,
+        565331,
+        565527,
+        566021,
+        567840,
+        567928,
+        568102,
+        569550,
+        571230,
+        571231,
+        571373,
+        573190,
+        581392,
+        581393,
+        581400,
+        581785,
+        582890,
+        582891,
+        582893,
+        582895,
+        582896,
+        582897,
+        582898,
+        582902,
+        586357,
+        586358,
+        586359
+      ],
+      "bytes": 275001
+    },
+    {
+      "connection": "400",
+      "market": "0x233e4370d16889f614f62a3280887b31e0c381ec3a3e0bb362aefdf0703f6406",
+      "start": 1106719,
+      "end": 1108212,
+      "source_lines": [
+        1106719,
+        1106727,
+        1107189,
+        1107840,
+        1107849,
+        1107856,
+        1107858,
+        1107897,
+        1107967,
+        1107974,
+        1108189,
+        1108192,
+        1108193,
+        1108194,
+        1108197,
+        1108200,
+        1108201,
+        1108202,
+        1108207,
+        1108208,
+        1108209,
+        1108211,
+        1108212
+      ],
+      "bytes": 32422
+    },
+    {
+      "connection": "661",
+      "market": "0xd199ca50b6298536efb00a8d0448a3a64bdb78bb1965d394f6ad42ee73a318f4",
+      "start": 787564,
+      "end": 1125077,
+      "source_lines": [
+        787564,
+        998279,
+        1124894,
+        1125070,
+        1125071,
+        1125072,
+        1125077
+      ],
+      "bytes": 365941
+    }
+  ],
+  "saved_fixture_sha256": {
+    "book-incidents-fresh-264.jsonl": "b21495ae167c4da4d132f142afa3c879e28c1b9f473a3c200c36b0683d36b012",
+    "book-incidents-fresh-400.jsonl": "2f506393c418f631a89cf47acb74e61f039bbc04278de403445469495ced19da",
+    "book-incidents-fresh-661.jsonl": "182903344a5fcedbebacefdef298d6e34f8f4ff25ccdc720f115e74e52f0527b"
+  },
+  "interpretation": "The six selected actual live SBE books immediately before corrective refresh records equal the independent raw Decimal books. Current offline Rust also agrees at N=1,2,4. A worker omission of a captured update does not explain these six incoming differences. This resource-confounded run cannot establish venue behavior, network reliability, or capacity.",
+  "source_code_sha256": {
+    "src/core/app.rs": "82e20b9f26a7c62a90fbf94fe8ac28e9a472e1126dafc575b5a2898d19b2f82d",
+    "src/core/book_connection.rs": "37e86b9ee7b467766a6f5e10b13594ef182f43b447818f2b01f153c0d8c15f89",
+    "src/core/capture.rs": "276f656a0f461ca5a148d55a7867b96f61979b3fe44d5da6e124f5146da5ee1f",
+    "src/core/config.rs": "429c7ef5dbd9a8808b4295d0fe43613f8641daecd570e00ceab1557c8eb7f779",
+    "src/core/connection.rs": "59b84109b879e7bc91d9df4019414e04a0cbaacd5534b2ef8192faa6d4c2a6fe",
+    "src/core/decode_log.rs": "aa6c65646543994978a4dc28685b5bf00eaa4d8d29fd4e31d453bc09bd4aa658",
+    "src/core/discovery.rs": "e3062ced2d37862663249397239521b89dedd81a19c27ab8bd9f6190c4deceaf",
+    "src/core/fixture.rs": "d670437dd6182edad0ad4b6a6a6d3e7be29156a4ca6c9fb1647d5f73098dfd09",
+    "src/core/latency.rs": "ce7479ace70ddf6b0cc0be0efdc72fee9d365bfe8ceb1b6c0befcbf6e05e738e",
+    "src/core/lifecycle.rs": "aca2cc23c0b3c92171b40fd33465a470f0f6fcd5606a5bb67c660101456b3263",
+    "src/core/mod.rs": "32ff087780c4e9b8346ab090f390cf0a005f294ee78b63444968ac9b436fdafd",
+    "src/core/order_book.rs": "77486d64f12591a261e77524ddb7ea2c8cdc8c72cfc458ee42e656f6fc5ec819",
+    "src/core/pipeline.rs": "244fb44204fec7db26092c08b954db1a4131829ed726920648374399472dcc09",
+    "src/core/rate_limit.rs": "36d4b84ddcda9d4af55319a1929c9af10ea24e42cc8453e63e640efa0a311179",
+    "src/core/reconnect_backoff.rs": "19f5251d3edd414544269ca5ad4e4e45cb8c5ab12d293d1234801dd2e70b7a45",
+    "src/core/registry.rs": "4f9bcd6ed7e681ea306670523a78a51cfbe9c55f269ea552e3c65b0d2bbd16d9",
+    "src/core/routing.rs": "9cac0edbcf8faede47077ad1707bdde48b52b6ff23de77f7b9166157488328fb",
+    "src/core/subscriptions.rs": "256479270b792f4758a4010e64dcf4e86e68b309648000f4fcddf5bf978e1200",
+    "src/core/telemetry.rs": "45ecea4215b3dcacb3e910cb4d26ae53f560f8767857e5a2eb4f9e050f0f6181",
+    "src/core/worker.rs": "92eaac6bce352abd26ec9d1babf14052c4b9f0d3ea31472b8e74689baf7d5e4e",
+    "src/core/writer.rs": "89bf65bb8dc18300125fe87b7adbba7dfd1f46b6587ce54b9567553a13801d0c",
+    "src/exchange/mod.rs": "d99e4da4b00cf277a0308adf448e732aa63d0c186a3a46b28fb23cde235ab69a",
+    "src/exchange/polymarket/decode.rs": "0b8b2f89abb4092bf2963c7b0bfba998996b577924865ef9967384357d5bf8c1",
+    "src/exchange/polymarket/gamma.rs": "8f1bffd8bf13b00bf6eb96720312aeab6eeea622138b8ad9600ed86554a6e188",
+    "src/exchange/polymarket/mod.rs": "a91e600e6b3f4d6def0f2450c291f1b9cdb0660f022b491c5d0ee4cec12bbee1",
+    "src/exchange/polymarket/number.rs": "3f56ef470ccfd12033ca7acf60f798280c03bb2d64ca0ad220f134603e9645d1",
+    "src/exchange/polymarket/ws.rs": "08192efa5814d41fe91d1d0700520f5ac39eed167929becc3b7e5fa97c7b6dbd",
+    "src/lib.rs": "2bf3a827e879533dfa63b38d11b654b621cb51f77c8d50e845c30524db90aaff",
+    "src/main.rs": "1330cffdfd6fb19bc7e86bbcb9ab4f7a34efb8134e5a85904e73418b3d92687c",
+    "src/model.rs": "dfe7d70437b6ec78212cb5afff5467d7c46e372ffb8309370c6be56429f3ca8c",
+    "src/side.rs": "83dca6f9e4db06dd1d486aa21f07d1ddec2cab1cc430b0f2c4fdbb857e6ae667",
+    "src/util/aligned_sbe_reader.rs": "7ae471368523d1d4b0240a5375d42d483caf9ba33c233c63c0b74f6509045e87",
+    "src/util/aligned_sbe_writer.rs": "b66bd32394cb5a26e891b152d523d155260040ab2e8746131f26ae7f265d4cf4",
+    "src/util/build.rs": "2c860b5b575b2399704a2d4ed9e9df51b27bf7c38a6167cdc6945a543bec7310",
+    "src/util/dtos.rs": "3e4edb85ae4a308943c33847a7601ba40a1edebc31dec23361e36ebf8c60bad9",
+    "src/util/mod.rs": "685716aecbe602ecbb9c0689d2741f7e75671437e4a51e09aa168b10c604b853",
+    "src/util/orderbook_schema.rs": "9462a5167cf1627cbb82e068ab87f7022121e5a15b243c6d3e3a740b8932a7cd",
+    "src/util/sbe_yaml.rs": "af749044c88dc6e9c959b29ac7dbf18be5eb7e542c0b46d8be11bc34b3545442"
+  }
+}

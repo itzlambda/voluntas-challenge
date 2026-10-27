@@ -1,0 +1,225 @@
+{
+  "date": "2026-10-26",
+  "validation": {
+    "tests_passed": 16,
+    "book_tests": 2,
+    "checker_tests": 8,
+    "socket_tests": 6,
+    "clippy_all_targets_warnings_denied": true,
+    "fmt_check": true,
+    "build_jobs": 2,
+    "test_threads": 1,
+    "commands": [
+      "cargo fmt --check --manifest-path fake-exchange/Cargo.toml",
+      "cargo clippy --manifest-path fake-exchange/Cargo.toml -j 2 --all-targets -- -D warnings",
+      "cargo test --manifest-path fake-exchange/Cargo.toml -j 2 -- --test-threads=1"
+    ]
+  },
+  "regression": {
+    "problem": "A hot connection overflowed while the generator monopolized a runtime worker.",
+    "proof": "The one-thread healthy_hot_socket_keeps_up_on_one_runtime_thread test fails with a 512-frame generation batch and passes with 32.",
+    "fix": "Yield after at most 32 generated frames; normal fan-out checks overflow with an atomic flag."
+  },
+  "smoke": {
+    "seconds": 60,
+    "initial_markets": 200,
+    "server_cores": 2,
+    "collector_workers": 2,
+    "rate": 1000,
+    "new_markets_per_second": 0.2,
+    "resolutions_per_second": 0.1,
+    "one_minute_load_before": 5.82,
+    "checker": {
+      "records": 60162,
+      "snapshots": 424,
+      "updates": 59738,
+      "errors": {
+        "count": 0,
+        "samples": []
+      },
+      "gaps": {
+        "count": 0,
+        "samples": []
+      },
+      "coverage": {
+        "catalog_assets": 424,
+        "creation_to_first_snapshot_ms": {
+          "count": 424,
+          "max": 498.456,
+          "min": 1.392,
+          "p50": 397.1,
+          "p99": 498.4,
+          "resolution_ms": 0.1
+        },
+        "eligible_without_snapshot": 0,
+        "grace_seconds": 5.0,
+        "samples": [],
+        "snapshotted_assets": 424
+      },
+      "tail": {
+        "assets": 424,
+        "changes_after_output": 348,
+        "changes_before_last_received_record": 10,
+        "max": 3,
+        "note": "unobserved trailing changes are reported separately from interior gaps",
+        "p50": 0,
+        "p99": 0
+      },
+      "latency_ms": {
+        "count": 60162,
+        "max": 553.868,
+        "min": 0.194,
+        "p50": 1.7,
+        "p99": 149.8,
+        "resolution_ms": 0.1
+      }
+    },
+    "collector": {
+      "books_held": 414,
+      "books_synced": 414,
+      "bytes_written": 2959916,
+      "catch_up_levels": 0,
+      "connection_splits": 0,
+      "connections": 5,
+      "coverage_pct": 100.0,
+      "decode_errors": 0,
+      "delivery_latency_ms_max": 553.868,
+      "delivery_latency_ms_mean": 9.409615187757874,
+      "event": "run_summary",
+      "events": 19690,
+      "frames": 19346,
+      "hints": 36,
+      "level_updates_written": 59738,
+      "mismatched_books": 0,
+      "provisional_markets": 2,
+      "registered_markets": 207,
+      "scans_completed": 6,
+      "snapshots_written": 424,
+      "subscribed_markets": 207,
+      "telemetry_dropped": 0,
+      "ts": "2026-10-26T12:55:13.666234734+00:00",
+      "unsync_marks": 0
+    }
+  },
+  "small_scale_ceiling": {
+    "seconds": 10,
+    "markets": 5000,
+    "connections": 50,
+    "assets_per_connection": 200,
+    "server_cores": [
+      0
+    ],
+    "client_cores": [
+      1
+    ],
+    "target_changes_per_second": 100000,
+    "outbound_capacity": 16384,
+    "history_enabled": false,
+    "one_minute_load_before": 6.67,
+    "client": {
+      "assets_per_connection": 200,
+      "book_frames": 10000,
+      "bytes_per_second": 3355610.9730386194,
+      "connections": 50,
+      "early_closes": 0,
+      "errors": 0,
+      "frames": 39166,
+      "frames_per_second": 3910.0950114901316,
+      "latency_ms": {
+        "count": 49066,
+        "max": 993.0,
+        "min": 0.0,
+        "p50": 6.0,
+        "p99": 920.0,
+        "resolution_ms": 0.1
+      },
+      "seconds": 10.016636395
+    },
+    "server_intervals": [
+      {
+        "bytes_per_second": 3177878.6523309317,
+        "closes_1013": 0,
+        "connections": 50,
+        "entries_per_second": 11319.490658593255,
+        "event": "stats",
+        "frames_per_second": 3625.3256247612935,
+        "generated_changes_per_second": 16057.696254298411,
+        "generator_lag_ms": [
+          8400.36
+        ],
+        "outbound_queue_depth_max": 57,
+        "subscriptions": 10000
+      }
+    ],
+    "server_cpu": {
+      "elapsed_seconds": 10.616621952038258,
+      "cpu_seconds": 10.260000000000002,
+      "cpu_cores": 0.9664090938106928
+    },
+    "client_cpu": {
+      "elapsed_seconds": 10.51,
+      "user_seconds": 1.87,
+      "system_seconds": 1.19
+    },
+    "interpretation": "One successful saturation run including subscription and 10,000 initial books, on a shared six-vCPU host. Server CPU was saturated while the client had spare CPU. Lag shows the requested 100,000 changes/s was not sustained. Full-scale capacity remains unmeasured."
+  },
+  "earlier_overload_attempts": [
+    {
+      "seconds": 20,
+      "outbound_capacity": 4096,
+      "result": {
+        "assets_per_connection": 200,
+        "book_frames": 10000,
+        "bytes_per_second": 2947233.6503652423,
+        "connections": 50,
+        "early_closes": 1,
+        "errors": 0,
+        "frames": 78517,
+        "frames_per_second": 3916.132264835577,
+        "latency_ms": {
+          "count": 88417,
+          "max": 1023.0,
+          "min": 0.0,
+          "p50": 19.0,
+          "p99": 666.0,
+          "resolution_ms": 0.1
+        },
+        "seconds": 20.049629249
+      },
+      "accepted_as_clean_ceiling": false
+    },
+    {
+      "seconds": 10,
+      "outbound_capacity": 16384,
+      "result": {
+        "assets_per_connection": 200,
+        "book_frames": 10000,
+        "bytes_per_second": 2953717.43289271,
+        "connections": 50,
+        "early_closes": 1,
+        "errors": 0,
+        "frames": 32393,
+        "frames_per_second": 3224.6620105450056,
+        "latency_ms": {
+          "count": 42293,
+          "max": 3996.0,
+          "min": 0.0,
+          "p50": 15.0,
+          "p99": 3526.0,
+          "resolution_ms": 0.1
+        },
+        "seconds": 10.045393872
+      },
+      "accepted_as_clean_ceiling": false
+    }
+  ],
+  "load_gate": "Both scripts check uptime immediately before starting a server, wait in ten-second increments for up to three minutes if one-minute load is above 12, and then refuse to start if it remains high. All recorded run gates were below 12.",
+  "scope_notes": [
+    "The binding spec and available collector protocol code were used.",
+    "No collector files changed. No collector issue was found in either smoke run.",
+    "Fault injection, scenarios, control API, lifecycle delays and TLS are intentionally excluded.",
+    "History uses buffered synchronous writes per shard and can increase lag on slow storage.",
+    "Tail and missing-snapshot coverage are reported separately from interior gaps; tail and coverage do not fail a check.",
+    "The 125-second no-PING timeout is implemented but was not exercised end to end by the <=60-second runs."
+  ]
+}

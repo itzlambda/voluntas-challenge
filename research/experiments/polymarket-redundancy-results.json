@@ -1,0 +1,2687 @@
+{
+  "runs": [
+    {
+      "market": {
+        "id": "6104736",
+        "question": "Will Bitcoin reach $82,000 on October 24?",
+        "condition_id": "0xecc23cf4dd24785b04a3f10d0ad6c6577858109296851d6a7cde76dd88682577",
+        "yes_asset_id": "42820435881084171095305173309280682294357335411274100735935831763831134276262",
+        "slug": "will-bitcoin-reach-82k-on-october-24-2026"
+      },
+      "started_at": "2026-10-24T10:08:25.765Z",
+      "connections": 10,
+      "observation_seconds": 120,
+      "warmup_seconds": 10,
+      "grace_seconds": 10,
+      "core_event_instances": 72,
+      "core_event_types": {
+        "price_change": 72
+      },
+      "core_events_seen_on_all_connections": 1,
+      "core_events_not_seen_everywhere": [
+        {
+          "kind": "price_change",
+          "timestamp": "1792836516098",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "5e48e63bcfb1f8659fff350f83fa39775f09d1e2b7985ab36add41d56e442723"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836517074",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "bb6eeaf793a6ef2c4c0c67c2d6a282856ec121cbada9f03b62ecf826e85cf2dc"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836517131",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "5b1f7b3a00c6799b5f18883f04883edc68b7580004c20c14e70404300e5b0121"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836531886",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "d5a30d7bb723651aece4ef7ccb0d0af8c882cfc6e04d8afadf0070483933f337"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836532511",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "ac05c37e124fb9c897809960267e9011b71fd972142c51dabafb3d508aecacea"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836532519",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "68df06240d4fae9ea434191bbfac630e97374594e242a6c1bb959e230459a226"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836533126",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "7cc60ec8321b4c979e3c02db2a85a34bcad637c1c0499f6e8b9cca7c10d95332"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836533130",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "b130c47cf36fb47e427cddf9b4a240f709f2c7537f4b9735457e40a56cbd602f"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836533353",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "99cc9e36dcd672498c5d5ba551f9d4c3bd5effb4ef86ec2c31855ed66b0776ff"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836533413",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "2f1896ac8221c06f41ed8b9498b524a8d7616f697bfff366863a3373e38df180"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836533413",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "1a284e7b830ecdd197683b412e36de41bea717fb8e43fcac9e42887d1034924e"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836533627",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "e9589e429008cc8dd1014c8b98d328cd3279630f02e08b19d8308f0a42819c4f"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836534353",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "0a3c5ee38ddc4c3a8e1bb0cecb1886463fd1a5ead5afab974ced09c8c2445100"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836535272",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "278786f557df3fdf2b07a1c73c88224963c44f2d9d04d1745121f846bf378c66"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836540497",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "50c996792b757948b3f41bd484055b66982f309a3fb9d56e2089d347a02dbde3"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836542049",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "9a5f0462840ca82da606997192088a426032450991c4f823d29e99193d30d955"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836542655",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "e56740a335d015bcab8f1468d15ba43310a1aa3c4b16cc12483728d2abb7661d"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836543573",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "13237ee9c95e1a8f9d993fd24670b3617b128e7ccaa400454a714ec8267e92ed"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836545429",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "ee5361bc70ce8d9d5dcdec63dc574a24008f0fa612ba047c8ce907821b97add3"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836545429",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "73cc9fbd2d856aa3e264cd656ce24731c10be063da7fc64d2c1b7e651c8046ba"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836545743",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "6a839e9fd70ea0b505abd121b4049ac8c99bbc0bb136b6bb5ab461ffda29a6e6"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836546027",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "75b9859d64f24e4dbac67167960ab61f585fb7a58d2332d73c8cc9abc00a9c87"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836546126",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "d8d39518c51761e3f479a5fa03995c2e5e7a291d339bc850f6aa56f6d43bbf5f"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836546214",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "8bb6a0b4ff29f16fd6729d0fe19d419743d37e45fd065f9e5b42150dc5ac4c10"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836546235",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "ddc52e86191c289d28f0d47ad730bc0e2c38fe750f3ce747a7ea14c8f6a1215a"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836546242",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "6f730978b0e3bfc58f2e58738d8dab0d7a0e5a59898ef33b97ec020c2c3bb2bb"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836546346",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "e2c76290a144fd53d1587c41856dca539d52b50207143d0f9d1e4ab402c299dc"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836546349",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "f3736a5a1067b60c7a98277cb98aee8a1dd603000713716df00bb9bbde17a36a"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836551082",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "63b66f98e8e2477d39298a5f0e8329486d0f3228c59a83843164aa8c49110b55"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836551082",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "9630101bd4991f4fd0b0f13d203b7b0ce75c14e22b8e3c1a442772986da0c964"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836551091",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "4e148af738ab25613b17c68418bee59c8d4cc20789995a6f308a2d0bc936961f"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836551093",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "18f172d63c1761e90a96e96b948362f93235d6c121116376e9902b2d1d4b2fbd"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836556003",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "a6fff57abfb53ea1e6784c667bbb5b701aa3874800f777a185c4580cf632025e"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836556003",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "ceee873901b7889c87baaf897c7a08c482c7c926a30b0501eb75390bff92ef9f"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836559167",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "edac25114773fc5f8e2edf1fcce2b392972721b9d6f08472a5e8e13a97522d54"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836559186",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "c6db59d2601f9c41e7a042787c90a0a8f8dd020fcaa45fec37bdb0c2a4cd2588"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836562348",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "a814d47ffe0e82857e50505cbff99df38d1f0ed4f217c475c1822d31fa9c6802"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836562348",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "3514ccccb771715f3097869b28e5bee075be8f6c2fe487b79894088770860986"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836562968",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "9b96a14e3c47c3f0da1188eb5886021c0f971aed4409466000123274168219fc"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836566391",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "ecb220c19ecf1131a20fc34d22b74359082ff52eb5b9ba812ba1103ae22c21fb"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836567321",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "fa10b777564271ab57b42c444076b90314714c97354a9a3307fd1bf6ea2231d9"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836567334",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "a1b3a262cf1bc5b6cc76a3ac4617faba768a69ea5e297b702d7f2dac1f3ccbeb"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836577319",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "5f0cb35812475509e7eb85a2518936ac942b11a04ecc04292c2245369de2e9ff"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836577380",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "aabc2a66c39e77a44faaf2b1f8d2b15b9af2aee0ae6b37c42ee700c33872b85b"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836577465",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "94791b064c5c3106a5a34da70f682549af4b6e1fd04e72d8a3b22a9a5269dccc"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836577465",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "1283bbea14e268aff50f291dcfb965a02b798d12b9f8572090e285d3117df325"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836577785",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "c4c64e361752aa7b286de3baab8d6239cfd82f928e8112ae581bb59cbbb085d9"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836579620",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "d7bd144773334385c5269218f9acddbf62037356187e96662442b8f50add45b7"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836580553",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "b02a57c495f30d281ac0b9c56db51c72d7214c24d5493f27d9e9e36ab47b359b"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836580555",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "567f84b03303dacd10381a35f6a67a3be74c7cf5ba6d3013ad5fa2dcc1917587"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836581473",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "4ffe625cdf8050ff8fc7a36d2b15e3c242cfba7282c0ca2f736cb3a174210a47"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836581473",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "8b11bf4fec3b8ecece3d6bfdf80d44e321c528b806d84795c07f58c9f56e1a78"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836581870",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "d97e9a588ef9898e3e85fff73f5c2f1f60e0b80de39fe14ab5305501518a434e"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836581870",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "cd5a4b341e45565cd8536ea0e428f7f41512d35a7054b98c56806331404b658d"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836581874",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "7af29aaab30da3116de4f216b6f7d9ed9ae4c6adaceea3fb5fe5e3360cd9e379"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836581874",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "0a0faad37ece6f7b479c36875445a91d04884703f20678c2aee569530f839058"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836582708",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "7b4aff1befbc2e9b3ab95da25d246acef8c65726c2593130db2b22db6252b21d"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836589784",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "98fdfbad2bb0a6f4f0ce4e99fdfd2cda32f957ede067d1dbaa50cc979db6854c"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836593101",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "5a71d300ee4ec736d2113097496fece287640a655f8f5c206dcbd93be80a84e6"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836593127",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "d52aa1c7429ba8589f910ea622f43809748577b3a8f8109164f419ce10391534"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836593179",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "e2ee1694f4f71c07b0fff0aaf99bd393ca50b90a0d6753d85dd752ee41477c80"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836593190",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "c8b2cadee38a6906746664122fb490bf5960068608b554f36d33aa36a98de7b3"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836593279",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "bf279e8c9e56adf6bd38a5e308858c22a15ef2cefe6c542da814be16473788fa"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836593308",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "99bad96a2a9fb2f0f6d6ce99fb49614f2cb08dc03c2a9250d025060a521207ce"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836604871",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "5d2a856a6a1c911803528cc606519bd1bdaec9b46dc9948f84e1f70b49d23197"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836604881",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "20c7f2581b963f7095fecafc4cb1002f5c03764bc21e6c5a917c6af265d26c9d"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836617948",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "6c537a8496f65bb16beafa5770410b37c5edf643318455a4b61585c971afef6b"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836619867",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "4367d02d84762eb3b7673aa1ebaf76d8e89f05e3172d62dae585db0588875db2"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836635556",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "1a651c195a94d61bb18f72753767ca23a9675ef725d6eaf6de74da351fc2db34"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836635593",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "041c70a8ee85063983f8ba19945167d37b0201ff7a3e3b3c1dc42cbe6c42bcba"
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836635732",
+          "seen_on": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10
+          ],
+          "event_id": "d1a9ae6107e0cb0cd92eafd6f1b6c40c5f98ab077ba1b37485db037dd5d02d89"
+        }
+      ],
+      "shared_event_arrival_spread_ms": {
+        "count": 1,
+        "median": 6.5545229999988806,
+        "p95": 6.5545229999988806,
+        "max": 6.5545229999988806
+      },
+      "shared_event_book_state_disagreements": [],
+      "distinct_initial_states": 1,
+      "distinct_final_states": 2,
+      "timestamp_collisions": [
+        {
+          "kind": "price_change",
+          "timestamp": "1792836510065",
+          "different_payloads": 3,
+          "event_ids": [
+            "06a51209fad54c4eb311b33cde328687528acf41b5cd245e64523b77954bedaa",
+            "a036eaf007fe3525f2933987bc757602c03f61c0b81e183ecd70b156cbb98fa2",
+            "ff5ed7836689c14721dc50c6c3a38a685275a27b8dfba7c33fd29b985fb1b102"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836533413",
+          "different_payloads": 2,
+          "event_ids": [
+            "1a284e7b830ecdd197683b412e36de41bea717fb8e43fcac9e42887d1034924e",
+            "2f1896ac8221c06f41ed8b9498b524a8d7616f697bfff366863a3373e38df180"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836545429",
+          "different_payloads": 2,
+          "event_ids": [
+            "73cc9fbd2d856aa3e264cd656ce24731c10be063da7fc64d2c1b7e651c8046ba",
+            "ee5361bc70ce8d9d5dcdec63dc574a24008f0fa612ba047c8ce907821b97add3"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836551082",
+          "different_payloads": 2,
+          "event_ids": [
+            "63b66f98e8e2477d39298a5f0e8329486d0f3228c59a83843164aa8c49110b55",
+            "9630101bd4991f4fd0b0f13d203b7b0ce75c14e22b8e3c1a442772986da0c964"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836556003",
+          "different_payloads": 2,
+          "event_ids": [
+            "a6fff57abfb53ea1e6784c667bbb5b701aa3874800f777a185c4580cf632025e",
+            "ceee873901b7889c87baaf897c7a08c482c7c926a30b0501eb75390bff92ef9f"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836562348",
+          "different_payloads": 2,
+          "event_ids": [
+            "3514ccccb771715f3097869b28e5bee075be8f6c2fe487b79894088770860986",
+            "a814d47ffe0e82857e50505cbff99df38d1f0ed4f217c475c1822d31fa9c6802"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836577465",
+          "different_payloads": 2,
+          "event_ids": [
+            "1283bbea14e268aff50f291dcfb965a02b798d12b9f8572090e285d3117df325",
+            "94791b064c5c3106a5a34da70f682549af4b6e1fd04e72d8a3b22a9a5269dccc"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836581473",
+          "different_payloads": 2,
+          "event_ids": [
+            "4ffe625cdf8050ff8fc7a36d2b15e3c242cfba7282c0ca2f736cb3a174210a47",
+            "8b11bf4fec3b8ecece3d6bfdf80d44e321c528b806d84795c07f58c9f56e1a78"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836581870",
+          "different_payloads": 2,
+          "event_ids": [
+            "cd5a4b341e45565cd8536ea0e428f7f41512d35a7054b98c56806331404b658d",
+            "d97e9a588ef9898e3e85fff73f5c2f1f60e0b80de39fe14ab5305501518a434e"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836581874",
+          "different_payloads": 2,
+          "event_ids": [
+            "0a0faad37ece6f7b479c36875445a91d04884703f20678c2aee569530f839058",
+            "7af29aaab30da3116de4f216b6f7d9ed9ae4c6adaceea3fb5fe5e3360cd9e379"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836642181",
+          "different_payloads": 3,
+          "event_ids": [
+            "9036cfb64b0e425a00c7811533defeb9476790888d36f8b87ee7aba58e3a416c",
+            "cdefb58a9ca4b32bbbbf0b212f06b81dcfc5a687fbae3368d8765efde30a7c42",
+            "fccf6db4df43f71de4b7aa339140b13a0d19c9759d6d2ac7e9babc1d20da20d6"
+          ]
+        }
+      ],
+      "hash_reuse_across_different_changes": [
+        {
+          "hash": "9a589e0deb3130fea2da8687b279577d13c5d661",
+          "different_changes": 3
+        },
+        {
+          "hash": "c817b3815ba8520fe31b000a8d39525ad9945b60",
+          "different_changes": 3
+        },
+        {
+          "hash": "908a18d39bef426fe6835529dea4285b9b9fc79a",
+          "different_changes": 2
+        },
+        {
+          "hash": "fd281aed8b500b68748560784dc6c40673bb170e",
+          "different_changes": 2
+        },
+        {
+          "hash": "06abd4b23c9a5836d1a309bdab2aa21219d9e5e1",
+          "different_changes": 2
+        },
+        {
+          "hash": "4ca882f93cab86de2503ebf46845454e320bb5f1",
+          "different_changes": 2
+        },
+        {
+          "hash": "4db4491883f0033b5988389767b856f57cc664d0",
+          "different_changes": 2
+        },
+        {
+          "hash": "05ddea5bea4fe0e56b99eaab93b30502476782e2",
+          "different_changes": 2
+        },
+        {
+          "hash": "9d7dac606f4ba61324bbdc71a6f605215a945eb7",
+          "different_changes": 2
+        },
+        {
+          "hash": "28295e7f6a6d4119278d16fcd8272b7c3f6baa2c",
+          "different_changes": 2
+        },
+        {
+          "hash": "b77ca2e22607e21e0e352f26c980b2ffd84ea1b4",
+          "different_changes": 2
+        },
+        {
+          "hash": "6801ca05530ea94cb0912b35474c01a80effbc33",
+          "different_changes": 2
+        },
+        {
+          "hash": "c4b60dae256af8da44938cd33342971bf6663602",
+          "different_changes": 2
+        },
+        {
+          "hash": "cd4937db1211c63740044864880e9f7f7934cdfe",
+          "different_changes": 2
+        },
+        {
+          "hash": "8ceadc829afb5b79b5966e670afd4ea2e72aee39",
+          "different_changes": 2
+        },
+        {
+          "hash": "b4675966d361f8884227c08ee54aa2f82df48730",
+          "different_changes": 2
+        },
+        {
+          "hash": "b5b8ff67b007779eca8503f131c2843929be55dc",
+          "different_changes": 2
+        },
+        {
+          "hash": "71af338ab1dcd27d26df04969beace7d97bfd80a",
+          "different_changes": 2
+        },
+        {
+          "hash": "23baf6658ecb62f66d4e40f3791e3a988aefac6c",
+          "different_changes": 3
+        },
+        {
+          "hash": "aa6b18743777d36987c64c60ed1d5ee7f51909bf",
+          "different_changes": 3
+        }
+      ],
+      "all_shared_events_same_order": true,
+      "surviving_connections": {
+        "connections": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10
+        ],
+        "shared_core_events": 72,
+        "same_order": true,
+        "arrival_spread_ms": {
+          "count": 72,
+          "median": 44.96077399999194,
+          "p95": 70.5807380000042,
+          "max": 70.73281300000963
+        },
+        "first_arrival_merge_matches_reference_order": true,
+        "state_disagreements_at_shared_event": 0,
+        "distinct_final_states": 1,
+        "first_arrival_counts": {
+          "3": 26,
+          "4": 17,
+          "5": 5,
+          "6": 11,
+          "9": 13
+        }
+      },
+      "same_level_same_timestamp_different_sizes": [],
+      "selected_asset_reused_hash_examples": [
+        {
+          "hash": "9a589e0deb3130fea2da8687b279577d13c5d661",
+          "occurrences": [
+            {
+              "timestamp": "1792836510065",
+              "side": "BUY",
+              "price": "0.04",
+              "size": "764"
+            },
+            {
+              "timestamp": "1792836510065",
+              "side": "BUY",
+              "price": "0.03",
+              "size": "4197.69"
+            },
+            {
+              "timestamp": "1792836510065",
+              "side": "SELL",
+              "price": "0.11",
+              "size": "50"
+            }
+          ]
+        },
+        {
+          "hash": "908a18d39bef426fe6835529dea4285b9b9fc79a",
+          "occurrences": [
+            {
+              "timestamp": "1792836533413",
+              "side": "BUY",
+              "price": "0.04",
+              "size": "764"
+            },
+            {
+              "timestamp": "1792836533413",
+              "side": "BUY",
+              "price": "0.03",
+              "size": "4197.69"
+            }
+          ]
+        },
+        {
+          "hash": "06abd4b23c9a5836d1a309bdab2aa21219d9e5e1",
+          "occurrences": [
+            {
+              "timestamp": "1792836545429",
+              "side": "BUY",
+              "price": "0.04",
+              "size": "764"
+            },
+            {
+              "timestamp": "1792836545429",
+              "side": "BUY",
+              "price": "0.03",
+              "size": "4197.69"
+            }
+          ]
+        },
+        {
+          "hash": "05ddea5bea4fe0e56b99eaab93b30502476782e2",
+          "occurrences": [
+            {
+              "timestamp": "1792836551082",
+              "side": "BUY",
+              "price": "0.07",
+              "size": "50"
+            },
+            {
+              "timestamp": "1792836551082",
+              "side": "SELL",
+              "price": "0.1",
+              "size": "5620"
+            }
+          ]
+        },
+        {
+          "hash": "28295e7f6a6d4119278d16fcd8272b7c3f6baa2c",
+          "occurrences": [
+            {
+              "timestamp": "1792836556003",
+              "side": "SELL",
+              "price": "0.85",
+              "size": "1000"
+            },
+            {
+              "timestamp": "1792836556003",
+              "side": "SELL",
+              "price": "0.73",
+              "size": "0"
+            }
+          ]
+        },
+        {
+          "hash": "b77ca2e22607e21e0e352f26c980b2ffd84ea1b4",
+          "occurrences": [
+            {
+              "timestamp": "1792836562348",
+              "side": "BUY",
+              "price": "0.04",
+              "size": "764"
+            },
+            {
+              "timestamp": "1792836562348",
+              "side": "BUY",
+              "price": "0.03",
+              "size": "4197.69"
+            }
+          ]
+        },
+        {
+          "hash": "c4b60dae256af8da44938cd33342971bf6663602",
+          "occurrences": [
+            {
+              "timestamp": "1792836577465",
+              "side": "BUY",
+              "price": "0.04",
+              "size": "764"
+            },
+            {
+              "timestamp": "1792836577465",
+              "side": "BUY",
+              "price": "0.03",
+              "size": "4197.69"
+            }
+          ]
+        },
+        {
+          "hash": "8ceadc829afb5b79b5966e670afd4ea2e72aee39",
+          "occurrences": [
+            {
+              "timestamp": "1792836581473",
+              "side": "BUY",
+              "price": "0.04",
+              "size": "764"
+            },
+            {
+              "timestamp": "1792836581473",
+              "side": "BUY",
+              "price": "0.03",
+              "size": "4197.69"
+            }
+          ]
+        },
+        {
+          "hash": "71af338ab1dcd27d26df04969beace7d97bfd80a",
+          "occurrences": [
+            {
+              "timestamp": "1792836581874",
+              "side": "BUY",
+              "price": "0.06",
+              "size": "5213.44"
+            },
+            {
+              "timestamp": "1792836581874",
+              "side": "SELL",
+              "price": "0.09",
+              "size": "130.98"
+            }
+          ]
+        },
+        {
+          "hash": "aa6b18743777d36987c64c60ed1d5ee7f51909bf",
+          "occurrences": [
+            {
+              "timestamp": "1792836642181",
+              "side": "SELL",
+              "price": "0.12",
+              "size": "55"
+            },
+            {
+              "timestamp": "1792836642181",
+              "side": "BUY",
+              "price": "0.04",
+              "size": "764"
+            },
+            {
+              "timestamp": "1792836642181",
+              "side": "BUY",
+              "price": "0.03",
+              "size": "4197.69"
+            }
+          ]
+        }
+      ],
+      "connections_detail": [
+        {
+          "connection": 1,
+          "frames": 18,
+          "event_counts": {
+            "book": 1,
+            "price_change": 16,
+            "PONG": 1
+          },
+          "unrelated_event_counts": {},
+          "initial": {
+            "receipt_ms": 597.863395,
+            "exchange_timestamp": "1792836505706",
+            "hash": "fb6bb1c9087505ea95873bc692d8e18dfa4a32a9",
+            "state": "6d6f1d2435af9c0125880f4cc68fd6011dd90dfec2e75f8a24625294dbd90148"
+          },
+          "final_state": "2e04a163444a9b4a8d3787f0f7936d0af67ea868c18475e63d66b56511eca153",
+          "final_levels": {
+            "bids": 8,
+            "asks": 27
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 1,
+          "core_missing": 71,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 1,
+            "median": 6.5545229999988806,
+            "p95": 6.5545229999988806,
+            "max": 6.5545229999988806
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 2,
+          "frames": 137,
+          "event_counts": {
+            "book": 1,
+            "price_change": 98,
+            "PONG": 13,
+            "new_market": 25
+          },
+          "unrelated_event_counts": {
+            "new_market": 25
+          },
+          "initial": {
+            "receipt_ms": 598.490234,
+            "exchange_timestamp": "1792836505706",
+            "hash": "fb6bb1c9087505ea95873bc692d8e18dfa4a32a9",
+            "state": "6d6f1d2435af9c0125880f4cc68fd6011dd90dfec2e75f8a24625294dbd90148"
+          },
+          "final_state": "29754359bc5f3bd45c50082b5dea7fbb3ff0a3933ce2efcfe54f491ad1e12e4d",
+          "final_levels": {
+            "bids": 8,
+            "asks": 28
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 72,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 1,
+            "median": 2.024009999993723,
+            "p95": 2.024009999993723,
+            "max": 2.024009999993723
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 3,
+          "frames": 137,
+          "event_counts": {
+            "book": 1,
+            "price_change": 98,
+            "PONG": 13,
+            "new_market": 25
+          },
+          "unrelated_event_counts": {
+            "new_market": 25
+          },
+          "initial": {
+            "receipt_ms": 590.522389,
+            "exchange_timestamp": "1792836505706",
+            "hash": "fb6bb1c9087505ea95873bc692d8e18dfa4a32a9",
+            "state": "6d6f1d2435af9c0125880f4cc68fd6011dd90dfec2e75f8a24625294dbd90148"
+          },
+          "final_state": "29754359bc5f3bd45c50082b5dea7fbb3ff0a3933ce2efcfe54f491ad1e12e4d",
+          "final_levels": {
+            "bids": 8,
+            "asks": 28
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 72,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 1,
+            "median": 0.8329649999941466,
+            "p95": 0.8329649999941466,
+            "max": 0.8329649999941466
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 4,
+          "frames": 137,
+          "event_counts": {
+            "book": 1,
+            "price_change": 98,
+            "PONG": 13,
+            "new_market": 25
+          },
+          "unrelated_event_counts": {
+            "new_market": 25
+          },
+          "initial": {
+            "receipt_ms": 598.638178,
+            "exchange_timestamp": "1792836505706",
+            "hash": "fb6bb1c9087505ea95873bc692d8e18dfa4a32a9",
+            "state": "6d6f1d2435af9c0125880f4cc68fd6011dd90dfec2e75f8a24625294dbd90148"
+          },
+          "final_state": "29754359bc5f3bd45c50082b5dea7fbb3ff0a3933ce2efcfe54f491ad1e12e4d",
+          "final_levels": {
+            "bids": 8,
+            "asks": 28
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 72,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 1,
+            "median": 0.0,
+            "p95": 0.0,
+            "max": 0.0
+          },
+          "first_for_shared_events": 1
+        },
+        {
+          "connection": 5,
+          "frames": 137,
+          "event_counts": {
+            "book": 1,
+            "price_change": 98,
+            "PONG": 13,
+            "new_market": 25
+          },
+          "unrelated_event_counts": {
+            "new_market": 25
+          },
+          "initial": {
+            "receipt_ms": 598.176504,
+            "exchange_timestamp": "1792836505706",
+            "hash": "fb6bb1c9087505ea95873bc692d8e18dfa4a32a9",
+            "state": "6d6f1d2435af9c0125880f4cc68fd6011dd90dfec2e75f8a24625294dbd90148"
+          },
+          "final_state": "29754359bc5f3bd45c50082b5dea7fbb3ff0a3933ce2efcfe54f491ad1e12e4d",
+          "final_levels": {
+            "bids": 8,
+            "asks": 28
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 72,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 1,
+            "median": 3.9277259999944363,
+            "p95": 3.9277259999944363,
+            "max": 3.9277259999944363
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 6,
+          "frames": 137,
+          "event_counts": {
+            "book": 1,
+            "price_change": 98,
+            "PONG": 13,
+            "new_market": 25
+          },
+          "unrelated_event_counts": {
+            "new_market": 25
+          },
+          "initial": {
+            "receipt_ms": 592.60927,
+            "exchange_timestamp": "1792836505706",
+            "hash": "fb6bb1c9087505ea95873bc692d8e18dfa4a32a9",
+            "state": "6d6f1d2435af9c0125880f4cc68fd6011dd90dfec2e75f8a24625294dbd90148"
+          },
+          "final_state": "29754359bc5f3bd45c50082b5dea7fbb3ff0a3933ce2efcfe54f491ad1e12e4d",
+          "final_levels": {
+            "bids": 8,
+            "asks": 28
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 72,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 1,
+            "median": 0.26012700000137556,
+            "p95": 0.26012700000137556,
+            "max": 0.26012700000137556
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 7,
+          "frames": 137,
+          "event_counts": {
+            "book": 1,
+            "price_change": 98,
+            "PONG": 13,
+            "new_market": 25
+          },
+          "unrelated_event_counts": {
+            "new_market": 25
+          },
+          "initial": {
+            "receipt_ms": 606.741066,
+            "exchange_timestamp": "1792836505706",
+            "hash": "fb6bb1c9087505ea95873bc692d8e18dfa4a32a9",
+            "state": "6d6f1d2435af9c0125880f4cc68fd6011dd90dfec2e75f8a24625294dbd90148"
+          },
+          "final_state": "29754359bc5f3bd45c50082b5dea7fbb3ff0a3933ce2efcfe54f491ad1e12e4d",
+          "final_levels": {
+            "bids": 8,
+            "asks": 28
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 72,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 1,
+            "median": 3.1040009999996983,
+            "p95": 3.1040009999996983,
+            "max": 3.1040009999996983
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 8,
+          "frames": 18,
+          "event_counts": {
+            "book": 1,
+            "price_change": 16,
+            "PONG": 1
+          },
+          "unrelated_event_counts": {},
+          "initial": {
+            "receipt_ms": 595.573827,
+            "exchange_timestamp": "1792836505706",
+            "hash": "fb6bb1c9087505ea95873bc692d8e18dfa4a32a9",
+            "state": "6d6f1d2435af9c0125880f4cc68fd6011dd90dfec2e75f8a24625294dbd90148"
+          },
+          "final_state": "2e04a163444a9b4a8d3787f0f7936d0af67ea868c18475e63d66b56511eca153",
+          "final_levels": {
+            "bids": 8,
+            "asks": 27
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 1,
+          "core_missing": 71,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 1,
+            "median": 4.421791000000667,
+            "p95": 4.421791000000667,
+            "max": 4.421791000000667
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 9,
+          "frames": 137,
+          "event_counts": {
+            "book": 1,
+            "price_change": 98,
+            "PONG": 13,
+            "new_market": 25
+          },
+          "unrelated_event_counts": {
+            "new_market": 25
+          },
+          "initial": {
+            "receipt_ms": 608.507958,
+            "exchange_timestamp": "1792836505706",
+            "hash": "fb6bb1c9087505ea95873bc692d8e18dfa4a32a9",
+            "state": "6d6f1d2435af9c0125880f4cc68fd6011dd90dfec2e75f8a24625294dbd90148"
+          },
+          "final_state": "29754359bc5f3bd45c50082b5dea7fbb3ff0a3933ce2efcfe54f491ad1e12e4d",
+          "final_levels": {
+            "bids": 8,
+            "asks": 28
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 72,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 1,
+            "median": 1.72711100000015,
+            "p95": 1.72711100000015,
+            "max": 1.72711100000015
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 10,
+          "frames": 137,
+          "event_counts": {
+            "book": 1,
+            "price_change": 98,
+            "PONG": 13,
+            "new_market": 25
+          },
+          "unrelated_event_counts": {
+            "new_market": 25
+          },
+          "initial": {
+            "receipt_ms": 598.305758,
+            "exchange_timestamp": "1792836505706",
+            "hash": "fb6bb1c9087505ea95873bc692d8e18dfa4a32a9",
+            "state": "6d6f1d2435af9c0125880f4cc68fd6011dd90dfec2e75f8a24625294dbd90148"
+          },
+          "final_state": "29754359bc5f3bd45c50082b5dea7fbb3ff0a3933ce2efcfe54f491ad1e12e4d",
+          "final_levels": {
+            "bids": 8,
+            "asks": 28
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 72,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 1,
+            "median": 2.610457000002498,
+            "p95": 2.610457000002498,
+            "max": 2.610457000002498
+          },
+          "first_for_shared_events": 0
+        }
+      ],
+      "capture_errors": [
+        {
+          "connection": 1,
+          "type": "websocket",
+          "reason": "socket error"
+        },
+        {
+          "connection": 8,
+          "type": "websocket",
+          "reason": "socket error"
+        }
+      ],
+      "capture_status": [
+        {
+          "connection": 1,
+          "opened": true,
+          "frames": 18,
+          "bytes": 11190,
+          "errors": 1,
+          "unexpected_closes": 1
+        },
+        {
+          "connection": 2,
+          "opened": true,
+          "frames": 137,
+          "bytes": 124754,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 3,
+          "opened": true,
+          "frames": 137,
+          "bytes": 124754,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 4,
+          "opened": true,
+          "frames": 137,
+          "bytes": 124754,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 5,
+          "opened": true,
+          "frames": 137,
+          "bytes": 124754,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 6,
+          "opened": true,
+          "frames": 137,
+          "bytes": 124754,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 7,
+          "opened": true,
+          "frames": 137,
+          "bytes": 124754,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 8,
+          "opened": true,
+          "frames": 18,
+          "bytes": 11190,
+          "errors": 1,
+          "unexpected_closes": 1
+        },
+        {
+          "connection": 9,
+          "opened": true,
+          "frames": 137,
+          "bytes": 124754,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 10,
+          "opened": true,
+          "frames": 137,
+          "bytes": 124754,
+          "errors": 0,
+          "unexpected_closes": 0
+        }
+      ],
+      "cpu_ms": {
+        "user": 6574.38,
+        "system": 4626.792
+      },
+      "event_loop_delay_ms": {
+        "median": 1.157119,
+        "p99": 4.024319,
+        "max": 312.213503
+      },
+      "maximum_queued_output_bytes": 94562,
+      "matching_convention": "Canonical complete JSON payload plus occurrence count; not a guaranteed exchange event ID.",
+      "timing_scope": "Same-process socket callbacks, measured using one monotonic clock; not wire or matching-engine latency.",
+      "raw_capture_directory": "recordings/polymarket-redundancy-run-1"
+    },
+    {
+      "market": {
+        "id": "6104736",
+        "question": "Will Bitcoin reach $82,000 on October 24?",
+        "condition_id": "0xecc23cf4dd24785b04a3f10d0ad6c6577858109296851d6a7cde76dd88682577",
+        "yes_asset_id": "42820435881084171095305173309280682294357335411274100735935831763831134276262",
+        "slug": "will-bitcoin-reach-82k-on-october-24-2026"
+      },
+      "started_at": "2026-10-24T10:13:15.164Z",
+      "connections": 10,
+      "observation_seconds": 60,
+      "warmup_seconds": 10,
+      "grace_seconds": 10,
+      "core_event_instances": 27,
+      "core_event_types": {
+        "price_change": 27
+      },
+      "core_events_seen_on_all_connections": 27,
+      "core_events_not_seen_everywhere": [],
+      "shared_event_arrival_spread_ms": {
+        "count": 27,
+        "median": 6.916924000001018,
+        "p95": 60.1403590000009,
+        "max": 64.66583199999877
+      },
+      "shared_event_book_state_disagreements": [],
+      "distinct_initial_states": 1,
+      "distinct_final_states": 1,
+      "timestamp_collisions": [
+        {
+          "kind": "price_change",
+          "timestamp": "1792836824919",
+          "different_payloads": 2,
+          "event_ids": [
+            "657bac0c8d9db4d7f8c1cd8a57eb41deb91a8829b230e0319bea44d01a19f866",
+            "f0b0c5540533819a9c36e08d06475892bd5c68773ea055b76b7d39f8ceda74f1"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836825885",
+          "different_payloads": 2,
+          "event_ids": [
+            "4c6ac2ea9dd1a83b11b542f4d2667dfff7090cef04de8ed80d5563ff15d01cb2",
+            "f0020f94936923f96bc38c0594a8c2d8a1365b4e04113d6bc08e41ebaf33b529"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836847001",
+          "different_payloads": 2,
+          "event_ids": [
+            "8f12ce31a79ebe2ed773f4c2b0a6704c3612e082ce63fdbec316f12d0c4adc68",
+            "b06e88c96d8347d87a476128e0c0828b34979577cbba538e9f0c50574e515f61"
+          ]
+        },
+        {
+          "kind": "price_change",
+          "timestamp": "1792836867672",
+          "different_payloads": 3,
+          "event_ids": [
+            "092b83f2889592fd1c7f500ffb988e17fcc92d02cdf86f590c79f965f9586e41",
+            "741d776986fa9d2e3878ea11cdf30eb2b4a59c8144cc502f40ba63ad6fd2f003",
+            "ac3a34bd0e18eb9060fc757aca345e3a9a9f74b512fc83bf17f092296a06180f"
+          ]
+        }
+      ],
+      "hash_reuse_across_different_changes": [
+        {
+          "hash": "0ac869551ce7fc694ae73e8a5121211afd36105a",
+          "different_changes": 2
+        },
+        {
+          "hash": "5cd8eed62b34e2dde06328ef405080db240204f6",
+          "different_changes": 2
+        },
+        {
+          "hash": "0588ff402c1ad0a21645486b4f3064e030dbc980",
+          "different_changes": 2
+        },
+        {
+          "hash": "ec2ff913b3497141349b1cd8a77bfffb297d6ba0",
+          "different_changes": 2
+        },
+        {
+          "hash": "4b1ed6ccb3e7e68c2eb2de0afc9ac3e02e23efc2",
+          "different_changes": 2
+        },
+        {
+          "hash": "3a46054baaf0bf354e82881e5cb9ea80de30bd08",
+          "different_changes": 2
+        },
+        {
+          "hash": "e839077afa7ea673930883282e42c983eeb986e0",
+          "different_changes": 2
+        },
+        {
+          "hash": "b84122510d1c38c465e57877e96d55b4c6986fca",
+          "different_changes": 2
+        }
+      ],
+      "all_shared_events_same_order": true,
+      "surviving_connections": {
+        "connections": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "shared_core_events": 27,
+        "same_order": true,
+        "arrival_spread_ms": {
+          "count": 27,
+          "median": 6.916924000001018,
+          "p95": 60.1403590000009,
+          "max": 64.66583199999877
+        },
+        "first_arrival_merge_matches_reference_order": true,
+        "state_disagreements_at_shared_event": 0,
+        "distinct_final_states": 1,
+        "first_arrival_counts": {
+          "1": 10,
+          "2": 13,
+          "6": 1,
+          "7": 1,
+          "10": 2
+        }
+      },
+      "same_level_same_timestamp_different_sizes": [],
+      "selected_asset_reused_hash_examples": [
+        {
+          "hash": "0ac869551ce7fc694ae73e8a5121211afd36105a",
+          "occurrences": [
+            {
+              "timestamp": "1792836824919",
+              "side": "BUY",
+              "price": "0.04",
+              "size": "764"
+            },
+            {
+              "timestamp": "1792836824919",
+              "side": "BUY",
+              "price": "0.03",
+              "size": "4197.69"
+            }
+          ]
+        },
+        {
+          "hash": "ec2ff913b3497141349b1cd8a77bfffb297d6ba0",
+          "occurrences": [
+            {
+              "timestamp": "1792836825885",
+              "side": "SELL",
+              "price": "0.36",
+              "size": "0"
+            },
+            {
+              "timestamp": "1792836825885",
+              "side": "SELL",
+              "price": "0.74",
+              "size": "0"
+            }
+          ]
+        },
+        {
+          "hash": "3a46054baaf0bf354e82881e5cb9ea80de30bd08",
+          "occurrences": [
+            {
+              "timestamp": "1792836847001",
+              "side": "SELL",
+              "price": "0.86",
+              "size": "35.71"
+            },
+            {
+              "timestamp": "1792836847001",
+              "side": "SELL",
+              "price": "0.72",
+              "size": "17.86"
+            }
+          ]
+        },
+        {
+          "hash": "b84122510d1c38c465e57877e96d55b4c6986fca",
+          "occurrences": [
+            {
+              "timestamp": "1792836867672",
+              "side": "BUY",
+              "price": "0.06",
+              "size": "5214.48"
+            },
+            {
+              "timestamp": "1792836867672",
+              "side": "SELL",
+              "price": "0.09",
+              "size": "130.98"
+            }
+          ]
+        }
+      ],
+      "connections_detail": [
+        {
+          "connection": 1,
+          "frames": 60,
+          "event_counts": {
+            "book": 1,
+            "price_change": 34,
+            "PONG": 7,
+            "new_market": 18
+          },
+          "unrelated_event_counts": {
+            "new_market": 18
+          },
+          "initial": {
+            "receipt_ms": 261.403069,
+            "exchange_timestamp": "1792836792645",
+            "hash": "770502e375c82cceed02af6bda2d02e0f3357252",
+            "state": "ba4d1176b20b510865dbd1f6a571d56d500bca60220d92f114e84c273ae49b9f"
+          },
+          "final_state": "7551837c8cd205c34b64f2111ef235436eaa490e4ca20fb7d95bf09de5e52b2e",
+          "final_levels": {
+            "bids": 8,
+            "asks": 25
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 27,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 27,
+            "median": 0.8923170000052778,
+            "p95": 2.979236999999557,
+            "max": 3.923926000003121
+          },
+          "first_for_shared_events": 10
+        },
+        {
+          "connection": 2,
+          "frames": 60,
+          "event_counts": {
+            "book": 1,
+            "price_change": 34,
+            "PONG": 7,
+            "new_market": 18
+          },
+          "unrelated_event_counts": {
+            "new_market": 18
+          },
+          "initial": {
+            "receipt_ms": 264.022486,
+            "exchange_timestamp": "1792836792645",
+            "hash": "770502e375c82cceed02af6bda2d02e0f3357252",
+            "state": "ba4d1176b20b510865dbd1f6a571d56d500bca60220d92f114e84c273ae49b9f"
+          },
+          "final_state": "7551837c8cd205c34b64f2111ef235436eaa490e4ca20fb7d95bf09de5e52b2e",
+          "final_levels": {
+            "bids": 8,
+            "asks": 25
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 27,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 27,
+            "median": 0.33483999999589287,
+            "p95": 5.905033000002732,
+            "max": 23.02741600000445
+          },
+          "first_for_shared_events": 13
+        },
+        {
+          "connection": 3,
+          "frames": 60,
+          "event_counts": {
+            "book": 1,
+            "price_change": 34,
+            "PONG": 7,
+            "new_market": 18
+          },
+          "unrelated_event_counts": {
+            "new_market": 18
+          },
+          "initial": {
+            "receipt_ms": 264.882361,
+            "exchange_timestamp": "1792836792645",
+            "hash": "770502e375c82cceed02af6bda2d02e0f3357252",
+            "state": "ba4d1176b20b510865dbd1f6a571d56d500bca60220d92f114e84c273ae49b9f"
+          },
+          "final_state": "7551837c8cd205c34b64f2111ef235436eaa490e4ca20fb7d95bf09de5e52b2e",
+          "final_levels": {
+            "bids": 8,
+            "asks": 25
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 27,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 27,
+            "median": 4.969946000001073,
+            "p95": 26.354114000001573,
+            "max": 39.212963999998465
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 4,
+          "frames": 60,
+          "event_counts": {
+            "book": 1,
+            "price_change": 34,
+            "PONG": 7,
+            "new_market": 18
+          },
+          "unrelated_event_counts": {
+            "new_market": 18
+          },
+          "initial": {
+            "receipt_ms": 262.987116,
+            "exchange_timestamp": "1792836792645",
+            "hash": "770502e375c82cceed02af6bda2d02e0f3357252",
+            "state": "ba4d1176b20b510865dbd1f6a571d56d500bca60220d92f114e84c273ae49b9f"
+          },
+          "final_state": "7551837c8cd205c34b64f2111ef235436eaa490e4ca20fb7d95bf09de5e52b2e",
+          "final_levels": {
+            "bids": 8,
+            "asks": 25
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 27,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 27,
+            "median": 3.596675000000687,
+            "p95": 9.075926999998046,
+            "max": 22.63996500000212
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 5,
+          "frames": 60,
+          "event_counts": {
+            "book": 1,
+            "price_change": 34,
+            "PONG": 7,
+            "new_market": 18
+          },
+          "unrelated_event_counts": {
+            "new_market": 18
+          },
+          "initial": {
+            "receipt_ms": 266.073246,
+            "exchange_timestamp": "1792836792645",
+            "hash": "770502e375c82cceed02af6bda2d02e0f3357252",
+            "state": "ba4d1176b20b510865dbd1f6a571d56d500bca60220d92f114e84c273ae49b9f"
+          },
+          "final_state": "7551837c8cd205c34b64f2111ef235436eaa490e4ca20fb7d95bf09de5e52b2e",
+          "final_levels": {
+            "bids": 8,
+            "asks": 25
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 27,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 27,
+            "median": 5.951994999995804,
+            "p95": 25.197651000002224,
+            "max": 59.6549649999979
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 6,
+          "frames": 60,
+          "event_counts": {
+            "book": 1,
+            "price_change": 34,
+            "PONG": 7,
+            "new_market": 18
+          },
+          "unrelated_event_counts": {
+            "new_market": 18
+          },
+          "initial": {
+            "receipt_ms": 262.406688,
+            "exchange_timestamp": "1792836792645",
+            "hash": "770502e375c82cceed02af6bda2d02e0f3357252",
+            "state": "ba4d1176b20b510865dbd1f6a571d56d500bca60220d92f114e84c273ae49b9f"
+          },
+          "final_state": "7551837c8cd205c34b64f2111ef235436eaa490e4ca20fb7d95bf09de5e52b2e",
+          "final_levels": {
+            "bids": 8,
+            "asks": 25
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 27,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 27,
+            "median": 1.5365559999991092,
+            "p95": 6.091810000005353,
+            "max": 12.410354999999981
+          },
+          "first_for_shared_events": 1
+        },
+        {
+          "connection": 7,
+          "frames": 60,
+          "event_counts": {
+            "book": 1,
+            "price_change": 34,
+            "PONG": 7,
+            "new_market": 18
+          },
+          "unrelated_event_counts": {
+            "new_market": 18
+          },
+          "initial": {
+            "receipt_ms": 260.335418,
+            "exchange_timestamp": "1792836792645",
+            "hash": "770502e375c82cceed02af6bda2d02e0f3357252",
+            "state": "ba4d1176b20b510865dbd1f6a571d56d500bca60220d92f114e84c273ae49b9f"
+          },
+          "final_state": "7551837c8cd205c34b64f2111ef235436eaa490e4ca20fb7d95bf09de5e52b2e",
+          "final_levels": {
+            "bids": 8,
+            "asks": 25
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 27,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 27,
+            "median": 1.924816999999166,
+            "p95": 14.205728000000818,
+            "max": 16.08692300000257
+          },
+          "first_for_shared_events": 1
+        },
+        {
+          "connection": 8,
+          "frames": 60,
+          "event_counts": {
+            "book": 1,
+            "price_change": 34,
+            "PONG": 7,
+            "new_market": 18
+          },
+          "unrelated_event_counts": {
+            "new_market": 18
+          },
+          "initial": {
+            "receipt_ms": 263.518991,
+            "exchange_timestamp": "1792836792645",
+            "hash": "770502e375c82cceed02af6bda2d02e0f3357252",
+            "state": "ba4d1176b20b510865dbd1f6a571d56d500bca60220d92f114e84c273ae49b9f"
+          },
+          "final_state": "7551837c8cd205c34b64f2111ef235436eaa490e4ca20fb7d95bf09de5e52b2e",
+          "final_levels": {
+            "bids": 8,
+            "asks": 25
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 27,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 27,
+            "median": 2.25776599999881,
+            "p95": 5.361418000000413,
+            "max": 5.620256000001973
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 9,
+          "frames": 60,
+          "event_counts": {
+            "book": 1,
+            "price_change": 34,
+            "PONG": 7,
+            "new_market": 18
+          },
+          "unrelated_event_counts": {
+            "new_market": 18
+          },
+          "initial": {
+            "receipt_ms": 264.448528,
+            "exchange_timestamp": "1792836792645",
+            "hash": "770502e375c82cceed02af6bda2d02e0f3357252",
+            "state": "ba4d1176b20b510865dbd1f6a571d56d500bca60220d92f114e84c273ae49b9f"
+          },
+          "final_state": "7551837c8cd205c34b64f2111ef235436eaa490e4ca20fb7d95bf09de5e52b2e",
+          "final_levels": {
+            "bids": 8,
+            "asks": 25
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 27,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 27,
+            "median": 1.4429420000014943,
+            "p95": 4.997507000000041,
+            "max": 16.81755400000111
+          },
+          "first_for_shared_events": 0
+        },
+        {
+          "connection": 10,
+          "frames": 60,
+          "event_counts": {
+            "book": 1,
+            "price_change": 34,
+            "PONG": 7,
+            "new_market": 18
+          },
+          "unrelated_event_counts": {
+            "new_market": 18
+          },
+          "initial": {
+            "receipt_ms": 265.513599,
+            "exchange_timestamp": "1792836792645",
+            "hash": "770502e375c82cceed02af6bda2d02e0f3357252",
+            "state": "ba4d1176b20b510865dbd1f6a571d56d500bca60220d92f114e84c273ae49b9f"
+          },
+          "final_state": "7551837c8cd205c34b64f2111ef235436eaa490e4ca20fb7d95bf09de5e52b2e",
+          "final_levels": {
+            "bids": 8,
+            "asks": 25
+          },
+          "timestamp_regressions": [],
+          "parse_errors": [],
+          "later_snapshot_disagreements": [],
+          "repeated_exact_events": 0,
+          "core_events": 27,
+          "core_missing": 0,
+          "shared_order_matches_connection_1": true,
+          "shared_adjacent_order_inversions_vs_connection_1": 0,
+          "lag_behind_first_callback_ms": {
+            "count": 27,
+            "median": 3.384399000002304,
+            "p95": 60.1403590000009,
+            "max": 64.66583199999877
+          },
+          "first_for_shared_events": 2
+        }
+      ],
+      "capture_errors": [],
+      "capture_status": [
+        {
+          "connection": 1,
+          "opened": true,
+          "frames": 60,
+          "bytes": 76191,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 2,
+          "opened": true,
+          "frames": 60,
+          "bytes": 76191,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 3,
+          "opened": true,
+          "frames": 60,
+          "bytes": 76191,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 4,
+          "opened": true,
+          "frames": 60,
+          "bytes": 76191,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 5,
+          "opened": true,
+          "frames": 60,
+          "bytes": 76191,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 6,
+          "opened": true,
+          "frames": 60,
+          "bytes": 76191,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 7,
+          "opened": true,
+          "frames": 60,
+          "bytes": 76191,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 8,
+          "opened": true,
+          "frames": 60,
+          "bytes": 76191,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 9,
+          "opened": true,
+          "frames": 60,
+          "bytes": 76191,
+          "errors": 0,
+          "unexpected_closes": 0
+        },
+        {
+          "connection": 10,
+          "opened": true,
+          "frames": 60,
+          "bytes": 76191,
+          "errors": 0,
+          "unexpected_closes": 0
+        }
+      ],
+      "cpu_ms": {
+        "user": 3903.465,
+        "system": 2784.437
+      },
+      "event_loop_delay_ms": {
+        "median": 1.157119,
+        "p99": 4.444159,
+        "max": 90.439679
+      },
+      "maximum_queued_output_bytes": 11156,
+      "matching_convention": "Canonical complete JSON payload plus occurrence count; not a guaranteed exchange event ID.",
+      "timing_scope": "Same-process socket callbacks, measured using one monotonic clock; not wire or matching-engine latency.",
+      "raw_capture_directory": "recordings/polymarket-redundancy-run-2"
+    }
+  ]
+}

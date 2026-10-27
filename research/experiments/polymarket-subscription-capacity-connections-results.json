@@ -1,0 +1,491 @@
+{
+  "recording_directory": "recordings/subscription-capacity-connections-20261024",
+  "measurement": {
+    "started_at": "2026-10-24T17:49:21.075Z",
+    "finished_at": "2026-10-24T18:02:12.374Z",
+    "runtime": "v24.22.1",
+    "protocol": {
+      "claim": "Determine a tested lower bound or reproducible operational boundary for simultaneous market WebSockets from one observed egress; no assumption that a timeout is an IP connection cap.",
+      "endpoint": "wss://ws-subscriptions-clob.polymarket.com/ws/market",
+      "maximum_connections": 1024,
+      "one_market_per_socket": true,
+      "assets_per_socket": 2,
+      "opens_per_second_maximum": 2,
+      "initialization_timeout_seconds": 15,
+      "stage_hold_seconds": 15,
+      "final_hold_seconds": 60,
+      "ping_interval_seconds": 10,
+      "custom_feature_enabled": false,
+      "initial_dump": true,
+      "address_family": "IPv4 first, automatic family selection disabled",
+      "success": "Both valid book snapshots on every requested socket, OPEN state, at least one PONG per socket, PONG age <=15 seconds, no unexpected close or error during hold",
+      "stop_policy": "Stop ramp on any failure or throttling; no replacement connections; graceful shutdown and no automatic retry",
+      "client_guards": {
+        "rss_bytes": 805306368,
+        "queued_output_bytes": 16777216,
+        "total_received_bytes": 268435456,
+        "wall_seconds": 1000
+      },
+      "host": {
+        "logical_cores": 6,
+        "load_average": [
+          0.66,
+          0.62,
+          0.64
+        ]
+      },
+      "script_sha256": "2b67bb440afbe014e79edeedda65f9a68bd83439b375ec90b5c9b94820fb8cb7"
+    },
+    "stop_reason": null,
+    "conclusion": "Tested lower bound at chosen guard; no maximum established",
+    "maximum_requested": 1024,
+    "maximum_passed": 1024,
+    "stages": [
+      {
+        "target": 1,
+        "requested_markets": 1,
+        "requested_assets": 2,
+        "open": 1,
+        "complete_books": 2,
+        "healthy": 1,
+        "stage_start_ms": 2331.731661,
+        "hold_start_ms": 2832.875594,
+        "end_ms": 17900.664959,
+        "hold_seconds": 15.067789365000001,
+        "passed": true,
+        "stop_reason": null,
+        "received_bytes": 327594,
+        "bytes_per_second": 21741.34453730466,
+        "cpu_ms": {
+          "user": 754.312,
+          "system": 286.328
+        },
+        "event_loop_ms": {
+          "p50": 5.246975,
+          "p99": 6.803455,
+          "max": 16.261119
+        },
+        "rss_bytes": 112701440,
+        "open_file_descriptors": 25
+      },
+      {
+        "target": 2,
+        "requested_markets": 2,
+        "requested_assets": 4,
+        "open": 2,
+        "complete_books": 4,
+        "healthy": 2,
+        "stage_start_ms": 17905.719634,
+        "hold_start_ms": 18405.759529,
+        "end_ms": 33479.799088,
+        "hold_seconds": 15.074039559000001,
+        "passed": true,
+        "stop_reason": null,
+        "received_bytes": 201070,
+        "bytes_per_second": 13338.826610677863,
+        "cpu_ms": {
+          "user": 621.768,
+          "system": 199.42
+        },
+        "event_loop_ms": {
+          "p50": 5.238783,
+          "p99": 6.459391,
+          "max": 15.458303
+        },
+        "rss_bytes": 113225728,
+        "open_file_descriptors": 26
+      },
+      {
+        "target": 4,
+        "requested_markets": 4,
+        "requested_assets": 8,
+        "open": 4,
+        "complete_books": 8,
+        "healthy": 4,
+        "stage_start_ms": 33482.341015,
+        "hold_start_ms": 34483.20249,
+        "end_ms": 49558.835027,
+        "hold_seconds": 15.075632536999997,
+        "passed": true,
+        "stop_reason": null,
+        "received_bytes": 113133,
+        "bytes_per_second": 7504.361738874879,
+        "cpu_ms": {
+          "user": 780.307,
+          "system": 373.029
+        },
+        "event_loop_ms": {
+          "p50": 5.287935,
+          "p99": 26.951679,
+          "max": 390.594559
+        },
+        "rss_bytes": 113881088,
+        "open_file_descriptors": 28
+      },
+      {
+        "target": 8,
+        "requested_markets": 8,
+        "requested_assets": 16,
+        "open": 8,
+        "complete_books": 16,
+        "healthy": 8,
+        "stage_start_ms": 49560.523395,
+        "hold_start_ms": 51563.579,
+        "end_ms": 66636.758813,
+        "hold_seconds": 15.073179812999996,
+        "passed": true,
+        "stop_reason": null,
+        "received_bytes": 400582,
+        "bytes_per_second": 26575.81246755343,
+        "cpu_ms": {
+          "user": 822.039,
+          "system": 478.295
+        },
+        "event_loop_ms": {
+          "p50": 5.279743,
+          "p99": 13.393919,
+          "max": 72.089599
+        },
+        "rss_bytes": 116895744,
+        "open_file_descriptors": 32
+      },
+      {
+        "target": 16,
+        "requested_markets": 16,
+        "requested_assets": 32,
+        "open": 16,
+        "complete_books": 32,
+        "healthy": 16,
+        "stage_start_ms": 66638.470532,
+        "hold_start_ms": 70640.400395,
+        "end_ms": 85663.144491,
+        "hold_seconds": 15.022744095999995,
+        "passed": true,
+        "stop_reason": null,
+        "received_bytes": 573255,
+        "bytes_per_second": 38159.14032328067,
+        "cpu_ms": {
+          "user": 1005.64,
+          "system": 537.17
+        },
+        "event_loop_ms": {
+          "p50": 5.287935,
+          "p99": 10.264575,
+          "max": 36.306943
+        },
+        "rss_bytes": 117682176,
+        "open_file_descriptors": 40
+      },
+      {
+        "target": 32,
+        "requested_markets": 32,
+        "requested_assets": 64,
+        "open": 32,
+        "complete_books": 64,
+        "healthy": 32,
+        "stage_start_ms": 85665.230181,
+        "hold_start_ms": 93673.707393,
+        "end_ms": 108707.576569,
+        "hold_seconds": 15.033869175999993,
+        "passed": true,
+        "stop_reason": null,
+        "received_bytes": 241980,
+        "bytes_per_second": 16095.656890928378,
+        "cpu_ms": {
+          "user": 987.299,
+          "system": 646.763
+        },
+        "event_loop_ms": {
+          "p50": 5.328895,
+          "p99": 37.355519,
+          "max": 104.005631
+        },
+        "rss_bytes": 117682176,
+        "open_file_descriptors": 56
+      },
+      {
+        "target": 64,
+        "requested_markets": 64,
+        "requested_assets": 128,
+        "open": 64,
+        "complete_books": 128,
+        "healthy": 64,
+        "stage_start_ms": 108710.119015,
+        "hold_start_ms": 124862.342747,
+        "end_ms": 139922.657639,
+        "hold_seconds": 15.06031489200001,
+        "passed": true,
+        "stop_reason": null,
+        "received_bytes": 280514,
+        "bytes_per_second": 18626.0381679674,
+        "cpu_ms": {
+          "user": 791.671,
+          "system": 500.435
+        },
+        "event_loop_ms": {
+          "p50": 5.308415,
+          "p99": 13.762559,
+          "max": 54.427647
+        },
+        "rss_bytes": 117813248,
+        "open_file_descriptors": 88
+      },
+      {
+        "target": 128,
+        "requested_markets": 128,
+        "requested_assets": 256,
+        "open": 128,
+        "complete_books": 256,
+        "healthy": 128,
+        "stage_start_ms": 139924.16225,
+        "hold_start_ms": 174904.84845,
+        "end_ms": 189922.0448,
+        "hold_seconds": 15.017196350000013,
+        "passed": true,
+        "stop_reason": null,
+        "received_bytes": 336823,
+        "bytes_per_second": 22429.153361905646,
+        "cpu_ms": {
+          "user": 922.026,
+          "system": 497.408
+        },
+        "event_loop_ms": {
+          "p50": 5.283839,
+          "p99": 10.665983,
+          "max": 52.985855
+        },
+        "rss_bytes": 127905792,
+        "open_file_descriptors": 152
+      },
+      {
+        "target": 256,
+        "requested_markets": 256,
+        "requested_assets": 512,
+        "open": 256,
+        "complete_books": 512,
+        "healthy": 256,
+        "stage_start_ms": 189926.120705,
+        "hold_start_ms": 259773.928702,
+        "end_ms": 274849.356272,
+        "hold_seconds": 15.07542757,
+        "passed": true,
+        "stop_reason": null,
+        "received_bytes": 623491,
+        "bytes_per_second": 41358.097281482274,
+        "cpu_ms": {
+          "user": 1011.643,
+          "system": 611.725
+        },
+        "event_loop_ms": {
+          "p50": 5.263359,
+          "p99": 7.462911,
+          "max": 16.465919
+        },
+        "rss_bytes": 147697664,
+        "open_file_descriptors": 280
+      },
+      {
+        "target": 512,
+        "requested_markets": 512,
+        "requested_assets": 1024,
+        "open": 512,
+        "complete_books": 1024,
+        "healthy": 512,
+        "stage_start_ms": 274853.383013,
+        "hold_start_ms": 413295.130123,
+        "end_ms": 428358.874096,
+        "hold_seconds": 15.063743972999974,
+        "passed": true,
+        "stop_reason": null,
+        "received_bytes": 1977202,
+        "bytes_per_second": 131255.68275349785,
+        "cpu_ms": {
+          "user": 2120.822,
+          "system": 1899.921
+        },
+        "event_loop_ms": {
+          "p50": 5.419007,
+          "p99": 21.037055,
+          "max": 70.844415
+        },
+        "rss_bytes": 236957696,
+        "open_file_descriptors": 536
+      },
+      {
+        "target": 1024,
+        "requested_markets": 1024,
+        "requested_assets": 2048,
+        "open": 1024,
+        "complete_books": 2048,
+        "healthy": 1024,
+        "stage_start_ms": 428371.86426,
+        "hold_start_ms": 709057.431124,
+        "end_ms": 769075.11157,
+        "hold_seconds": 60.01768044599996,
+        "passed": true,
+        "stop_reason": null,
+        "received_bytes": 12205201,
+        "bytes_per_second": 203360.0917146649,
+        "cpu_ms": {
+          "user": 13166.183,
+          "system": 10829.238
+        },
+        "event_loop_ms": {
+          "p50": 5.468159,
+          "p99": 32.555007,
+          "max": 490.471423
+        },
+        "rss_bytes": 392982528,
+        "open_file_descriptors": 1048
+      }
+    ],
+    "egress": {
+      "source": "https://ws-subscriptions-clob.polymarket.com/cdn-cgi/trace",
+      "before_status": 200,
+      "after_status": 200,
+      "public_ip_observed_before": true,
+      "public_ip_observed_after": true,
+      "public_ip_unchanged": true,
+      "public_ip_family_before": 4,
+      "public_ip_family_after": 4,
+      "distinct_local_transport_addresses": 1,
+      "distinct_local_websocket_addresses": 0,
+      "distinct_remote_transport_addresses": 2,
+      "websocket_remote_families": [],
+      "websocket_handshake_diagnostics": 1024,
+      "handshake_statuses": [
+        101
+      ],
+      "addresses_retained": false
+    },
+    "errors": [],
+    "bytes_received": 93743296,
+    "peak_rss_bytes": 392982528,
+    "maximum_queued_output_bytes": 1290436,
+    "cpu_ms": {
+      "user": 132882.1,
+      "system": 85037.896
+    },
+    "sockets_not_closed_after_grace": 0
+  },
+  "verification": {
+    "verified_stages": [
+      {
+        "connections": 1,
+        "distinct_markets": 1,
+        "asset_books": 2,
+        "hold_seconds": 15.067789365000001,
+        "fresh_pongs": true
+      },
+      {
+        "connections": 2,
+        "distinct_markets": 2,
+        "asset_books": 4,
+        "hold_seconds": 15.074039559000001,
+        "fresh_pongs": true
+      },
+      {
+        "connections": 4,
+        "distinct_markets": 4,
+        "asset_books": 8,
+        "hold_seconds": 15.075632536999997,
+        "fresh_pongs": true
+      },
+      {
+        "connections": 8,
+        "distinct_markets": 8,
+        "asset_books": 16,
+        "hold_seconds": 15.073179812999996,
+        "fresh_pongs": true
+      },
+      {
+        "connections": 16,
+        "distinct_markets": 16,
+        "asset_books": 32,
+        "hold_seconds": 15.022744095999995,
+        "fresh_pongs": true
+      },
+      {
+        "connections": 32,
+        "distinct_markets": 32,
+        "asset_books": 64,
+        "hold_seconds": 15.033869175999993,
+        "fresh_pongs": true
+      },
+      {
+        "connections": 64,
+        "distinct_markets": 64,
+        "asset_books": 128,
+        "hold_seconds": 15.06031489200001,
+        "fresh_pongs": true
+      },
+      {
+        "connections": 128,
+        "distinct_markets": 128,
+        "asset_books": 256,
+        "hold_seconds": 15.017196350000013,
+        "fresh_pongs": true
+      },
+      {
+        "connections": 256,
+        "distinct_markets": 256,
+        "asset_books": 512,
+        "hold_seconds": 15.07542757,
+        "fresh_pongs": true
+      },
+      {
+        "connections": 512,
+        "distinct_markets": 512,
+        "asset_books": 1024,
+        "hold_seconds": 15.063743972999974,
+        "fresh_pongs": true
+      },
+      {
+        "connections": 1024,
+        "distinct_markets": 1024,
+        "asset_books": 2048,
+        "hold_seconds": 60.01768044599996,
+        "fresh_pongs": true
+      }
+    ],
+    "received_frames": 178951,
+    "received_payload_bytes": 93743296,
+    "total_pongs": 36892,
+    "event_types": {
+      "book": 2766,
+      "price_change": 139958,
+      "last_trade_price": 359
+    },
+    "distinct_markets": 1024,
+    "distinct_assets": 2048,
+    "minimum_connection_creation_interval_ms": 495.06706199998735,
+    "snapshot_initialization_ms": {
+      "minimum": 20.01568499999121,
+      "median": 28.854957999952603,
+      "maximum": 1133.9341419999255
+    },
+    "close_codes": {
+      "1000": 1024
+    },
+    "unexpected_closes": [],
+    "maximum_passed_from_raw": 1024,
+    "archived_harness_sha256_verified": true
+  },
+  "interpretation": "A bounded lower bound on simultaneous healthy sockets from the observed egress, not a published or measured absolute IP cap.",
+  "caveats": [
+    "One ramp, not independent repeated saturation trials.",
+    "Quiet or idle market sockets do not establish capacity at equal high update rates.",
+    "Initial harness per-WebSocket address extraction was unavailable; its all-transport local-address count and before/after exchange-edge public-egress checks remain recorded."
+  ],
+  "sources": [
+    "https://docs.polymarket.com/market-data/realtime-data",
+    "https://docs.polymarket.com/api-reference/rate-limits"
+  ],
+  "compaction": {
+    "note": "Bulky per-item arrays were trimmed to keep the repository readable. Aggregates above are unchanged. The full original file is in Git history.",
+    "full_original": "git show 76e65b8:research/experiments/polymarket-subscription-capacity-connections-results.json",
+    "trimmed": {
+      "measurement.connections": "1024 per-connection records removed"
+    }
+  }
+}

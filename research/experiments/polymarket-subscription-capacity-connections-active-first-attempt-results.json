@@ -1,0 +1,182 @@
+{
+  "recording_directory": "recordings/subscription-capacity-connections-active-20261024",
+  "measurement": {
+    "started_at": "2026-10-24T18:08:24.380Z",
+    "finished_at": "2026-10-24T18:11:05.641Z",
+    "runtime": "v24.22.1",
+    "protocol": {
+      "claim": "Determine a tested lower bound or reproducible operational boundary for simultaneous market WebSockets from one observed egress; no assumption that a timeout is an IP connection cap.",
+      "endpoint": "wss://ws-subscriptions-clob.polymarket.com/ws/market",
+      "maximum_connections": 4000,
+      "one_market_per_socket": true,
+      "assets_per_socket": 2,
+      "opens_per_second_maximum": 10,
+      "initialization_timeout_seconds": 15,
+      "stage_hold_seconds": 300,
+      "final_hold_seconds": 300,
+      "ping_interval_seconds": 10,
+      "custom_feature_enabled": false,
+      "initial_dump": true,
+      "address_family": "IPv4 first, automatic family selection disabled",
+      "success": "Both valid book snapshots on every requested socket, OPEN state, at least one PONG per socket, PONG age <=15 seconds, no unexpected close or error during hold",
+      "stop_policy": "Stop ramp on any failure or throttling; no replacement connections; graceful shutdown and no automatic retry",
+      "client_guards": {
+        "rss_bytes": 2147483648,
+        "queued_output_bytes": 16777216,
+        "total_received_bytes": 17179869184,
+        "retained_evidence_bytes": 4294967296,
+        "wall_seconds": 2400
+      },
+      "host": {
+        "logical_cores": 6,
+        "load_average": [
+          1.06,
+          1.78,
+          1.55
+        ]
+      },
+      "script_sha256": "853a04883f78fe88426dfefe0ad7075c13594dff75651054355080b0a18bd6ab",
+      "maximum_initializations_in_flight": 8,
+      "market_selection": "All markets ranked by observed Gamma volume24hr descending, eligible binary only",
+      "frame_recording": "All initial snapshot frames and PONGs, then at most one update frame per connection per ten seconds"
+    },
+    "stop_reason": "unexpected_close_1000",
+    "conclusion": "Observed operational failure; inspect evidence before claiming an IP cap",
+    "maximum_requested": 1317,
+    "maximum_passed": 0,
+    "stages": [
+      {
+        "target": 2000,
+        "requested_markets": 1317,
+        "requested_assets": 2634,
+        "open": 1315,
+        "complete_books": 2634,
+        "healthy": 1315,
+        "stage_start_ms": 8522.096062,
+        "hold_start_ms": 158799.425088,
+        "end_ms": 158804.868571,
+        "hold_seconds": 0.00544348300001002,
+        "passed": false,
+        "stop_reason": "unexpected_close_1000",
+        "received_bytes": 0,
+        "bytes_per_second": 0,
+        "cpu_ms": {
+          "user": 5.817,
+          "system": 2.303
+        },
+        "event_loop_ms": {
+          "p50": 0.000511,
+          "p99": 0.000511,
+          "max": 0
+        },
+        "rss_bytes": 472760320,
+        "open_file_descriptors": 1345,
+        "market_updates": 0,
+        "market_updates_per_second": 0,
+        "price_change_entries": 0,
+        "active_markets": 0,
+        "callback_work_ms": 0,
+        "maximum_callback_ms": 0
+      }
+    ],
+    "egress": {
+      "source": "https://ws-subscriptions-clob.polymarket.com/cdn-cgi/trace",
+      "before_status": 200,
+      "after_status": 200,
+      "public_ip_observed_before": true,
+      "public_ip_observed_after": true,
+      "public_ip_unchanged": true,
+      "public_ip_family_before": 4,
+      "public_ip_family_after": 4,
+      "distinct_local_transport_addresses": 1,
+      "distinct_local_websocket_addresses": 1,
+      "distinct_remote_transport_addresses": 2,
+      "websocket_remote_families": [
+        "IPv4"
+      ],
+      "websocket_handshake_diagnostics": 1317,
+      "handshake_statuses": [
+        101
+      ],
+      "addresses_retained": false
+    },
+    "errors": [],
+    "bytes_received": 251497412,
+    "peak_rss_bytes": 472498176,
+    "maximum_queued_output_bytes": 88285,
+    "cpu_ms": {
+      "user": 80446.889,
+      "system": 34806.026
+    },
+    "sockets_not_closed_after_grace": 0,
+    "retained_payload_bytes": 9153190,
+    "total_market_updates": 387929,
+    "total_price_change_entries": 765016
+  },
+  "verification": {
+    "verified_stages": [],
+    "received_frames": 16887,
+    "received_payload_bytes": 9153190,
+    "all_received_payload_bytes": 251497412,
+    "frame_recording": "All initial snapshot frames and PONGs, then at most one update frame per connection per ten seconds",
+    "total_pongs": 10545,
+    "event_types": {
+      "book": 2635,
+      "price_change": 5016,
+      "last_trade_price": 8
+    },
+    "distinct_markets": 1317,
+    "distinct_assets": 2634,
+    "minimum_connection_creation_interval_ms": 99.0074969999987,
+    "snapshot_initialization_ms": {
+      "minimum": 19.778435000000172,
+      "median": 38.648881999994046,
+      "maximum": 1041.9789979999769
+    },
+    "close_codes": {
+      "1000": 1317
+    },
+    "unexpected_closes": [
+      {
+        "connection": 499,
+        "close": {
+          "mono_ms": 157885.495093,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        }
+      },
+      {
+        "connection": 1062,
+        "close": {
+          "mono_ms": 157043.118473,
+          "code": 1000,
+          "reason": "all subscribed assets resolved",
+          "wasClean": true,
+          "expected": false
+        }
+      }
+    ],
+    "resolved_market_closes": [],
+    "maximum_passed_from_raw": 0,
+    "archived_harness_sha256_verified": true
+  },
+  "interpretation": "A bounded lower bound on simultaneous healthy sockets from the observed egress, not a published or measured absolute IP cap.",
+  "caveats": [
+    "One ramp, not independent repeated saturation trials.",
+    "Observed live traffic does not establish a true worst case.",
+    "Volume24hr ranks historical trading volume, not instantaneous order-book update frequency."
+  ],
+  "sources": [
+    "https://docs.polymarket.com/market-data/realtime-data",
+    "https://docs.polymarket.com/api-reference/rate-limits"
+  ],
+  "compaction": {
+    "note": "Bulky per-item arrays were trimmed to keep the repository readable. Aggregates above are unchanged. The full original file is in Git history.",
+    "full_original": "git show 76e65b8:research/experiments/polymarket-subscription-capacity-connections-active-first-attempt-results.json",
+    "trimmed": {
+      "measurement.connections": "1317 per-connection records removed"
+    }
+  }
+}

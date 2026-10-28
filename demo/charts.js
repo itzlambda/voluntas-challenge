@@ -21,7 +21,7 @@
   const WORKER_COLORS = [C.green, C.blue, C.light, C.grey, C.dark];
   // Approximate restart time, estimated from the reported dip just before the screenshot.
   const DEPLOYMENT_AT = Date.UTC(2026, 9, 27, 13, 8) / 1000;
-  const RANGES = {'15m': 5000, '1h': 15000, '6h': 60000};
+  const RANGES = {'15m': 5000, '1h': 15000, '12h': 60000, '24h': 120000, all: 120000};
   // Legend swatches use classes because the page's CSP forbids inline styles.
   const SWATCH = {[C.green]: 'c-green', [C.blue]: 'c-blue', [C.light]: 'c-light', [C.grey]: 'c-grey', [C.dark]: 'c-dark', [C.miss]: 'c-miss'};
 
@@ -364,8 +364,9 @@
       if (!h || !h.timestamps) return emptyMessage();
       const bucket = (h.bars || {}).bucket_seconds || 0;
       const resolution = `Lines every ${h.step_seconds} s, bars per ${bucket >= 60 ? `${bucket / 60} min` : `${bucket} s`}`;
-      if (h.anchored_to_last_data) return `Showing the ${view.range} up to the collector's last data, ${S.clock(h.last_data_at)}. ${resolution}.`;
+      if (h.anchored_to_last_data) return `Showing ${view.range === 'all' ? 'all retained telemetry' : `the ${view.range}`} up to the collector's last data, ${S.clock(h.last_data_at)}. ${resolution}.`;
       if (h.status === 'stale') return `History could not be refreshed; showing the last successful load. ${resolution}.`;
+      if (view.range === 'all') return `All retained telemetry, ${S.clock(h.start)} to ${S.clock(h.end)}. ${resolution}.`;
       return `${resolution}. Hover a chart to read values.`;
     }
 

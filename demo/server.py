@@ -70,7 +70,10 @@ LAST_KNOWN_OFFSET_SECONDS = 10
 FRESH_SECONDS = 15
 
 # window: (duration, line step, bar bucket)
-HISTORY_WINDOWS = {"15m": (900, 1, 30), "1h": (3600, 5, 120), "6h": (21600, 30, 600)}
+HISTORY_WINDOWS = {"15m": (900, 1, 30), "1h": (3600, 5, 120),
+                   "12h": (43200, 60, 1200), "24h": (86400, 120, 2400)}
+HISTORY_RANGES = (*HISTORY_WINDOWS, "all")
+FIRST_DATA_QUERY = labelled({"first_data": f"min_over_time((timestamp({PUBLISHED}))[7d:5m])"})
 HISTORY_FIELDS = ("up", "published_at", "markets_desired", "markets_synced",
                   "markets_standby_ready", "publisher_switches_total",
                   "books_desired", "books_synced", "events_per_second", "book_updates_per_second",
@@ -124,8 +127,8 @@ def matrix(payload, definitions):
     return fields
 
 
-def decode_history(payload, end, window):
-    duration, step, _ = HISTORY_WINDOWS[window]
+def decode_history(payload, end, window, settings=None):
+    duration, step, _ = settings or HISTORY_WINDOWS[window]
     fields = matrix(payload, HISTORY_SERIES)
     start = end - duration
     timestamps = list(range(start, end + 1, step))
@@ -152,9 +155,9 @@ def decode_history(payload, end, window):
             "latency_unit": "ms", "rate_window_seconds": 60, "latency_window_seconds": 300}
 
 
-def decode_bars(payload, end, window):
+def decode_bars(payload, end, window, settings=None):
     """Counter increases per bucket. Timestamps are bucket starts; buckets without a scrape are null."""
-    duration, _, bucket = HISTORY_WINDOWS[window]
+    duration, _, bucket = settings or HISTORY_WINDOWS[window]
     fields = matrix(payload, bar_series(bucket))
     ends = list(range(end - duration + bucket, end + 1, bucket))
     series = {key: [] for key in sorted(fields) if key != "up_max"}
@@ -266,6 +269,7 @@ class Reader:
         self.bars_cache = {}
         self.history_lock = threading.Lock()
         self.last_known_cache = (-math.inf, None)
+        self.first_data_cache = (-math.inf, None)
 
     def query(self, endpoint, parameters, limit=1_048_576):
         request = urllib.request.Request(
@@ -286,28 +290,62 @@ class Reader:
             return int(math.ceil((last + duration * 0.05) / step) * step), last
         return end, None
 
+    def first_data(self, now):
+        fetched, first = self.first_data_cache
+        if time.monotonic() - fetched < 60:
+            return first
+        payload = self.query("query", {"query": FIRST_DATA_QUERY, "time": now})
+        rows = payload.get("data", {}).get("result", [])
+        first = finite(rows[0]["value"][1]) if len(rows) == 1 else None
+        if first is not None:
+            # Refine the coarse search to the first retained scrape, including lookback.
+            payload = self.query("query_range", {"query": labelled({"first_scrape": f"timestamp({PUBLISHED})"}),
+                                 "start": max(0, first - 600), "end": first, "step": 1})
+            values = [finite(v) for row in payload.get("data", {}).get("result", [])
+                      for _, v in row.get("values", [])]
+            first = min((v for v in values if v is not None), default=first)
+        self.first_data_cache = (time.monotonic(), first)
+        return first
+
     def history(self, window):
-        if window not in HISTORY_WINDOWS:
+        if window not in HISTORY_RANGES:
             raise ValueError("unsupported history window")
-        duration, step, bucket = HISTORY_WINDOWS[window]
-        end, anchored = self.history_end(duration, step)
         if not self.history_lock.acquire(timeout=4):
             return {"schema_version": 1, "status": "unavailable", "window": window}
         try:
             cached = self.history_cache.get(window)
-            if cached and cached[0] == end:
-                return cached[1]
-            bar_end = end // bucket * bucket
             try:
+                if window == "all":
+                    now = time.time()
+                    first = self.first_data(now)
+                    stats = self.stats()
+                    anchored = stats.get("values_at") if stats.get("status") == "stopped" else None
+                    last = anchored if anchored is not None else now
+                    span = max(60, last - first) if first is not None else 900
+                    step = max(1, math.ceil(span / 900))
+                    bucket = max(30, math.ceil(span / 72 / 30) * 30)
+                    end = math.floor(last / step) * step
+                    duration = math.ceil((end - first) / step) * step if first is not None else 900
+                    duration = max(step, duration)
+                else:
+                    duration, step, bucket = HISTORY_WINDOWS[window]
+                    end, anchored = self.history_end(duration, step)
+                settings = (duration, step, bucket)
+                cache_key = (end, settings)
+                if cached and cached[0] == cache_key:
+                    return cached[1]
+                bar_end = end // bucket * bucket
+                bar_settings = (math.ceil(duration / bucket) * bucket, step, bucket)
                 payload = self.query("query_range", {"query": HISTORY_QUERY, "start": end - duration,
                                      "end": end, "step": step}, limit=4_194_304)
-                result = decode_history(payload, end, window)
+                result = decode_history(payload, end, window, settings)
                 bars = self.bars_cache.get(window)
-                if not bars or bars[0] != bar_end:
+                bar_key = (bar_end, bar_settings)
+                if not bars or bars[0] != bar_key:
                     bar_payload = self.query("query_range", {
-                        "query": bar_query(bucket), "start": bar_end - duration + bucket,
+                        "query": bar_query(bucket), "start": bar_end - bar_settings[0] + bucket,
                         "end": bar_end, "step": bucket}, limit=4_194_304)
-                    bars = (bar_end, decode_bars(bar_payload, bar_end, window))
+                    bars = (bar_key, decode_bars(bar_payload, bar_end, window, bar_settings))
                     self.bars_cache[window] = bars
                 result["bars"] = bars[1]
                 result["anchored_to_last_data"] = anchored is not None
@@ -316,7 +354,8 @@ class Reader:
                 result = {**(cached[1] if cached else {}), "schema_version": 1,
                           "status": "stale" if cached and cached[1].get("timestamps") else "unavailable",
                           "window": window}
-            self.history_cache[window] = (end, result)
+            if result["status"] == "ok":
+                self.history_cache[window] = (cache_key, result)
             return result
         finally:
             self.history_lock.release()
@@ -457,7 +496,7 @@ class Handler(BaseHTTPRequestHandler):
         if parsed.path == "/api/prometheus/query":
             self.prometheus_query(parsed.query)
             return
-        history_routes = {f"/api/demo/history?window={window}": window for window in HISTORY_WINDOWS}
+        history_routes = {f"/api/demo/history?window={window}": window for window in HISTORY_RANGES}
         if self.path == "/api/demo/stats":
             self.json_response(200, self.server.reader.stats())
             return

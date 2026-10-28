@@ -305,15 +305,10 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
     const condition = '0x233e4370d16889f614f62a3280887b31e0c381ec3a3e0bb362aefdf0703f6406';
     assert.equal(BigInt(`0x${condition.slice(-16)}`) % 4n, 2n);
     assert.match(diagram.componentHtml('route').body, /6 mod 4 = 2/);
-    const html = fs.readFileSync(path.join(DEMO, 'architecture.html'), 'utf8');
-    for (const id of Object.keys(diagram.COMPONENTS)) assert.match(html, new RegExp(`data-id="${id}"`), id);
-    for (const [, id] of html.matchAll(/data-id="([^"]+)"/g)) assert.ok(diagram.COMPONENTS[id], `box ${id} has details`);
-    for (let n = 1; n <= diagram.STEPS.length; n += 1) assert.match(html, new RegExp(`<button type="button" class="num" data-num="${n}"`), `step ${n} is a button`);
-    assert.doesNotMatch(html, /step-prev|step-play|step-next|metrics-note/);
   });
 
   await test('pages: copy rules, privacy, no inline scripts or styles', () => {
-    const pages = ['index.html', 'architecture.html', 'live.html'];
+    const pages = ['index.html', 'live.html'];
     const visible = file => fs.readFileSync(path.join(DEMO, file), 'utf8').replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ');
     for (const file of [...pages, 'status.js', 'overview.js', 'charts.js', 'chart-help.js', 'diagram.js', 'site.css']) {
       // SVG path data is coordinates, not addresses.
@@ -327,14 +322,16 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
       assert.doesNotMatch(raw, /\sstyle="/, `${file}: no inline styles under the CSP`);
       const text = visible(file);
       assert.doesNotMatch(text, / · | — |→|»/, `${file}: no dot joins, dash fragments or arrows`);
-      assert.match(raw, /<nav class="site-nav"[\s\S]*Overview[\s\S]*Architecture[\s\S]*Live/);
+      assert.match(raw, /<nav class="site-nav"[\s\S]*Overview[\s\S]*Live/);
       assert.doesNotMatch(raw, /\/tradeoffs/, `${file}: Trade-offs is removed until its sources are rewritten`);
       const footer = raw.match(/<footer[\s\S]*?<\/footer>/)[0];
-      for (const href of ['https://github.com/itzlambda/voluntas-challenge-private', 'https://x.com/itzlambda']) {
+      for (const href of ['https://github.com/itzlambda/voluntas-challenge', 'https://x.com/itzlambda']) {
         assert.ok(footer.includes(`href="${href}" target="_blank" rel="noopener noreferrer" aria-label="`), `${file}: ${href} opens in a new tab with a name`);
       }
       assert.equal((footer.match(/<a /g) || []).length, 2, `${file}: footer has only the source and Twitter icons`);
       if (file === 'live.html') {
+        assert.deepEqual([...raw.matchAll(/data-range="([^"]+)"/g)].map(match => match[1]),
+          ['15m', '1h', '12h', '24h', 'all']);
         const sections = raw.match(/<section class="panel chart[\s\S]*?<\/section>/g);
         assert.equal(sections.length, 11);
         assert.doesNotMatch(raw, /How to read these numbers/, 'definitions live at chart titles');

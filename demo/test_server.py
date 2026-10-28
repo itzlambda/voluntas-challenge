@@ -275,6 +275,25 @@ class ConnectionStateTests(unittest.TestCase):
             self.assertIsNotNone(values[0])
             self.assertTrue(all(v is None for v in history["bars"]["series"]["session_ends:remote_close"][-5:]))
 
+    def test_all_history_covers_retained_data_and_stops_at_last_data(self):
+        for scenario in ("live", "stopped", "never_ran"):
+            with self.subTest(scenario=scenario), Running(scenario) as running:
+                history = running.json("/api/demo/history?window=all")
+                self.assertEqual(history["status"], "ok")
+                self.assertEqual(history["window"], "all")
+                self.assertLessEqual(len(history["timestamps"]), 902)
+                self.assertLessEqual(len(history["bars"]["timestamps"]), 74)
+                if scenario == "never_ran":
+                    self.assertTrue(all(v is None for v in history["series"]["events_per_second"]))
+                    continue
+                self.assertAlmostEqual(history["start"], running.fake.timeline.start,
+                                       delta=history["step_seconds"] + 1)
+                self.assertTrue(any(v is not None for v in history["series"]["events_per_second"]))
+                self.assertEqual(history["anchored_to_last_data"], scenario == "stopped")
+                if scenario == "stopped":
+                    self.assertAlmostEqual(history["end"], running.fake.timeline.stop,
+                                           delta=history["step_seconds"] + 15)
+
     def test_history_windows_and_series(self):
         with Running("live") as running:
             for window, (duration, step, bucket) in HISTORY_WINDOWS.items():
@@ -300,19 +319,19 @@ class HttpTests(unittest.TestCase):
             status, headers, body = running.get("/")
             self.assertIn(b"Markets with a current book", body)
             self.assertIn("script-src 'self'", headers["Content-Security-Policy"])
-            for path, needle in {"/architecture": b"Ownership rules", "/live": b"Time inside the collector",
+            for path, needle in {"/live": b"Time inside the collector",
                                  "/live?range=1h": b'aria-describedby="help-internal"'}.items():
                 self.assertIn(needle, running.get(path)[2], path)
             for path, (_, content_type) in ASSETS.items():
                 status, headers, body = running.get(path)
                 self.assertEqual(headers["Content-Type"], content_type)
                 self.assertTrue(body)
-            request = urllib.request.Request(running.base + "/architecture/")
+            request = urllib.request.Request(running.base + "/live/")
             opener = urllib.request.build_opener(type("NoRedirect", (urllib.request.HTTPRedirectHandler,), {"redirect_request": lambda *a: None}))
             with self.assertRaises(urllib.error.HTTPError) as error:
                 opener.open(request)
             self.assertEqual(error.exception.code, 301)
-            self.assertEqual(error.exception.headers["Location"], "/architecture")
+            self.assertEqual(error.exception.headers["Location"], "/live")
             for path in ["/api/demo/stats?query=anything", "/api/demo/history?window=2h", "/server.py",
                          "/fake_prometheus.py", "/synthetic_collector.py", "/test_ui.cjs", "/api/other", "/../server.py",
                          "/tradeoffs", "/tradeoffs.html"]:

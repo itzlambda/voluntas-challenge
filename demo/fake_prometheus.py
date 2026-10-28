@@ -145,6 +145,10 @@ class Timeline:
     def series(self, field, t, bucket=None):
         """[(labels, value)] for one field at time t; an empty list means no sample."""
         last = self.last_running(t)
+        if field == "first_data":
+            return [({}, max(self.start, t - 7 * 24 * HOUR))] if last is not None else []
+        if field == "first_scrape":
+            return [({}, t)] if self.running(t) else []
         if field == "last_publication":
             return [({}, self.published(last))] if last is not None and t - last < 7 * 24 * HOUR else []
         if field in ("up", "up_recent", "up_max"):

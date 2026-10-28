@@ -289,9 +289,13 @@ serves `/` and `/live` from an asset allowlist, plus:
   counts, event rate, latency percentiles and sample counts, standby coverage,
   switch totals, negative exchange-age share, and freshness timestamps.
   Unavailable values are `null`, never NaN, infinity, or a substituted zero.
-- `GET /api/demo/history?window=15m|1h|6h`: aligned range-query series at
-  one-, five-, and 30-second steps, with per-bucket counter increases under
-  `bars` (30-second, two-minute, and ten-minute buckets). Each window has a
+- `GET /api/demo/history?window=15m|1h|12h|24h|all`: aligned range-query series at
+  one-, five-, 60-, and 120-second steps for the fixed windows, with per-bucket
+  counter increases under `bars` (30-second, two-minute, 20-minute, and
+  40-minute buckets). All covers retained collector telemetry within the configured
+  seven-day retention period, using about 900 line points and 72 bar buckets.
+  Its start is discovered from retained samples, including across collector restarts.
+  When the collector has stopped, All ends at its last data. Each window has a
   shared cache. Responses are limited to 4 MiB. If the collector stopped
   before the window, history ends at the last data and sets
   `anchored_to_last_data`.

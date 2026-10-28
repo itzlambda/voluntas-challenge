@@ -272,7 +272,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
     assert.deepEqual([...charts.legendValues('writer_busy', idle.writer_busy, stats('live'))], ['0%'], 'measured idle differs from missing data');
   });
 
-  await test('deployment marker is labeled, scales with the canvas and stays in its time range', () => {
+  await test('deployment marker stays unobtrusive and reveals details only near its line', () => {
     const at = Date.UTC(2026, 9, 27, 13, 8) / 1000;
     const history = {start: at - 60, end: at + 60};
     const calls = [];
@@ -283,11 +283,18 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
     const plot = {ctx: context, bbox: {left: 100, top: 20, width: 600, height: 360}, valToPos: () => 680};
     charts.drawDeploymentMarker(plot, history, 2);
     assert.ok(calls.some(call => call[0] === 'scale' && call[1] === 2));
-    assert.ok(calls.some(call => call[0] === 'fillText' && call[1] === 'New deployment'));
-    assert.ok(calls.some(call => call[0] === 'fillText' && call[1] === 'Approx. time'));
-    const label = calls.find(call => call[0] === 'fillRect');
-    assert.ok(label[1] >= 50 && label[1] + label[3] <= 350, 'label stays inside the chart near its edge');
-    assert.match(charts.chartNote('updates', history, {}), /New deployment.*approx.*service restarted/);
+    assert.ok(calls.some(call => call[0] === 'stroke'));
+    assert.ok(!calls.some(call => ['fillText', 'fillRect'].includes(call[0])), 'no permanent label covers the data');
+    assert.equal(charts.chartNote('updates', history, {}), '', 'deployment details do not occupy space below the chart');
+    plot.valToPos = (_value, _axis, canvas) => canvas ? 680 : 290;
+    plot.cursor = {left: 294, top: 100};
+    assert.ok(charts.deploymentHovered(plot, history, 2));
+    plot.cursor.left = 300;
+    assert.ok(!charts.deploymentHovered(plot, history, 2));
+    plot.cursor = {left: 290, top: -1};
+    assert.ok(!charts.deploymentHovered(plot, history, 2), 'leaving the plot hides the tooltip');
+    plot.cursor.top = 181;
+    assert.ok(!charts.deploymentHovered(plot, history, 2), 'the tooltip stays within the plot height');
     calls.length = 0;
     charts.drawDeploymentMarker(plot, {start: at + 1, end: at + 900}, 2);
     assert.equal(calls.length, 0, 'no marker on unrelated history');

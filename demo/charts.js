@@ -145,9 +145,7 @@
     if (!deploymentInRange(history)) return;
     const {ctx, bbox} = u;
     const x = u.valToPos(DEPLOYMENT_AT, 'x', true) / ratio;
-    const left = bbox.left / ratio;
     const top = bbox.top / ratio;
-    const right = (bbox.left + bbox.width) / ratio;
     const bottom = (bbox.top + bbox.height) / ratio;
     ctx.save();
     ctx.scale(ratio, ratio);
@@ -155,28 +153,24 @@
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 4]);
     ctx.beginPath();
-    ctx.moveTo(x, top + 40);
+    ctx.moveTo(x, top);
     ctx.lineTo(x, bottom);
     ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.font = 'bold 12px system-ui, sans-serif';
-    const width = ctx.measureText('New deployment').width + 16;
-    const labelLeft = Math.max(left, Math.min(x - width / 2, right - width));
-    ctx.fillStyle = '#242729';
-    ctx.fillRect(labelLeft, top + 2, width, 36);
-    ctx.fillStyle = C.light;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    ctx.fillText('New deployment', labelLeft + width / 2, top + 5);
-    ctx.font = '10px system-ui, sans-serif';
-    ctx.fillText('Approx. time', labelLeft + width / 2, top + 22);
     ctx.restore();
   }
 
+  function deploymentHovered(u, history, ratio) {
+    return deploymentInRange(history) && isNum(u.cursor.left) && isNum(u.cursor.top)
+      && u.cursor.top >= 0 && u.cursor.top <= u.bbox.height / ratio
+      && Math.abs(u.cursor.left - u.valToPos(DEPLOYMENT_AT, 'x')) <= 6;
+  }
+
+  function deploymentText() {
+    return `New deployment · ${new Date(DEPLOYMENT_AT * 1000).toLocaleString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short'})} (approx.): service restarted to bring in other changes.`;
+  }
+
   function chartNote(id, history, stats) {
-    if (id === 'updates') return deploymentInRange(history)
-      ? `New deployment — ${new Date(DEPLOYMENT_AT * 1000).toLocaleString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short'})} (approx.): service restarted to bring in other changes.`
-      : '';
+    if (id === 'updates') return '';
     if (id === 'connections') {
       const ob = S.sockets(stats || {}, 'orderbook');
       const md = S.sockets(stats || {}, 'market_discovery');
@@ -214,6 +208,7 @@
     }
 
     function options(id, def, element) {
+      let markerTip;
       const big = element.closest('.chart').classList.contains('big');
       const series = def.series.map(item => {
         const base = {label: item.label, stroke: item.color, width: 1.5, spanGaps: false, points: {show: false}};
@@ -240,9 +235,25 @@
         ],
         series: [{}, ...series],
         hooks: {
+          ready: [u => {
+            if (id !== 'updates') return;
+            markerTip = doc.createElement('div');
+            markerTip.className = 'deployment-marker-tip';
+            markerTip.setAttribute('role', 'tooltip');
+            markerTip.textContent = deploymentText();
+            markerTip.hidden = true;
+            u.over.append(markerTip);
+          }],
+          setData: [() => { if (markerTip) markerTip.hidden = true; }],
           drawAxes: [u => shadeGaps(u, id)],
           draw: [u => { if (id === 'updates') drawDeploymentMarker(u, view.history, uPlot.pxRatio || win.devicePixelRatio || 1); }],
-          setCursor: [u => renderLegend(id, u.cursor.idx)],
+          setCursor: [u => {
+            renderLegend(id, u.cursor.idx);
+            if (!markerTip) return;
+            markerTip.hidden = !u.over.matches(':hover')
+              || !deploymentHovered(u, view.history, uPlot.pxRatio || win.devicePixelRatio || 1);
+            if (!markerTip.hidden) markerTip.style.left = `${Math.max(4, Math.min(u.cursor.left + 12, u.over.clientWidth - markerTip.offsetWidth - 4))}px`;
+          }],
         },
       };
     }
@@ -431,7 +442,7 @@
     return view;
   }
 
-  root.DemoCharts = {stack, gaps, diff, definitions, legendValues, chartNote, deploymentInRange, drawDeploymentMarker};
+  root.DemoCharts = {stack, gaps, diff, definitions, legendValues, chartNote, deploymentInRange, drawDeploymentMarker, deploymentHovered};
   if (root.document && root.document.getElementById && root.document.getElementById('charts') && root.uPlot && S.page) {
     root.DemoCharts.page = init(root.document, root, root.uPlot, S.page);
   }

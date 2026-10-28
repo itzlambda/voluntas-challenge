@@ -373,12 +373,8 @@
     function describeHistory() {
       const h = view.history;
       if (!h || !h.timestamps) return emptyMessage();
-      const bucket = (h.bars || {}).bucket_seconds || 0;
-      const resolution = `Lines every ${h.step_seconds} s, bars per ${bucket >= 60 ? `${bucket / 60} min` : `${bucket} s`}`;
-      if (h.anchored_to_last_data) return `Showing ${view.range === 'all' ? 'all retained telemetry' : `the ${view.range}`} up to the collector's last data, ${S.clock(h.last_data_at)}. ${resolution}.`;
-      if (h.status === 'stale') return `History could not be refreshed; showing the last successful load. ${resolution}.`;
-      if (view.range === 'all') return `All retained telemetry, ${S.clock(h.start)} to ${S.clock(h.end)}. ${resolution}.`;
-      return `${resolution}. Hover a chart to read values.`;
+      if (h.status === 'stale') return 'History could not be refreshed; showing the last successful load.';
+      return '';
     }
 
     function load(range) {

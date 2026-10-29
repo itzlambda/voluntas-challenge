@@ -88,7 +88,7 @@
     <div class="section-head">
       <div>
         <h2 id="architecture-heading">How it's built</h2>
-        <p class="section-lead">Markets are discovered from Gamma and lifecycle sockets, subscribed twice across two WebSocket pools, routed to a single owning worker, and encoded by one writer thread.</p>
+        <p class="section-lead">Markets are discovered from Gamma and lifecycle sockets, subscribed twice across two WebSocket pools, routed to a single owning worker, and encoded by one writer. The writer sends SBE to a file, as the challenge asks, or to a WebSocket stream we added for the browser.</p>
       </div>
     </div>
   <div class="architecture">
@@ -153,13 +153,16 @@
 
           <div class="step-row" data-step="7" role="group" aria-labelledby="step-control-7">
             <button type="button" class="num" data-num="7" id="step-control-7" aria-controls="detail" aria-label="Step 7 of 7">7</button>
-            <div class="cells single"><button type="button" class="box" data-id="writer">Writer thread<small>encodes SBE and writes the file</small></button></div>
+            <div class="cells single"><button type="button" class="box" data-id="writer">Writer<small>encodes every record as SBE, then sends it to one output</small></button></div>
             <div class="side"></div>
 
-            <div class="link-row" data-link="7"><svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0 V26"/></svg></div>
+            <div class="link-row" data-link="7"><svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0 V13 H25 V26 M50 13 H75 V26"/></svg></div>
 
             <span class="num empty" aria-hidden="true"></span>
-            <div class="cells single file-cell"><button type="button" class="box file" data-id="output">books.sbe</button></div>
+            <div class="cells two file-cell">
+              <button type="button" class="box file" data-id="output">books.sbe<small>file output, what the challenge asks for</small></button>
+              <button type="button" class="box" data-id="stream">WebSocket stream<small>added so a browser can watch books live</small></button>
+            </div>
             <div class="side"></div>
           </div>
           <aside class="worker-design-note" aria-label="Worker and writer design trade-off">
@@ -177,7 +180,7 @@
         <ul>
           <li>A market stays with one worker for the life of the process</li>
           <li>Only that worker reads or changes its books</li>
-          <li>Only the writer touches the output file</li>
+          <li>Only the writer touches the output</li>
           <li>Connections hold no book state</li>
           <li>Pools only keep a market's two copies on different sockets</li>
         </ul>

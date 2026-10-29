@@ -141,7 +141,7 @@
         <h2 id="h-writer-busy"><button class="chart-help" type="button" aria-describedby="help-writer-busy" aria-expanded="false">Writer busy time</button></h2>
         <div class="chart-tooltip" id="help-writer-busy" role="tooltip" popover="auto">
           <p>Share of wall time the single output task spends on records, excluding idle waits; it is not CPU use. In file mode the writer converts and encodes records and writes or flushes output, including snapshots and chunk rotation. In stream mode the stream hub encodes every output record and routes its bytes to subscribers; bytes with no subscriber are discarded after encoding. Sustained values near 100% indicate little writer headroom; compare with waiting on the writer and internal latency.</p>
-          <p>File and stream output do different work, so values before and after the shaded rollout window on 29 October are not comparable.</p>
+          <p>File and stream output do different work, so values on either side of the shaded band are not comparable.</p>
           <p>Values use a one-minute rate. Missing or stale periods are left blank. Counters restart from zero when the collector restarts.</p>
           <p class="small muted">Metrics: <code>collector_writer_busy_seconds_total</code>.</p>
         </div>
@@ -156,7 +156,7 @@
         <div class="chart-tooltip" id="help-writer" role="tooltip" popover="auto">
           <p>Combined time all book workers wait after the output channel reports full, averaged over one minute. Output goes to the file writer or the stream hub. The value is milliseconds of worker wait per second, not time per event. Multiple workers can wait together, so the value can exceed 1,000.</p>
           <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
-          <p>Values inside the shaded rollout window on 29 October include ordinary send overhead from a since-fixed measurement error. Values before and after it are comparable.</p>
+          <p>Values inside the shaded band include a measurement error that has since been fixed.</p>
           <p class="small muted">Metrics: <code>collector_writer_blocked_seconds_total</code>.</p>
         </div>
       </div>

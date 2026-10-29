@@ -91,16 +91,15 @@
       code: ['src/core/worker.rs', 'src/core/order_book.rs'],
     },
     writer: {
-      title: 'Writer thread',
-      lead: 'Converts each output record into the supplied SBE types and encodes it with AlignedSbeWriter. The file grows in 64 MiB chunks.',
+      title: 'Writer',
+      lead: 'Converts each output record into the supplied SBE types and encodes it. A startup flag picks one output: the file, or the WebSocket stream.',
       rows: [
-        ['Owns', 'The output file'],
+        ['Owns', 'The output'],
         ['Receives', 'Record batches from every worker, through one bounded channel'],
         ['Sends', 'SBE bytes to the output'],
-        ['Runs as', 'A plain OS thread, because file writes block'],
+        ['Runs as', 'A plain OS thread for the file, because file writes block. A Tokio task for the stream.'],
         ['Timestamps', 'Time inside the collector ends when a level update finishes encoding'],
         ['Why', 'I originally planned to move encoding to the book workers. That required changes to the supplied encoding path, so I kept it unchanged. Benchmark a single book worker before retaining the pool or parallelizing encoding.'],
-        ['Stream mode', 'Not part of the challenge. Since 29 October this demo runs with --output-mode stream: a hub task replaces this thread, encodes the same records with the same helpers, and sends the bytes over WebSocket instead of to a file. Nothing upstream changes.'],
       ],
       code: ['src/core/writer.rs', 'src/core/stream.rs'],
     },
@@ -113,6 +112,16 @@
         ['Cost', 'A crash loses up to one in-memory chunk. There is no fsync durability promise.'],
       ],
       code: ['src/core/writer.rs', 'docs/ARCHITECTURE.md'],
+    },
+    stream: {
+      title: 'WebSocket stream',
+      lead: 'Not part of the challenge. We added it so a browser can watch books live; this demo runs it. Clients subscribe to books and receive the same SBE messages the file would hold.',
+      rows: [
+        ['Enabled by', '--output-mode stream, instead of the file'],
+        ['Joining', 'No history. A client waits for each book\'s next snapshot, within 60 seconds.'],
+        ['Slow clients', 'Disconnected, never waited for, so they cannot slow the collector'],
+      ],
+      code: ['src/core/stream.rs', 'docs/ARCHITECTURE.md'],
     },
   };
 
@@ -138,8 +147,8 @@
     {title: 'The worker applies it', lit: ['workers'], link: 6,
       text: 'The worker applies each copy to that source\'s book only. Only the publishing copy produces output records; the standby copy stays current privately.',
       time: 'No new timestamp. The records carry the receive time and monotonic instant.', code: ['src/core/worker.rs']},
-    {title: 'The writer encodes it', lit: ['writer', 'output'], link: 7,
-      text: 'The writer encodes each record into SBE. That ends time inside the collector. The bytes reach the file later, when the 64 MiB chunk is written. This is the only step stream mode changes: outside the challenge, the live demo now sends the same SBE bytes over WebSocket instead of writing the file.',
+    {title: 'The writer encodes it', lit: ['writer', 'output', 'stream'], link: 7,
+      text: 'The writer encodes each record into SBE. That ends time inside the collector. The bytes then go to one output: the file the challenge asks for, written in 64 MiB chunks, or the WebSocket stream we added for the browser.',
       time: 'Encoding complete: time inside the collector is measured here', code: ['src/core/writer.rs', 'src/core/stream.rs']},
   ];
 

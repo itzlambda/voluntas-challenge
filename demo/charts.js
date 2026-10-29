@@ -236,18 +236,13 @@
       && u.valToPos(item.start, 'x') <= u.cursor.left && u.cursor.left <= u.valToPos(item.end, 'x')) || null;
   }
 
-  const clockTime = at => new Date(at * 1000).toLocaleString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short'});
-  const utcTime = at => new Date(at * 1000).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
-
-  function rolloutText(item) {
-    const end = new Date(item.end * 1000).toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit', hourCycle: 'h23'});
-    return `${item.label} · ${clockTime(item.start)} to ${end}${item.details ? `: ${item.details}` : ''}`;
-  }
+  // The band already shows when it happened, so the text carries only the context.
+  const rolloutText = item => item.details ? `${item.label}. ${item.details}` : item.label;
 
   function chartNote(id, history, stats, markers = [], windows = []) {
     if (id === 'writer_busy') {
-      const item = windows.find(window => window.label.startsWith('Stream output rollout'));
-      return item ? `Not comparable across the shaded rollout. Before ${utcTime(item.start)} the writer wrote the challenge's SBE file; after ${utcTime(item.end)} the stream hub encodes the same records and routes them to WebSocket clients, with no file writes.` : '';
+      return windows.some(item => /stream/i.test(item.label))
+        ? 'File output before the shaded band, stream output after. They do different work, so do not compare across it.' : '';
     }
     if (id === 'updates') return '';
     if (id === 'connections') {

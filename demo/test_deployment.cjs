@@ -224,7 +224,7 @@ function fakeBanner() {
   });
 
   await test('rollout windows: shaded with edge lines in range, hover anywhere inside explains it', () => {
-    const windows = [{start: STAGE, end: STREAM, label: 'Stream output rollout, outside the challenge', details: 'Ignore this period.'}];
+    const windows = [{start: STAGE, end: STREAM, label: 'Switched to stream output', details: 'Ignore the band itself.'}];
     const calls = [];
     const context = new Proxy({}, {get: (_, name) => (...args) => { calls.push([name, ...args]); }});
     const pos = at => at === STAGE ? 200 : at === STREAM ? 500 : at < STAGE ? 50 : 650;
@@ -247,7 +247,8 @@ function fakeBanner() {
     assert.equal(charts.rolloutHovered(plot, history, 2, windows), null);
     plot.cursor = {left: 350, top: -1};
     assert.equal(charts.rolloutHovered(plot, history, 2, windows), null, 'leaving the plot hides the tooltip');
-    assert.match(charts.rolloutText(windows[0]), /^Stream output rollout, outside the challenge · .+ to \d\d:\d\d: Ignore this period\.$/);
+    assert.equal(charts.rolloutText(windows[0]), 'Switched to stream output. Ignore the band itself.', 'no timestamps: the band shows when');
+    assert.equal(charts.rolloutText({...windows[0], details: ''}), 'Switched to stream output');
   });
 
   await test('deployed metadata: one rollout window replaces the individual restart markers', () => {

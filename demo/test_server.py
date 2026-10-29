@@ -33,11 +33,11 @@ def connections(expected, connected):
 class Running:
     """Serves a Server and, optionally, a fake Prometheus on free ports for one test."""
 
-    def __init__(self, scenario=None, reader=None):
+    def __init__(self, scenario=None, reader=None, stream_origin=None):
         self.fake = FakePrometheus(("127.0.0.1", 0), scenario) if scenario else None
         url = f"http://127.0.0.1:{self.fake.server_port}" if self.fake else "http://127.0.0.1:9"
         self.reader = reader or Reader(url)
-        self.server = Server(("127.0.0.1", 0), self.reader)
+        self.server = Server(("127.0.0.1", 0), self.reader, stream_origin)
         self.base = f"http://127.0.0.1:{self.server.server_port}"
 
     def __enter__(self):
@@ -60,6 +60,20 @@ class Running:
 
     def json(self, path):
         return json.loads(self.get(path)[2])
+
+
+class StreamCspTests(unittest.TestCase):
+    def test_explicit_stream_origin_is_allowed_on_both_pages(self):
+        with Running(stream_origin="wss://stream.example.com") as running:
+            for path in ["/", "/live"]:
+                _, headers, _ = running.get(path)
+                self.assertIn("connect-src 'self' wss://stream.example.com;", headers["Content-Security-Policy"])
+                self.assertIn("script-src 'self';", headers["Content-Security-Policy"])
+
+    def test_stream_origin_cannot_inject_policy_or_paths(self):
+        for origin in ["ws://stream.example.com", "wss://stream.example.com/path", "wss://stream.example.com; script-src *", "wss://stream.example.com:65536"]:
+            with self.assertRaises(ValueError):
+                Server(("127.0.0.1", 0), Reader("http://127.0.0.1:9"), origin)
 
 
 class ReaderTests(unittest.TestCase):

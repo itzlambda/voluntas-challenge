@@ -1,0 +1,5 @@
+# Install as a voluntas-demo.service drop-in when enabling browser stream access.
+[Service]
+EnvironmentFile=/etc/voluntas/demo-stream.env
+ExecStart=
+ExecStart=/usr/bin/python3 /opt/voluntas-demo/server.py --prometheus-url http://127.0.0.1:9091 --bind 127.0.0.1 --port 8000 --stream-origin ${STREAM_ORIGIN}

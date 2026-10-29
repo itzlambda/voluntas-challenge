@@ -316,6 +316,12 @@ individual failed requests do not. Keep this endpoint and Prometheus private.
 
 ## Demo reader
 
+The dashboard server accepts `--stream-origin wss://stream.example.com` to allow
+that exact endpoint in the HTML content security policy. Install the matching
+`ops/voluntas-demo-stream.conf.example` drop-in and set `STREAM_ORIGIN` in
+`/etc/voluntas/demo-stream.env` when enabling direct browser streaming. This does
+not subscribe the telemetry page to book data.
+
 Prometheus scrapes the collector every second with a 900 ms timeout and keeps
 metric history. `demo/server.py` reads Prometheus, never the collector
 directly, and supports one collector target under the `collector` job. It

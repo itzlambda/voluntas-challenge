@@ -3,6 +3,7 @@
 import argparse
 import json
 import math
+import re
 import threading
 import time
 import urllib.parse
@@ -441,7 +442,15 @@ CSP = ("default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' 
 class Server(ThreadingHTTPServer):
     daemon_threads = True
 
-    def __init__(self, address, reader):
+    def __init__(self, address, reader, stream_origin=None):
+        self.csp = CSP
+        if stream_origin is not None:
+            if not re.fullmatch(r"wss://[A-Za-z0-9.-]+(?::[0-9]{1,5})?", stream_origin):
+                raise ValueError("stream origin must be a wss:// hostname with an optional port")
+            parsed = urllib.parse.urlsplit(stream_origin)
+            if parsed.port is not None and not 1 <= parsed.port <= 65535:
+                raise ValueError("invalid stream port")
+            self.csp = CSP.replace("connect-src 'self';", "connect-src 'self' " + stream_origin + ";")
         self.reader = reader
         self.slots = threading.BoundedSemaphore(16)
         super().__init__(address, Handler)
@@ -558,7 +567,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         if content_type.startswith("text/html"):
-            self.send_header("Content-Security-Policy", CSP)
+            self.send_header("Content-Security-Policy", self.server.csp)
             self.send_header("Referrer-Policy", "no-referrer")
         self.end_headers()
         self.wfile.write(body)
@@ -573,5 +582,6 @@ if __name__ == "__main__":
     parser.add_argument("--bind", default="127.0.0.1")
     parser.add_argument("--port", default=8000, type=int)
     parser.add_argument("--scan-interval-secs", default=900, type=int, help="Use 0 for fixed-market mode")
+    parser.add_argument("--stream-origin", help="Optional public wss:// origin allowed by the page CSP")
     args = parser.parse_args()
-    Server((args.bind, args.port), Reader(args.prometheus_url, args.scan_interval_secs)).serve_forever()
+    Server((args.bind, args.port), Reader(args.prometheus_url, args.scan_interval_secs), args.stream_origin).serve_forever()

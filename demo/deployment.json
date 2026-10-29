@@ -1,7 +1,18 @@
 {
   "schema_version": 1,
-  "in_progress": true,
+  "in_progress": false,
   "message": "A new deployment is in progress. Connections and charts may take a few minutes to recover.",
   "started_at": 1793275756,
-  "markers": []
+  "markers": [
+    {
+      "at": 1793277637,
+      "label": "Socket telemetry deployment",
+      "details": "Collector restarted with per-socket telemetry. Books and subscriptions rebuilt after restart."
+    },
+    {
+      "at": 1793278529,
+      "label": "Stream mode enabled",
+      "details": "Collector restarted to stream SBE over WebSocket. File output stopped; encoded output metrics now count subscribed books only."
+    }
+  ]
 }

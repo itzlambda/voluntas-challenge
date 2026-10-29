@@ -77,6 +77,17 @@ pub struct MarketBooks {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct ConnectionId(pub u16);
 
+impl ConnectionId {
+    /// Subscription placement assigns even IDs to primaries and odd IDs to replicas.
+    pub fn pool(self) -> &'static str {
+        if self.0 & 1 == 0 {
+            "primary"
+        } else {
+            "replica"
+        }
+    }
+}
+
 /// One source for isolated replay, or two distinct mirrored live sources.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct MarketSources {

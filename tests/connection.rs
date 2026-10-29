@@ -240,9 +240,7 @@ async fn lifecycle_reconnects_and_resubscribes() {
         Arc::new(RateLimiter::per_second(1000.0)),
         events,
         cancel.clone(),
-        Metrics::default().register(Component::Connection(
-            engineering_challenge::core::metrics::ConnectionKind::MarketDiscovery,
-        )),
+        Metrics::default().register(Component::DiscoveryConnection),
     ));
     let (tcp, _) = timeout(STEP, listener.accept()).await.unwrap().unwrap();
     let mut server = accept_async(tcp).await.unwrap();

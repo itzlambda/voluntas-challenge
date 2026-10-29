@@ -24,9 +24,7 @@ use crate::core::capture::Capture;
 use crate::core::connection::{ConnectionIds, FrameTotals, handle_frame};
 use crate::core::decode_log::DecodeErrorLog;
 use crate::core::fixture::{FixtureEvent, ProtocolCommand};
-use crate::core::metrics::{
-    Component, ConnectionKind, EndReason, Metrics, PUBLICATION_INTERVAL, Publisher,
-};
+use crate::core::metrics::{Component, EndReason, Metrics, PUBLICATION_INTERVAL, Publisher};
 use crate::core::rate_limit::RateLimiter;
 use crate::core::reconnect_backoff::ReconnectBackoff;
 use crate::core::routing::Workers;
@@ -158,9 +156,7 @@ pub async fn run_book_connection<P: BookProtocol>(
         session_has_book: false,
         pending: HashMap::new(),
         totals: FrameTotals::default(),
-        metrics: ctx
-            .metrics
-            .register(Component::Connection(ConnectionKind::Orderbook)),
+        metrics: ctx.metrics.register(Component::Connection(id)),
         publication: interval(PUBLICATION_INTERVAL),
         sessions: 0,
     };
@@ -180,6 +176,7 @@ impl<P: BookProtocol> BookConnection<P> {
             .clone_from(&self.totals.exchange_to_receive);
         self.metrics.state.negative = self.totals.negative_exchange_ages;
         self.metrics.state.events = self.totals.events;
+        self.metrics.state.socket_markets = self.markets.len() as u64;
         self.metrics.state.decode_errors = self.totals.decode_errors;
         self.metrics.state.expected = !self.ids.is_empty();
         self.metrics.publish_if_due();

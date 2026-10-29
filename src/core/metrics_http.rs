@@ -147,6 +147,11 @@ fn respond(request: Request<Incoming>, view: &View, draining: bool) -> Response<
     } else {
         match request.uri().path() {
             "/metrics" => (StatusCode::OK, view.text.as_ref(), prometheus::TEXT_FORMAT),
+            "/metrics/sockets" => (
+                StatusCode::OK,
+                view.sockets_text.as_ref(),
+                prometheus::TEXT_FORMAT,
+            ),
             "/healthz" => (StatusCode::OK, "ok\n", "text/plain"),
             "/readyz" => {
                 let ready = !draining

@@ -204,10 +204,43 @@ exchange, or complete exchange-wide discovery. Component snapshots can briefly
 disagree during placement changes. A zero `desired` count makes the coverage
 ratio unavailable.
 
+## Socket traffic
+
+Order-book sockets additionally expose cumulative event counts, connection state,
+and subscribed-market counts at `/metrics/sockets`. This endpoint is separate
+from `/metrics`; scrape it under `collector_sockets` every 15 seconds with a
+three-second timeout. `ops/prometheus.yml` contains both jobs.
+
+- `collector_socket_events_total{socket_id,pool}` counts decoded data events,
+  including full books and both physical feeds. Heartbeats are excluded.
+- `collector_socket_connected{socket_id,pool}` is 1 for an open connection.
+- `collector_socket_markets{socket_id,pool}` counts subscribed logical markets.
+  Zero indicates an empty task waiting for future subscriptions.
+- `collector_socket_process_start_timestamp_seconds` identifies the collector
+  process for restart markers and rate-window isolation. It has no labels.
+
+Socket IDs persist across reconnects and subscription changes within a process.
+Counters reset on process restart. Retired slots retain counters but stop
+exporting live connection and market gauges. Aggregate metrics stay unchanged.
+The separate endpoint adds about 6,001 series for 2,000 socket slots, without
+per-market labels or per-socket histogram buckets.
+
+The Live page uses one-minute rates with at least four samples. Clicking a
+histogram bucket filters a 25-row socket list. Selecting a socket loads only
+its history, with a maximum of 1,000 points. Available windows are 15 minutes,
+one hour, six hours, and 24 hours. The first minute after process start is a
+history gap. Rates include reconnect snapshot bursts.
+
+The panel combines existing aggregate freshness checks with socket-job scrape
+health and a 45-second maximum source sample age. Stale values remain labeled
+with their age. An independent socket-job failure does not change aggregate
+chart status.
+
 ## Label rules
 
-No metric carries market IDs, book IDs, connection IDs, file paths, publisher
-or standby roles, or error text. The collector keeps per-market state for
+The aggregate `/metrics` endpoint carries no market IDs, book IDs, connection
+IDs, file paths, publisher or standby roles, or error text. The socket endpoint
+adds bounded connection IDs and a fixed primary or replica pool label. The collector keeps per-market state for
 correctness and exports only bounded aggregates. Per-market detail is in the
 structured incidents on stderr. The only per-worker label is `worker` on busy
 time.
@@ -264,6 +297,8 @@ exchange connections, and a bind failure exits nonzero. The
 `metrics_available` startup event on stderr announces the address.
 
 - `GET /metrics`: Prometheus text with HELP and TYPE lines.
+- `GET /metrics/sockets`: cached per-socket Prometheus text, for the separate
+  15-second scrape job.
 - `GET /healthz`: 200 while the HTTP service runs, including startup.
 - `GET /readyz`: 200 once initial catalog setup is done and components have
   published, while every required component has published in the last
@@ -301,6 +336,9 @@ serves `/` and `/live` from an asset allowlist, plus:
   shared cache. Responses are limited to 4 MiB. If the collector stopped
   before the window, history ends at the last data and sets
   `anchored_to_last_data`.
+- `GET /api/demo/sockets`: current fleet rates and state, cached for five seconds.
+- `GET /api/demo/socket-history?socket=ID&window=15m|1h|6h|24h`: selected-socket
+  history with source freshness gaps and restart markers.
 - `GET /api/prometheus/query`: read-only pass-through of frontend-defined
   PromQL to the Prometheus `query` or `query_range` API (optional `time`, or
   `start`, `end`, and `step`). Expressions are limited to 8,192 characters.

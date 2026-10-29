@@ -5,7 +5,7 @@ use chrono::{DateTime, Utc};
 use engineering_challenge::Side;
 use engineering_challenge::core::config::Config;
 use engineering_challenge::core::metrics::{
-    Component, ConnectionKind, Distribution, EndReason, Histogram, Metrics,
+    Component, Distribution, EndReason, Histogram, Metrics,
 };
 use engineering_challenge::core::metrics_http::MetricsServer;
 use engineering_challenge::core::pipeline::Pipeline;
@@ -39,7 +39,7 @@ async fn wait_for(metrics: &Metrics, name: &str, expected: f64) -> String {
 #[test]
 fn exposition_is_cumulative_and_has_only_allowed_families() {
     let metrics = Metrics::default();
-    let mut input = metrics.register(Component::Connection(ConnectionKind::Orderbook));
+    let mut input = metrics.register(Component::Connection(ConnectionId(0)));
     input.state.expected = true;
     input.state.connected = true;
     for age in [0., 0.005, 0.005001, 60., 61.] {
@@ -178,14 +178,14 @@ fn exposition_is_cumulative_and_has_only_allowed_families() {
 #[test]
 fn session_totals_survive_retirement_without_counting_snapshots_twice() {
     let metrics = Metrics::default();
-    let mut first = metrics.register(Component::Connection(ConnectionKind::Orderbook));
+    let mut first = metrics.register(Component::Connection(ConnectionId(0)));
     first.state.expected = true;
     first.state.connected = true;
     first.end_session(EndReason::RemoteClose);
     first.publish();
     first.publish();
     drop(first);
-    let mut second = metrics.register(Component::Connection(ConnectionKind::Orderbook));
+    let mut second = metrics.register(Component::Connection(ConnectionId(1)));
     second.state.expected = true;
     second.state.connected = true;
     second.end_session(EndReason::RemoteClose);
@@ -401,6 +401,10 @@ async fn http_readiness_routes_and_shutdown_work_without_a_reader() {
     let _ = rustls::crypto::ring::default_provider().install_default();
     let metrics = Metrics::default();
     let mut component = metrics.register(Component::Worker(0));
+    let mut socket = metrics.register(Component::Connection(ConnectionId(3)));
+    socket.state.events = 12;
+    socket.state.socket_markets = 2;
+    socket.publish();
     let fatal = CancellationToken::new();
     let mut server = MetricsServer::start("127.0.0.1:0".parse().unwrap(), metrics, fatal.clone())
         .await
@@ -474,6 +478,18 @@ async fn http_readiness_routes_and_shutdown_work_without_a_reader() {
             .status(),
         413
     );
+    let socket_text = client
+        .get(format!("{base}/metrics/sockets"))
+        .send()
+        .await
+        .unwrap()
+        .text()
+        .await
+        .unwrap();
+    assert!(
+        socket_text.contains("collector_socket_events_total{socket_id=\"3\",pool=\"replica\"} 12")
+    );
+    assert!(!socket_text.contains("collector_events_total "));
     let mut slow = tokio::net::TcpStream::connect(server.address)
         .await
         .unwrap();
@@ -493,7 +509,7 @@ async fn http_readiness_routes_and_shutdown_work_without_a_reader() {
             .text()
             .await
             .unwrap()
-            .contains("collector_events_total 7")
+            .contains("collector_events_total 19")
     );
     server.begin_shutdown();
     assert_eq!(
@@ -517,4 +533,112 @@ fn histogram_overflow_is_bounded() {
     histogram.record(90.);
     assert_eq!(histogram.count, 1);
     assert_eq!(histogram.buckets[histogram.bounds().len()], 1);
+}
+
+#[test]
+fn socket_exposition_preserves_totals_and_separates_active_state_from_retired_counters() {
+    let metrics = Metrics::default();
+    let mut primary = metrics.register(Component::Connection(ConnectionId(0)));
+    let mut replica = metrics.register(Component::Connection(ConnectionId(1)));
+    primary.state.events = 100;
+    primary.state.socket_markets = 256;
+    primary.state.connected = true;
+    primary.state.expected = true;
+    replica.state.events = 90;
+    replica.state.socket_markets = 128;
+    replica.state.connected = true;
+    replica.state.expected = true;
+    primary.publish();
+    replica.publish();
+    let view = metrics.render().unwrap();
+    assert!(!view.text.contains("collector_socket_"));
+    assert_eq!(value(&view.text, "collector_events_total"), 190.);
+    assert_eq!(
+        value(
+            &view.sockets_text,
+            "collector_socket_events_total{socket_id=\"0\",pool=\"primary\"}"
+        ),
+        100.
+    );
+    assert_eq!(
+        value(
+            &view.sockets_text,
+            "collector_socket_events_total{socket_id=\"1\",pool=\"replica\"}"
+        ),
+        90.
+    );
+    assert_eq!(
+        value(
+            &view.sockets_text,
+            "collector_socket_markets{socket_id=\"1\",pool=\"replica\"}"
+        ),
+        128.
+    );
+    assert!(
+        value(
+            &view.sockets_text,
+            "collector_socket_process_start_timestamp_seconds"
+        ) > 0.
+    );
+
+    // Session ends and empty subscriptions preserve cumulative counts on the same slot.
+    primary.state.connected = false;
+    primary.state.socket_markets = 0;
+    primary.end_session(EndReason::Emptied);
+    primary.publish();
+    let view = metrics.render().unwrap();
+    assert_eq!(
+        value(
+            &view.sockets_text,
+            "collector_socket_events_total{socket_id=\"0\",pool=\"primary\"}"
+        ),
+        100.
+    );
+    assert_eq!(
+        value(
+            &view.sockets_text,
+            "collector_socket_connected{socket_id=\"0\",pool=\"primary\"}"
+        ),
+        0.
+    );
+    assert_eq!(
+        value(
+            &view.sockets_text,
+            "collector_socket_markets{socket_id=\"0\",pool=\"primary\"}"
+        ),
+        0.
+    );
+    primary.state.connected = true;
+    primary.state.socket_markets = 1;
+    primary.state.events += 2;
+    primary.publish();
+    let view = metrics.render().unwrap();
+    assert_eq!(
+        value(
+            &view.sockets_text,
+            "collector_socket_events_total{socket_id=\"0\",pool=\"primary\"}"
+        ),
+        102.
+    );
+    assert_eq!(value(&view.text, "collector_events_total"), 192.);
+    drop(primary);
+    let view = metrics.render().unwrap();
+    assert_eq!(value(&view.text, "collector_events_total"), 192.);
+    assert_eq!(
+        value(
+            &view.sockets_text,
+            "collector_socket_events_total{socket_id=\"0\",pool=\"primary\"}"
+        ),
+        102.
+    );
+    assert!(
+        !view
+            .sockets_text
+            .contains("collector_socket_connected{socket_id=\"0\"")
+    );
+    assert!(
+        !view
+            .sockets_text
+            .contains("collector_socket_markets{socket_id=\"0\"")
+    );
 }

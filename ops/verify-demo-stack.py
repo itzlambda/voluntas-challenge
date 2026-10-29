@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import socket
 import subprocess
+import sys
 import tempfile
 import threading
 import time
@@ -16,6 +17,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--prometheus", required=True)
 parser.add_argument("--demo", required=True)
 args = parser.parse_args()
+sys.path.insert(0, str(Path(args.demo).resolve().parent))
 spec = importlib.util.spec_from_file_location("demo", args.demo)
 demo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(demo)
@@ -23,6 +25,8 @@ spec.loader.exec_module(demo)
 
 class Fixture(BaseHTTPRequestHandler):
     requests = 0
+    socket_requests = 0
+    started = time.time() - 3600
 
     def do_GET(self):
         Fixture.requests += 1
@@ -36,6 +40,14 @@ class Fixture(BaseHTTPRequestHandler):
             rows += [f'{name}_bucket{{le="0.001"}} {count / 2}',
                      f'{name}_bucket{{le="0.01"}} {count}', f'{name}_bucket{{le="60"}} {count}',
                      f'{name}_bucket{{le="+Inf"}} {count}', f'{name}_count {count}', f'{name}_sum {count * .005}']
+        if self.path == "/metrics/sockets":
+            Fixture.socket_requests += 1
+            rows = [f'collector_socket_process_start_timestamp_seconds {Fixture.started}']
+            for socket_id, pool in [(0, "primary"), (1, "replica")]:
+                labels = f'socket_id="{socket_id}",pool="{pool}"'
+                rows += [f'collector_socket_events_total{{{labels}}} {Fixture.socket_requests * 30}',
+                         f'collector_socket_connected{{{labels}}} 1',
+                         f'collector_socket_markets{{{labels}}} 256']
         body = ('\n'.join(rows) + '\n').encode()
         self.send_response(200)
         self.send_header("Content-Type", "text/plain; version=0.0.4")
@@ -65,19 +77,27 @@ scrape_configs:
   - job_name: collector
     static_configs:
       - targets: ['127.0.0.1:{fixture.server_port}']
+  - job_name: collector_sockets
+    metrics_path: /metrics/sockets
+    scrape_interval: 15s
+    scrape_timeout: 3s
+    static_configs:
+      - targets: ['127.0.0.1:{fixture.server_port}']
 ''')
         process = subprocess.Popen([args.prometheus, f"--config.file={config}",
                                    f"--storage.tsdb.path={root / 'data'}",
                                    f"--web.listen-address=127.0.0.1:{port}", "--log.level=error"],
                                   stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
         reader = demo.Reader(f"http://127.0.0.1:{port}")
-        for _ in range(40):
+        for _ in range(240):
             time.sleep(.25)
             if process.poll() is not None:
                 raise RuntimeError(process.stderr.read().decode())
             if Fixture.requests >= 4:
                 break
-        assert Fixture.requests >= 4, "scrapes did not arrive"
+        if Fixture.requests < 4:
+            targets = reader.query("targets", {})
+            raise AssertionError(f"scrapes did not arrive: {targets}")
         stats = reader.stats()
         assert stats["status"] == "live", stats
         assert stats["markets"]["synced"] == 10
@@ -88,14 +108,36 @@ scrape_configs:
         assert len(history["timestamps"]) == 901
         assert history["series"]["events_per_second"][0] is None
         assert any(value is not None for value in history["series"]["internal_p99"])
+        socket_deadline = time.monotonic() + 70
+        while True:
+            reader.socket_reader.refreshed = -float("inf")
+            sockets = reader.socket_reader.sockets()
+            if sockets.get("status") == "live" and len(sockets["sockets"]) == 2 and all(
+                    row["events_per_second"] is not None for row in sockets["sockets"]):
+                break
+            assert time.monotonic() < socket_deadline, sockets
+            time.sleep(1)
+        assert all(abs(row["events_per_second"] - 2) < 0.1 for row in sockets["sockets"]), sockets
+        history_deadline = time.monotonic() + 30
+        while True:
+            reader.socket_reader.histories.clear()
+            socket_history = reader.socket_reader.history(0, "15m")
+            assert socket_history["status"] == "ok", socket_history
+            if any(value is not None for value in socket_history["events_per_second"]):
+                break
+            assert time.monotonic() < history_deadline, socket_history
+            time.sleep(1)
+        assert len(socket_history["timestamps"]) <= 1000
         fixture.shutdown()
         fixture.server_close()
         time.sleep(2)
         reader.refreshed = -float("inf")
         assert reader.stats()["status"] == "stale"
+        assert reader.socket_reader.sockets()["status"] == "stale"
         assert reader.history("15m")["series"]["events_per_second"][-1] is None
         print(json.dumps({"result": "passed", "checks": ["real 1s Prometheus scraping", "live demo values",
-              "rate and histogram queries", "901-point history with missing-data gaps", "scrape outage becomes stale"]}))
+              "rate and histogram queries", "901-point history with missing-data gaps", "real 15s socket scraping",
+              "selected-socket history query", "scrape outage becomes stale"]}))
 finally:
     fixture.shutdown()
     fixture.server_close()

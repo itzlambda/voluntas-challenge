@@ -11,6 +11,8 @@ use prometheus::{Encoder, TextEncoder};
 use tokio::sync::watch;
 use tokio_util::sync::CancellationToken;
 
+use crate::model::ConnectionId;
+
 pub const PUBLICATION_INTERVAL: Duration = Duration::from_secs(1);
 pub const STALE_AFTER: Duration = Duration::from_secs(15);
 const EXCHANGE_BOUNDS: &[f64] = &[
@@ -128,7 +130,8 @@ pub enum Component {
     Worker(usize),
     Writer,
     Discovery,
-    Connection(ConnectionKind),
+    Connection(ConnectionId),
+    DiscoveryConnection,
 }
 
 #[derive(Debug, Clone)]
@@ -137,6 +140,7 @@ pub struct Snapshot {
     pub internal: Histogram,
     pub negative: u64,
     pub events: u64,
+    pub socket_markets: u64,
     pub decode_errors: u64,
     pub mismatches: u64,
     pub older_full_books: u64,
@@ -162,6 +166,7 @@ impl Default for Snapshot {
             internal: Histogram::default(),
             negative: 0,
             events: 0,
+            socket_markets: 0,
             decode_errors: 0,
             mismatches: 0,
             older_full_books: 0,
@@ -189,10 +194,20 @@ struct Published {
     retired: bool,
 }
 type Slot = Arc<Mutex<Published>>;
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct Metrics {
     slots: Arc<Mutex<Vec<Slot>>>,
     failure: CancellationToken,
+    started_at: f64,
+}
+impl Default for Metrics {
+    fn default() -> Self {
+        Self {
+            slots: Arc::default(),
+            failure: CancellationToken::new(),
+            started_at: timestamp(),
+        }
+    }
 }
 pub struct Publisher {
     slot: Slot,
@@ -234,6 +249,7 @@ impl Drop for Publisher {
 #[derive(Clone, Default)]
 pub struct View {
     pub text: Arc<str>,
+    pub sockets_text: Arc<str>,
     pub fresh: bool,
     pub initialized: bool,
     pub created: Option<Instant>,
@@ -273,6 +289,9 @@ impl Metrics {
         let mut connections = [[0u64; 2]; 2];
         let mut ends = [[0u64; EndReason::ALL.len()]; 2];
         let mut workers = Vec::new();
+        let mut socket_events = Vec::new();
+        let mut socket_connected = Vec::new();
+        let mut socket_markets = Vec::new();
         let mut writer_busy = 0.;
         let mut oldest = None::<f64>;
         let mut fresh = !slots.is_empty();
@@ -302,7 +321,23 @@ impl Metrics {
             if let Component::Writer = slot.component {
                 writer_busy += s.busy_seconds;
             }
-            if let Component::Connection(kind) = slot.component {
+            if let Component::Connection(id) = slot.component {
+                let labels = vec![
+                    ("socket_id", id.0.to_string()),
+                    ("pool", id.pool().to_owned()),
+                ];
+                socket_events.push((labels.clone(), s.events as f64));
+                if !slot.retired {
+                    socket_connected.push((labels.clone(), f64::from(s.connected)));
+                    socket_markets.push((labels, s.socket_markets as f64));
+                }
+            }
+            let connection_kind = match slot.component {
+                Component::Connection(_) => Some(ConnectionKind::Orderbook),
+                Component::DiscoveryConnection => Some(ConnectionKind::MarketDiscovery),
+                _ => None,
+            };
+            if let Some(kind) = connection_kind {
                 let i = kind.index();
                 for (a, b) in ends[i].iter_mut().zip(s.session_ends) {
                     *a += b;
@@ -491,7 +526,40 @@ impl Metrics {
         families.retain(|family| !family.get_metric().is_empty());
         let mut bytes = Vec::new();
         TextEncoder::new().encode(&families, &mut bytes)?;
+        let socket_families = vec![
+            scalar(
+                "socket_events_total",
+                "Cumulative decoded data events per upstream order-book socket, including full books; excludes heartbeats.",
+                MetricType::COUNTER,
+                socket_events,
+            ),
+            scalar(
+                "socket_connected",
+                "Whether an active order-book socket is connected.",
+                MetricType::GAUGE,
+                socket_connected,
+            ),
+            scalar(
+                "socket_markets",
+                "Logical markets subscribed on an active order-book socket.",
+                MetricType::GAUGE,
+                socket_markets,
+            ),
+            scalar(
+                "socket_process_start_timestamp_seconds",
+                "UTC start time of this metrics instance; identifies collector restarts in socket history.",
+                MetricType::GAUGE,
+                vec![(vec![], self.started_at)],
+            ),
+        ];
+        let socket_families: Vec<_> = socket_families
+            .into_iter()
+            .filter(|family| !family.get_metric().is_empty())
+            .collect();
+        let mut socket_bytes = Vec::new();
+        TextEncoder::new().encode(&socket_families, &mut socket_bytes)?;
         Ok(View {
+            sockets_text: String::from_utf8(socket_bytes)?.into(),
             text: String::from_utf8(bytes)?.into(),
             fresh,
             initialized,
@@ -583,7 +651,7 @@ fn histogram(name: &str, help: &str, data: &Histogram) -> MetricFamily {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::metrics::{Component, ConnectionKind, Metrics, STALE_AFTER, timestamp};
+    use crate::core::metrics::{Component, Metrics, STALE_AFTER, timestamp};
     use std::time::{Duration, Instant};
 
     #[test]
@@ -610,7 +678,7 @@ mod tests {
         let mut worker = metrics.register(Component::Worker(0));
         worker.state.synced_markets = 1;
         worker.publish();
-        let mut standby = metrics.register(Component::Connection(ConnectionKind::Orderbook));
+        let mut standby = metrics.register(Component::Connection(crate::model::ConnectionId(1)));
         assert!(!metrics.render().unwrap().fresh);
         standby.publish();
         let view = metrics.render().unwrap();

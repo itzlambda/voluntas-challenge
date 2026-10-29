@@ -10,6 +10,7 @@
 <script src="/vendor/uPlot.iife.min.js" defer></script>
 <script src="/status.js" defer></script>
 <script src="/charts.js" defer></script>
+<script src="/sockets.js" defer></script>
 <script src="/chart-help.js" defer></script>
 </head>
 <body>
@@ -185,6 +186,66 @@
       <div class="legend" data-legend></div>
     </section>
   </div>
+  <section class="panel socket-panel" id="sockets" aria-labelledby="h-sockets">
+    <div class="chart-head">
+      <h2 id="h-sockets"><button class="chart-help" type="button" aria-describedby="help-sockets" aria-expanded="false">Traffic per order-book socket</button></h2>
+      <div class="chart-tooltip" id="help-sockets" role="tooltip" popover="auto">
+        <p>Decoded market-data events per second on each upstream order-book socket, primary and replica, over a one-minute rate. Full books count, so a reconnect's burst of full books raises the rate for about a minute. Heartbeats and control messages do not count. There are no per-market rates.</p>
+        <p>The distribution includes connected sockets with markets and a rate. Exactly zero has its own bar. Sockets that are disconnected, have no markets, are warming up or have no current rate are counted separately and never shown as zero.</p>
+        <p>Bins are fitted to the rates when the page loads and stay fixed between refreshes so bars stay comparable. Rates far outside the fitted range go to the end bars. Use Fit range to refit.</p>
+        <p>Socket telemetry is scraped every 15 seconds. A rate needs four samples, so it appears about a minute after a new socket task starts or the collector restarts. Reconnects keep the counter, and is shown only while the socket keeps publishing fresh telemetry. History loads for the selected socket only; gaps mean no rate, and dashed lines mark collector restarts, after which the same ID may carry different markets.</p>
+      </div>
+      <p class="socket-status" data-socket-status aria-live="polite">Loading sockets</p>
+    </div>
+    <p class="socket-demo-note" data-socket-demo hidden>Synthetic demo data, generated in this browser from a fixed seed. These are not collector measurements; the rest of the page still shows live values. <a href="/live">Show real socket telemetry</a></p>
+    <div class="socket-states" data-socket-states role="group" aria-label="Socket counts by state. Select one to list those sockets."></div>
+    <div class="socket-dist">
+      <div class="histogram" data-socket-histogram role="group" aria-label="Sockets by events per second. Select a bar to list its sockets; arrow keys move between bars."></div>
+      <div class="histogram-foot">
+        <p class="small muted">Events per second, one-minute rate. Bar labels are lower bounds.</p>
+        <p class="small muted" data-socket-fit-note aria-live="polite"></p>
+        <button type="button" class="control" data-socket-fit>Fit range</button>
+      </div>
+    </div>
+    <div class="socket-body">
+      <div class="socket-list">
+        <div class="socket-controls">
+          <label>Socket ID <input type="search" inputmode="numeric" autocomplete="off" spellcheck="false" data-socket-search></label>
+          <label>Pool <select data-socket-pool><option value="">Both</option><option value="primary">Primary</option><option value="replica">Replica</option></select></label>
+          <label>Sort <select data-socket-sort><option value="busiest">Busiest first</option><option value="quietest">Quietest first</option><option value="id">By ID</option></select></label>
+          <button type="button" class="control" data-socket-pause aria-pressed="false">Pause updates</button>
+        </div>
+        <p class="small muted socket-filter" data-socket-filter aria-live="polite"></p>
+        <div class="table-wrap">
+          <table class="socket-table">
+            <caption class="visually-hidden">Order-book sockets. Select a socket ID to load its history.</caption>
+            <thead><tr><th scope="col">Socket</th><th scope="col">Pool</th><th scope="col">Status</th><th scope="col" class="num">Markets</th><th scope="col" class="num">Events/s</th></tr></thead>
+            <tbody data-socket-rows></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <button type="button" class="control" data-socket-prev>Previous</button>
+          <p class="small muted" data-socket-page aria-live="polite"></p>
+          <button type="button" class="control" data-socket-next>Next</button>
+        </div>
+      </div>
+      <div class="socket-history">
+        <div class="history-head">
+          <h3 data-socket-title>No socket selected</h3>
+          <div class="range" role="group" aria-label="History window">
+            <button type="button" data-socket-window="15m" aria-pressed="false">15m</button>
+            <button type="button" data-socket-window="1h" aria-pressed="true">1h</button>
+            <button type="button" data-socket-window="6h" aria-pressed="false">6h</button>
+            <button type="button" data-socket-window="24h" aria-pressed="false">24h</button>
+          </div>
+        </div>
+        <p class="small muted" data-socket-meta>Select a socket in the list to load its events per second.</p>
+        <div class="plot" data-socket-plot role="img" aria-label="No socket selected"></div>
+        <p class="small socket-readout" data-socket-readout aria-hidden="true"></p>
+        <p class="chart-note" data-socket-history-note></p>
+      </div>
+    </div>
+  </section>
 </main>
 <footer class="site-footer">
   <a class="icon-link" href="https://github.com/itzlambda/voluntas-challenge" target="_blank" rel="noopener noreferrer" aria-label="Source code on GitHub" title="Source code"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.31.76-1.61-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .32.21.69.82.57A12 12 0 0 0 12 .3"/></svg></a>

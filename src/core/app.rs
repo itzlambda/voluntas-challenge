@@ -14,7 +14,7 @@ use crate::core::book_connection::{BookConnectionContext, SILENCE_LIMIT, run_boo
 use crate::core::capture::Capture;
 use crate::core::decode_log::DecodeErrorLog;
 use crate::core::discovery::Discovery;
-use crate::core::metrics::{Component, ConnectionKind, Metrics};
+use crate::core::metrics::{Component, Metrics};
 use crate::core::metrics_http::MetricsServer;
 use crate::core::pipeline::Pipeline;
 use crate::core::rate_limit::RateLimiter;
@@ -124,7 +124,7 @@ async fn run_collector(settings: Settings) -> anyhow::Result<bool> {
                 open_limiter.clone(),
                 events.clone(),
                 cancel.clone(),
-                metrics.register(Component::Connection(ConnectionKind::MarketDiscovery)),
+                metrics.register(Component::DiscoveryConnection),
             );
             let failure = fatal.clone();
             let stopping = cancel.clone();

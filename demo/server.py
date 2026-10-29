@@ -9,7 +9,10 @@ import urllib.parse
 import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from http.client import HTTPException
 from pathlib import Path
+
+from socket_metrics import SocketReader, WINDOWS as SOCKET_HISTORY_WINDOWS
 
 SELECTOR = '{job="collector"}'
 HISTOGRAMS = {
@@ -270,13 +273,17 @@ class Reader:
         self.history_lock = threading.Lock()
         self.last_known_cache = (-math.inf, None)
         self.first_data_cache = (-math.inf, None)
+        self.socket_reader = SocketReader(self.query, self.stats)
 
     def query(self, endpoint, parameters, limit=1_048_576):
         request = urllib.request.Request(
             self.url.removesuffix("query") + endpoint,
             data=urllib.parse.urlencode({**parameters, "timeout": "2s"}).encode())
-        with urllib.request.urlopen(request, timeout=3) as response:
-            raw = response.read(limit + 1)
+        try:
+            with urllib.request.urlopen(request, timeout=3) as response:
+                raw = response.read(limit + 1)
+        except HTTPException as error:
+            raise OSError("incomplete metrics response") from error
         if len(raw) > limit:
             raise ValueError("metrics response exceeds limit")
         return json.loads(raw)
@@ -422,6 +429,8 @@ ASSETS = {"/chart-help.js": ("chart-help.js", "text/javascript; charset=utf-8"),
           "/status.js": ("status.js", "text/javascript; charset=utf-8"),
           "/diagram.js": ("diagram.js", "text/javascript; charset=utf-8"),
           "/overview.js": ("overview.js", "text/javascript; charset=utf-8"),
+          "/sockets.js": ("sockets.js", "text/javascript; charset=utf-8"),
+          "/socket-demo.js": ("socket-demo.js", "text/javascript; charset=utf-8"),
           "/charts.js": ("charts.js", "text/javascript; charset=utf-8")}
 CSP = ("default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; "
        "connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
@@ -495,6 +504,24 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlsplit(self.path)
         if parsed.path == "/api/prometheus/query":
             self.prometheus_query(parsed.query)
+            return
+        if self.path == "/api/demo/sockets":
+            self.json_response(200, self.server.reader.socket_reader.sockets())
+            return
+        if parsed.path == "/api/demo/socket-history":
+            try:
+                fields = urllib.parse.parse_qs(parsed.query, keep_blank_values=True, strict_parsing=True, max_num_fields=2)
+                if set(fields) != {"socket", "window"} or any(len(values) != 1 for values in fields.values()):
+                    raise ValueError("provide one socket and window")
+                raw_id, window = fields["socket"][0], fields["window"][0]
+                if not raw_id.isascii() or not raw_id.isdecimal() or not 0 <= int(raw_id) <= 65535:
+                    raise ValueError("invalid socket ID")
+                if window not in SOCKET_HISTORY_WINDOWS:
+                    raise ValueError("unsupported socket history window")
+            except ValueError as error:
+                self.json_response(400, {"schema_version": 1, "status": "error", "error": str(error)})
+                return
+            self.json_response(200, self.server.reader.socket_reader.history(int(raw_id), window))
             return
         history_routes = {f"/api/demo/history?window={window}": window for window in HISTORY_RANGES}
         if self.path == "/api/demo/stats":

@@ -1,0 +1,234 @@
+// Deployment banner and restart marker tests: metadata parsing, polling, banner state, chart markers and page markup.
+// Run with: node demo/test_deployment.cjs
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+
+const DEMO = __dirname;
+
+function load(files) {
+  const context = {console, Date, Math, JSON, Number, Promise, Object, Array, Set, Map, String, Boolean, Error, Symbol};
+  context.globalThis = context;
+  vm.createContext(context);
+  for (const file of files) vm.runInContext(fs.readFileSync(path.join(DEMO, file), 'utf8'), context, {filename: file});
+  return context;
+}
+
+const passed = [];
+async function test(name, fn) { await fn(); passed.push(name); }
+
+const NOW = 1_800_000_000;
+const STAGE = Date.UTC(2026, 9, 29, 10, 0, 5) / 1000;
+const STREAM = Date.UTC(2026, 9, 29, 11, 30, 17) / 1000;
+const body = (extra = {}) => ({schema_version: 1, in_progress: false, message: 'A new deployment is in progress.', started_at: null, markers: [], ...extra});
+
+/** A scripted browser: fetch answers come from a queue; timers run only when the test advances them. */
+function fakeEnv() {
+  let now = NOW * 1000;
+  let nextId = 1;
+  const timers = new Map();
+  const listeners = {document: {}, window: {}};
+  const env = {
+    responses: [], fetches: [], delays: [],
+    Date: {now: () => now},
+    document: {visibilityState: 'visible', addEventListener(type, fn) { (listeners.document[type] ||= []).push(fn); }},
+    navigator: {onLine: true},
+    window: {addEventListener(type, fn) { (listeners.window[type] ||= []).push(fn); }},
+    AbortSignal: {timeout: () => undefined},
+    setTimeout(fn, delay) { const id = nextId++; timers.set(id, {fn, at: now + delay}); env.delays.push(delay); return id; },
+    clearTimeout(id) { timers.delete(id); },
+    async fetch(url) {
+      env.fetches.push(url);
+      const next = env.responses.shift();
+      if (!next || next.error) throw new TypeError('Failed to fetch');
+      return {ok: !next.status || next.status < 400, status: next.status || 200, json: async () => next.body};
+    },
+    async advance(ms) {
+      now += ms;
+      for (const [id, timer] of [...timers]) if (timer.at <= now) { timers.delete(id); timer.fn(); }
+      await settle();
+    },
+    fire(target, type) { for (const fn of listeners[target][type] || []) fn(); },
+    pending: () => timers.size,
+  };
+  return env;
+}
+const settle = () => new Promise(resolve => setImmediate(resolve));
+
+function fakeBanner() {
+  const text = {textContent: ''};
+  const element = {hidden: true, querySelector: () => text, text};
+  return {element, doc: {getElementById: id => id === 'deployment-banner' ? element : null}};
+}
+
+(async () => {
+  const ctx = load(['status.js', 'deployment.js']);
+  const D = ctx.DemoDeployment;
+  const S = ctx.DemoStatus;
+
+  await test('metadata parsing rejects invalid bodies instead of guessing a state', () => {
+    for (const bad of [null, [], 'x', {}, body({schema_version: 2}), body({in_progress: 'true'}), body({in_progress: 1}),
+      body({markers: {}}), body({markers: 'none'})]) {
+      assert.equal(D.parse(bad), null, JSON.stringify(bad));
+    }
+    const ok = D.parse(body({in_progress: true, started_at: STAGE}));
+    assert.equal(ok.inProgress, true);
+    assert.equal(ok.startedAt, STAGE);
+    assert.equal(D.parse(body({in_progress: true, message: '   '})).message, D.DEFAULT_MESSAGE, 'blank message falls back to the neutral default');
+    assert.equal(D.parse(body({started_at: 'soon'})).startedAt, null);
+    assert.equal(D.parse(body({started_at: STAGE * 1000})).startedAt, null, 'milliseconds are not seconds');
+    assert.equal(D.parse(body({message: 'x'.repeat(1000)})).message.length, 300);
+    const {markers} = D.parse({schema_version: 1, in_progress: false});
+    assert.deepEqual([...markers], [], 'markers are optional');
+  });
+
+  await test('markers: valid, sorted, deduplicated, malformed entries dropped', () => {
+    const parsed = D.parse(body({markers: [
+      {at: STREAM, label: 'Stream activation', details: 'Collector restarted with stream output.'},
+      {at: STAGE, label: 'File telemetry stage', details: 'Collector restarted with new telemetry.'},
+      {at: STAGE, label: 'Duplicate', details: 'same instant'},
+      {at: 0, label: 'Zero'}, {at: 'x', label: 'Text'}, {at: STAGE + 5}, {at: STAGE + 6, label: ''}, null, 7,
+      {at: STAGE + 9, label: 'No details'},
+    ]})).markers;
+    assert.deepEqual([...parsed.map(m => m.label)], ['File telemetry stage', 'No details', 'Stream activation']);
+    assert.equal(parsed[1].details, '');
+  });
+
+  await test('polling: immediate fetch, normal interval, failures keep the banner and back off', async () => {
+    const env = fakeEnv();
+    const deployment = D.createDeployment(env, S);
+    const {element, doc} = fakeBanner();
+    D.bindBanner(deployment, doc, null);
+    const states = [];
+    deployment.subscribe(state => states.push(state));
+    env.responses.push({body: body({in_progress: true})});
+    deployment.start();
+    await settle();
+    assert.deepEqual(env.fetches, ['/deployment.json']);
+    assert.equal(element.hidden, false);
+    assert.equal(element.text.textContent, 'A new deployment is in progress.');
+    assert.equal(env.delays.at(-1), D.INTERVAL);
+    assert.ok(D.INTERVAL >= 5000 && D.INTERVAL <= 10000);
+
+    // Unchanged metadata does not notify again.
+    env.responses.push({body: body({in_progress: true})});
+    await env.advance(D.INTERVAL);
+    assert.equal(states.length, 1);
+
+    // Network error, server error, invalid body, missing file: banner stays, delays grow.
+    env.responses.push({error: true}, {status: 502}, {body: {schema_version: 1, in_progress: 'maybe'}}, {status: 404});
+    for (let i = 0; i < 4; i += 1) await env.advance(60000);
+    assert.equal(deployment.failures, 4);
+    assert.equal(element.hidden, false, 'banner stays visible through transient failures');
+    assert.ok(env.delays.at(-1) > D.INTERVAL);
+
+    env.responses.push({body: body({in_progress: false, markers: [{at: STAGE, label: 'Stage', details: 'Restarted.'}]})});
+    await env.advance(60000);
+    assert.equal(deployment.failures, 0);
+    assert.equal(element.hidden, true);
+    assert.equal(element.text.textContent, '');
+    assert.equal(states.length, 2);
+    assert.equal(states[1].markers.length, 1);
+    assert.equal(env.delays.at(-1), D.INTERVAL);
+  });
+
+  await test('banner starts hidden and never appears from failures alone', async () => {
+    const env = fakeEnv();
+    const deployment = D.createDeployment(env, S);
+    const {element, doc} = fakeBanner();
+    D.bindBanner(deployment, doc, null);
+    env.responses.push({status: 404});
+    deployment.start();
+    await settle();
+    assert.equal(element.hidden, true, 'an older server without the file shows no banner');
+    assert.equal(deployment.state, null);
+  });
+
+  await test('polling pauses while hidden and resumes at once when visible', async () => {
+    const env = fakeEnv();
+    const deployment = D.createDeployment(env, S);
+    env.responses.push({body: body()});
+    deployment.start();
+    await settle();
+    env.document.visibilityState = 'hidden';
+    env.fire('document', 'visibilitychange');
+    assert.equal(env.pending(), 0);
+    await env.advance(120000);
+    assert.equal(env.fetches.length, 1);
+    env.document.visibilityState = 'visible';
+    env.responses.push({body: body()});
+    env.fire('document', 'visibilitychange');
+    await settle();
+    assert.equal(env.fetches.length, 2);
+  });
+
+  await test('banner text uses textContent and adds the start time', () => {
+    const {element, doc} = fakeBanner();
+    const listeners = [];
+    const fake = {subscribe: fn => listeners.push(fn)};
+    D.bindBanner(fake, doc, at => `T${at}`);
+    listeners[0](D.parse(body({in_progress: true, message: '<img src=x onerror=alert(1)>', started_at: STAGE})));
+    assert.equal(element.text.textContent, `<img src=x onerror=alert(1)> Started T${STAGE}.`);
+    assert.equal(element.innerHTML, undefined, 'never written as markup');
+  });
+
+  const charts = load(['status.js', 'deployment.js', 'charts.js']).DemoCharts;
+  const historical = Date.UTC(2026, 9, 27, 13, 8) / 1000;
+
+  await test('chart markers: historical marker kept, metadata markers added, duplicates dropped', () => {
+    const list = charts.deploymentMarkers([{at: STREAM, label: 'Stream', details: 'b'}, {at: STAGE, label: 'Stage', details: 'a'},
+      {at: STAGE, label: 'Dup', details: ''}, {at: historical, label: 'Same as historical', details: ''}]);
+    assert.deepEqual([...list.map(m => m.label)], ['New deployment', 'Stage', 'Stream']);
+    assert.equal(list[0].approx, true);
+    assert.equal(list[1].approx, false);
+    assert.deepEqual([...charts.deploymentMarkers().map(m => m.at)], [historical]);
+  });
+
+  await test('chart markers: each line drawn in range, hover picks the nearest and explains it', () => {
+    const markers = charts.deploymentMarkers([{at: STAGE, label: 'File telemetry stage', details: 'Collector restarted.'},
+      {at: STREAM, label: 'Stream activation', details: ''}]);
+    const history = {start: STAGE - 60, end: STREAM + 60};
+    const calls = [];
+    const context = new Proxy({}, {get: (_, name) => (...args) => { calls.push([name, ...args]); }});
+    const pos = at => at === STAGE ? 200 : at === STREAM ? 500 : -1000;
+    const plot = {ctx: context, bbox: {left: 100, top: 20, width: 600, height: 360}, valToPos: (at, _axis, canvas) => canvas ? pos(at) * 2 : pos(at)};
+    charts.drawDeploymentMarker(plot, history, 2, markers);
+    assert.equal(calls.filter(call => call[0] === 'stroke').length, 2, 'historical marker outside the range is not drawn');
+    assert.ok(!calls.some(call => ['fillText', 'fillRect'].includes(call[0])), 'no permanent labels');
+    plot.cursor = {left: 203, top: 50};
+    assert.equal(charts.deploymentHovered(plot, history, 2, markers).label, 'File telemetry stage');
+    plot.cursor.left = 497;
+    assert.equal(charts.deploymentHovered(plot, history, 2, markers).label, 'Stream activation');
+    plot.cursor.left = 350;
+    assert.equal(charts.deploymentHovered(plot, history, 2, markers), null);
+    const text = charts.deploymentText(markers[1]);
+    assert.match(text, /^File telemetry stage · .+: Collector restarted\.$/);
+    assert.doesNotMatch(text, /approx/, 'metadata markers are exact');
+    assert.match(charts.deploymentText(markers[0]), /\(approx\.\): service restarted/);
+    assert.doesNotMatch(charts.deploymentText(markers[2]), /: $/, 'no dangling colon without details');
+  });
+
+  await test('pages: hidden status banner first, metadata script before charts, no inline markup', () => {
+    for (const file of ['index.html', 'live.html']) {
+      const raw = fs.readFileSync(path.join(DEMO, file), 'utf8');
+      const banner = raw.match(/<div class="deployment-banner"[^>]*>/);
+      assert.ok(banner, `${file}: banner present`);
+      assert.match(banner[0], /id="deployment-banner"/);
+      assert.match(banner[0], /role="status"/);
+      assert.match(banner[0], /\shidden>/, `${file}: hidden by default`);
+      assert.ok(raw.indexOf('deployment-banner') < raw.indexOf('<header'), `${file}: banner above the header`);
+      const scripts = [...raw.matchAll(/<script src="([^"]+)"/g)].map(match => match[1]);
+      assert.ok(scripts.indexOf('/deployment.js') > scripts.indexOf('/status.js'), `${file}: loads after status.js`);
+      if (scripts.includes('/charts.js')) assert.ok(scripts.indexOf('/deployment.js') < scripts.indexOf('/charts.js'));
+      assert.match(raw, /<script src="\/deployment.js" defer><\/script>/);
+    }
+    const source = fs.readFileSync(path.join(DEMO, 'deployment.js'), 'utf8');
+    assert.doesNotMatch(source, /innerHTML|insertAdjacentHTML|eval\(|https?:\/\//, 'same-origin, text only');
+    assert.doesNotMatch(source, /\/home\/|\/Users\/|\b(?:\d{1,3}\.){3}\d{1,3}\b|localhost|@/, 'no paths, hosts or addresses');
+    const charts = fs.readFileSync(path.join(DEMO, 'charts.js'), 'utf8');
+    assert.doesNotMatch(charts, /markerTip\.innerHTML/);
+  });
+
+  console.log(`Deployment tests passed (${passed.length}): ${passed.join('; ')}.`);
+})().catch(error => { console.error(error); process.exit(1); });

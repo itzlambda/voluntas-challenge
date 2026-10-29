@@ -34,6 +34,10 @@ code, .mono { font-family: var(--mono); font-size: 0.92em; }
 .skip { position: absolute; left: 8px; top: -40px; background: var(--panel); padding: 6px 10px; z-index: 20; }
 .skip:focus { top: 8px; }
 
+/* Deployment banner: neutral, full width, above the header. */
+.deployment-banner { display: flex; align-items: center; gap: 10px; padding: 10px 24px; background: var(--panel); border-bottom: 1px solid var(--line); color: var(--strong); font-size: 14px; }
+.deployment-banner::before { content: ""; width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--blue); flex: none; }
+
 /* Header */
 .site-header { display: flex; align-items: center; gap: 24px 32px; flex-wrap: wrap; padding: 18px 24px; border-bottom: 1px solid var(--line); }
 .site-name { color: var(--strong); font-size: 18px; font-weight: 600; text-decoration: none; letter-spacing: -0.01em; margin-right: 8px; }

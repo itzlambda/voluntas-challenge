@@ -8,6 +8,8 @@ cargo clippy --all-targets -- -D warnings
 cargo test --all-targets
 python3 -m unittest discover -s demo
 node demo/test_ui.cjs
+node demo/test_sockets.cjs
+node demo/test_deployment.cjs
 ```
 
 The binary integration test runs discovery, reconnects, removals, recovery, live
@@ -44,6 +46,8 @@ The affected checks are:
 python3 -m unittest discover -s demo
 python3 -m unittest discover -s ops
 node demo/test_ui.cjs
+node demo/test_sockets.cjs
+node demo/test_deployment.cjs
 node --check demo/charts.js
 ```
 

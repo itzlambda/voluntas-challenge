@@ -158,7 +158,10 @@ live, not for archiving.
 - **Telemetry.** stderr events `stream_available` (endpoint at startup),
   `stream_client_kicked` (client, reason, book count), `stream_client_error`,
   and `stream_accept_failed`. There are no per-client Prometheus metrics yet.
-- **Not built yet.** Authentication, `Origin` checks, per-IP limits, and TLS.
+- **Admission.** `--stream-max-clients` caps connections including pending
+  handshakes, which time out after five seconds. `--stream-allow-origin` adds an
+  allowed browser Origin; native clients may omit Origin.
+- **Not built yet.** Authentication, per-IP limits, and in-process TLS.
   Bind to loopback and put a reverse proxy in front before exposing it.
 
 The hub reports as the writer in metrics: `collector_writer_busy_seconds_total`

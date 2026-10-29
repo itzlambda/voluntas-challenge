@@ -317,7 +317,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
   await test('pages: copy rules, privacy, no inline scripts or styles', () => {
     const pages = ['index.html', 'live.html'];
     const visible = file => fs.readFileSync(path.join(DEMO, file), 'utf8').replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ');
-    for (const file of [...pages, 'status.js', 'overview.js', 'charts.js', 'chart-help.js', 'diagram.js', 'site.css']) {
+    for (const file of [...pages, 'status.js', 'deployment.js', 'overview.js', 'charts.js', 'chart-help.js', 'diagram.js', 'site.css']) {
       // SVG path data is coordinates, not addresses.
       const text = fs.readFileSync(path.join(DEMO, file), 'utf8').replace(/ d="[^"]*"/g, '');
       assert.doesNotMatch(text, /\/home\/|\/Users\/|\b(?:\d{1,3}\.){3}\d{1,3}\b|localhost|admin@/, `${file}: no paths, hosts or IPs`);

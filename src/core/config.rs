@@ -45,6 +45,10 @@ pub struct Config {
     pub stream_client_queue: usize,
     /// Order books one stream client may subscribe to at once.
     pub stream_max_books: usize,
+    /// Simultaneous stream connections, including pending handshakes.
+    pub stream_max_clients: usize,
+    /// Allowed browser Origins. Empty permits any Origin; native clients may omit it.
+    pub stream_allowed_origins: Vec<String>,
     /// Where frames that fail to decode are logged.
     pub decode_error_log: PathBuf,
     /// New WebSocket connections opened per second, at most.
@@ -69,6 +73,8 @@ impl Default for Config {
             stream_bind: SocketAddr::from(([127, 0, 0, 1], 9100)),
             stream_client_queue: 4096,
             stream_max_books: 1024,
+            stream_max_clients: 64,
+            stream_allowed_origins: Vec::new(),
             decode_error_log: PathBuf::from("decode-errors.jsonl"),
             connection_opens_per_second: 20.0,
             capture: None,
@@ -93,6 +99,20 @@ impl Config {
             self.stream_max_books > 0,
             "--stream-max-books must be positive"
         );
+        ensure!(
+            self.stream_max_clients > 0
+                && self.stream_max_clients <= tokio::sync::Semaphore::MAX_PERMITS,
+            "--stream-max-clients is outside the supported range"
+        );
+        for origin in &self.stream_allowed_origins {
+            let url = reqwest::Url::parse(origin)?;
+            ensure!(
+                matches!(url.scheme(), "http" | "https")
+                    && url.host_str().is_some()
+                    && url.origin().ascii_serialization() == *origin,
+                "--stream-allow-origin expects an HTTP origin without a path"
+            );
+        }
         ensure!(
             self.connection_opens_per_second.is_finite() && self.connection_opens_per_second > 0.,
             "rates must be positive and finite"

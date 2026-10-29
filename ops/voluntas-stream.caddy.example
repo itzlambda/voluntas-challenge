@@ -1,0 +1,5 @@
+# Install on the collector host. Set STREAM_HOST in the Caddy service environment.
+{$STREAM_HOST} {
+	respond /healthz "ok" 200
+	reverse_proxy 127.0.0.1:9100
+}

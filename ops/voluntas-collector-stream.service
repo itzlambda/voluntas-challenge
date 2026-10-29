@@ -1,0 +1,33 @@
+[Unit]
+Description=Voluntas order book collector
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/etc/voluntas/collector-approved
+
+[Service]
+Type=simple
+DynamicUser=yes
+StateDirectory=voluntas-collector
+WorkingDirectory=/var/lib/voluntas-collector
+EnvironmentFile=/etc/voluntas/stream.env
+ExecStart=/usr/bin/python3 /opt/voluntas/collector-launch.py /opt/voluntas/collector --output-mode stream --stream-bind 127.0.0.1:9100 --stream-max-clients 32 --stream-allow-origin ${STREAM_ALLOWED_ORIGIN} --metrics-bind 0.0.0.0:19090 --workers 4 --markets-per-connection 256
+LimitNOFILE=65536
+Restart=on-failure
+RestartSec=10
+KillSignal=SIGTERM
+TimeoutStopSec=30
+StandardOutput=journal
+StandardError=journal
+LogNamespace=voluntas
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

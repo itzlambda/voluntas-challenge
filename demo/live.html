@@ -9,12 +9,14 @@
 <link rel="stylesheet" href="/site.css">
 <script src="/vendor/uPlot.iife.min.js" defer></script>
 <script src="/status.js" defer></script>
+<script src="/deployment.js" defer></script>
 <script src="/charts.js" defer></script>
 <script src="/sockets.js" defer></script>
 <script src="/chart-help.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="deployment-banner" id="deployment-banner" role="status" hidden><span class="deployment-banner-text"></span></div>
 <header class="site-header">
   <a class="site-name" href="/">Voluntas demo</a>
   <nav class="site-nav" aria-label="Pages">
@@ -41,9 +43,9 @@
       <div class="chart-head">
         <h2 id="h-internal"><button class="chart-help" type="button" aria-describedby="help-internal" aria-expanded="false">Time inside the collector</button></h2>
         <div class="chart-tooltip" id="help-internal" role="tooltip" popover="auto">
-          <p>Monotonic time from receiving a WebSocket frame to finishing the SBE encoding of each emitted price-level record. Only the publishing copy counts. Snapshots, source switches and later file writes are excluded. A message with 50 changed levels gives 50 observations.</p>
+          <p>Monotonic time from receiving a WebSocket frame to finishing the SBE encoding of each emitted price-level record. Only the publishing copy counts. In stream mode, only records encoded for at least one stream subscriber count. Snapshots, source switches and later file or socket writes are excluded. A message with 50 changed levels gives 50 observations.</p>
           <p>p50 and p99 are histogram estimates over five-minute windows. Bucket bounds near the median are 10, 25, 50 and 100 µs, then 250 µs, 500 µs, 1 ms and 2.5 ms, so small differences are not meaningful. A percentile above the largest bucket shows as more than 60 s.</p>
-          <p>When no updates arrive, there are no new latency observations. The five-minute window can keep earlier samples visible; idle time does not count as zero latency. A failed scrape is shown as a gap.</p>
+          <p>When no updates arrive, or in stream mode no one is subscribed, there are no new latency observations. The five-minute window can keep earlier samples visible; idle time does not count as zero latency. A failed scrape is shown as a gap.</p>
           <p>The chart uses a logarithmic scale.</p>
           <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
           <p class="small muted">Metrics: <code>collector_receive_to_encode_seconds</code>.</p>
@@ -72,7 +74,7 @@
       <div class="chart-head">
         <h2 id="h-updates"><button class="chart-help" type="button" aria-describedby="help-updates" aria-expanded="false">Book updates per second</button></h2>
         <div class="chart-tooltip" id="help-updates" role="tooltip" popover="auto">
-          <p>Encoded price-level records per second over one minute, from the latency histogram's count. Messages received counts decoded data events on both pools, so each exchange message is counted about twice. Heartbeats are excluded.</p>
+          <p>Encoded price-level records per second over one minute, from the latency histogram's count. In stream mode, only records encoded for at least one stream subscriber count, so this reads zero while no one is subscribed. Messages received counts decoded data events on both pools, so each exchange message is counted about twice. Heartbeats are excluded.</p>
           <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
           <p class="small muted">Metrics: <code>collector_receive_to_encode_seconds</code>, <code>collector_events_total</code>.</p>
         </div>
@@ -138,12 +140,12 @@
       <div class="chart-head">
         <h2 id="h-writer-busy"><button class="chart-help" type="button" aria-describedby="help-writer-busy" aria-expanded="false">Writer busy time</button></h2>
         <div class="chart-tooltip" id="help-writer-busy" role="tooltip" popover="auto">
-          <p>Share of wall time the single writer spends converting and encoding records and writing or flushing output. Includes snapshots and chunk rotation, excludes idle waits, and is not CPU use. Sustained values near 100% indicate little writer headroom; compare with waiting on the writer and internal latency.</p>
+          <p>Share of wall time the single output task spends on records, excluding idle waits; it is not CPU use. In file mode the writer converts and encodes records and writes or flushes output, including snapshots and chunk rotation. In stream mode the stream hub routes records to subscribers and encodes them; records with no subscriber are dropped before encoding. Sustained values near 100% indicate little writer headroom; compare with waiting on the writer and internal latency.</p>
           <p>Values use a one-minute rate. Missing or stale periods are left blank. Counters restart from zero when the collector restarts.</p>
           <p class="small muted">Metrics: <code>collector_writer_busy_seconds_total</code>.</p>
         </div>
       </div>
-      <div class="plot" data-plot role="img" aria-label="Share of wall time the writer spends encoding and writing output"></div>
+      <div class="plot" data-plot role="img" aria-label="Share of wall time the writer or stream hub spends handling output"></div>
       <div class="legend" data-legend></div>
       <p class="chart-note" data-note></p>
     </section>
@@ -151,7 +153,7 @@
       <div class="chart-head">
         <h2 id="h-writer"><button class="chart-help" type="button" aria-describedby="help-writer" aria-expanded="false">Waiting on the writer</button></h2>
         <div class="chart-tooltip" id="help-writer" role="tooltip" popover="auto">
-          <p>Waiting on the writer sums the time all workers spend blocked on a full writer channel. Values are worker-seconds per second and can exceed 1 when several workers wait at once.</p>
+          <p>Waiting on the writer sums the time all workers spend blocked on a full channel to the writer, or to the stream hub in stream mode. Values are worker-seconds per second and can exceed 1 when several workers wait at once.</p>
           <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
           <p class="small muted">Metrics: <code>collector_writer_blocked_seconds_total</code>.</p>
         </div>

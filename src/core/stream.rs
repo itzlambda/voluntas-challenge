@@ -16,6 +16,7 @@
 
 use std::collections::{HashMap, HashSet};
 use std::net::SocketAddr;
+use std::sync::Arc;
 use std::time::Duration;
 
 use anyhow::Context;
@@ -24,7 +25,7 @@ use futures_util::{SinkExt, StreamExt};
 use serde::Deserialize;
 use serde_json::json;
 use tokio::net::{TcpListener, TcpStream};
-use tokio::sync::{mpsc, oneshot};
+use tokio::sync::{Semaphore, mpsc, oneshot};
 use tokio_tungstenite::WebSocketStream;
 use tokio_tungstenite::tungstenite::error::ProtocolError;
 use tokio_tungstenite::tungstenite::protocol::WebSocketConfig;
@@ -52,11 +53,13 @@ const CLIENT_DRAIN_DEADLINE: Duration = Duration::from_secs(2);
 /// How long a close frame may take to send.
 const CLOSE_DEADLINE: Duration = Duration::from_secs(1);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct StreamSettings {
     pub bind: SocketAddr,
     pub client_queue: usize,
     pub max_books: usize,
+    pub max_clients: usize,
+    pub allowed_origins: Arc<[String]>,
 }
 
 impl From<&Config> for StreamSettings {
@@ -65,6 +68,8 @@ impl From<&Config> for StreamSettings {
             bind: config.stream_bind,
             client_queue: config.stream_client_queue,
             max_books: config.stream_max_books,
+            max_clients: config.stream_max_clients,
+            allowed_origins: config.stream_allowed_origins.clone().into(),
         }
     }
 }
@@ -93,7 +98,7 @@ pub fn spawn_stream(
     tracker.spawn(accept_loop(
         listener,
         controls_tx,
-        settings.client_queue,
+        settings.clone(),
         stop.clone(),
         tracker.clone(),
     ));
@@ -362,10 +367,11 @@ fn unsubscribe(
 async fn accept_loop(
     listener: TcpListener,
     controls: mpsc::Sender<Control>,
-    client_queue: usize,
+    settings: StreamSettings,
     stop: CancellationToken,
     tracker: TaskTracker,
 ) {
+    let permits = Arc::new(Semaphore::new(settings.max_clients));
     let mut next_id: ClientId = 0;
     loop {
         let (socket, peer) = tokio::select! {
@@ -380,13 +386,18 @@ async fn accept_loop(
                 }
             },
         };
+        let Ok(permit) = permits.clone().try_acquire_owned() else {
+            drop(socket);
+            continue;
+        };
         next_id += 1;
         let id = next_id;
         let controls = controls.clone();
         let stop = stop.clone();
+        let settings = settings.clone();
         tracker.spawn(async move {
-            if let Err(error) = serve_client(id, socket, controls.clone(), client_queue, stop).await
-            {
+            let _permit = permit;
+            if let Err(error) = serve_client(id, socket, controls.clone(), settings, stop).await {
                 telemetry::emit(
                     "stream_client_error",
                     json!({"client":id,"peer":peer.to_string(),"error":format!("{error:#}")}),
@@ -409,18 +420,49 @@ async fn serve_client(
     id: ClientId,
     socket: TcpStream,
     controls: mpsc::Sender<Control>,
-    client_queue: usize,
+    settings: StreamSettings,
     stop: CancellationToken,
 ) -> anyhow::Result<()> {
     socket.set_nodelay(true)?;
     let config = WebSocketConfig::default().max_message_size(Some(MAX_INBOUND_MESSAGE_BYTES));
-    let ws = tokio::select! {
-        _ = stop.cancelled() => return Ok(()),
-        ws = tokio_tungstenite::accept_async_with_config(socket, Some(config)) => {
-            ws.context("WebSocket handshake")?
+    use tokio_tungstenite::tungstenite::handshake::server::{
+        ErrorResponse, Request as HandshakeRequest, Response as HandshakeResponse,
+    };
+    let origins = settings.allowed_origins;
+    #[allow(
+        clippy::result_large_err,
+        reason = "tungstenite requires an unboxed HTTP error response"
+    )]
+    let callback = move |request: &HandshakeRequest,
+                         response: HandshakeResponse|
+          -> Result<HandshakeResponse, ErrorResponse> {
+        let mut headers = request.headers().get_all("origin").iter();
+        let allowed = match headers.next() {
+            None => true,
+            Some(origin) => {
+                headers.next().is_none()
+                    && (origins.is_empty()
+                        || origin
+                            .to_str()
+                            .is_ok_and(|value| origins.iter().any(|allowed| allowed == value)))
+            }
+        };
+        if allowed {
+            Ok(response)
+        } else {
+            let mut error = ErrorResponse::new(Some("origin not allowed".into()));
+            *error.status_mut() = tokio_tungstenite::tungstenite::http::StatusCode::FORBIDDEN;
+            Err(error)
         }
     };
-    let (frames_tx, mut frames) = mpsc::channel(client_queue);
+    let ws = tokio::select! {
+        _ = stop.cancelled() => return Ok(()),
+        ws = tokio::time::timeout(Duration::from_secs(5),
+            tokio_tungstenite::accept_hdr_async_with_config(socket, callback, Some(config))) => {
+            ws.context("WebSocket handshake timeout")?.context("WebSocket handshake")?
+        }
+    };
+    let (frames_tx, mut frames) = mpsc::channel(settings.client_queue);
     let (kick_tx, mut kick) = oneshot::channel();
     if controls
         .send(Control::Join {
@@ -560,6 +602,8 @@ mod tests {
             bind: SocketAddr::from(([127, 0, 0, 1], 0)),
             client_queue,
             max_books,
+            max_clients: 64,
+            allowed_origins: Arc::from([]),
         }
     }
 
@@ -742,6 +786,67 @@ mod tests {
             matches!(ended, None | Some(CloseCode::Again)),
             "{ended:?} after {received}"
         );
+        drop(records);
+        stream.done.await.unwrap().unwrap();
+    }
+
+    #[tokio::test]
+    async fn enforces_client_limit_and_releases_capacity_after_disconnect() {
+        let mut config = settings(16, 2);
+        config.max_clients = 1;
+        let (stream, records) = start(config);
+        let first = connect(stream.address, &[]).await;
+        assert!(
+            tokio_tungstenite::connect_async(format!("ws://{}", stream.address))
+                .await
+                .is_err()
+        );
+        drop(first);
+        let next = tokio::time::timeout(Duration::from_secs(2), async {
+            loop {
+                if let Ok((client, _)) =
+                    tokio_tungstenite::connect_async(format!("ws://{}", stream.address)).await
+                {
+                    break client;
+                }
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .unwrap();
+        drop(next);
+        drop(records);
+        stream.done.await.unwrap().unwrap();
+    }
+
+    #[tokio::test]
+    async fn rejects_unlisted_origins_and_accepts_allowed_or_native_clients() {
+        use tokio_tungstenite::tungstenite::client::IntoClientRequest;
+        let mut config = settings(16, 2);
+        config.allowed_origins = vec!["https://demo.example.com".to_owned()].into();
+        let (stream, records) = start(config);
+        for origin in ["https://other.example.com", "null"] {
+            let mut request = format!("ws://{}", stream.address)
+                .into_client_request()
+                .unwrap();
+            request
+                .headers_mut()
+                .insert("Origin", origin.parse().unwrap());
+            match tokio_tungstenite::connect_async(request).await {
+                Err(WsError::Http(response)) => assert_eq!(response.status(), 403),
+                other => panic!("expected Origin rejection: {other:?}"),
+            }
+        }
+        let mut request = format!("ws://{}", stream.address)
+            .into_client_request()
+            .unwrap();
+        request
+            .headers_mut()
+            .insert("Origin", "https://demo.example.com".parse().unwrap());
+        let (allowed, _) = tokio_tungstenite::connect_async(request).await.unwrap();
+        let native = connect(stream.address, &[]).await;
+        drop(allowed);
+        drop(native);
         drop(records);
         stream.done.await.unwrap().unwrap();
     }

@@ -422,7 +422,9 @@ class Reader:
 ROOT = Path(__file__).parent
 # Pages accept any query string; assets and APIs match exactly.
 PAGES = {"/": "index.html", "/live": "live.html"}
-ASSETS = {"/chart-help.js": ("chart-help.js", "text/javascript; charset=utf-8"),
+ASSETS = {"/deployment.js": ("deployment.js", "text/javascript; charset=utf-8"),
+          "/deployment.json": ("deployment.json", "application/json"),
+          "/chart-help.js": ("chart-help.js", "text/javascript; charset=utf-8"),
           "/vendor/uPlot.iife.min.js": ("vendor/uPlot.iife.min.js", "text/javascript; charset=utf-8"),
           "/vendor/uPlot.min.css": ("vendor/uPlot.min.css", "text/css; charset=utf-8"),
           "/site.css": ("site.css", "text/css; charset=utf-8"),

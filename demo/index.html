@@ -7,12 +7,14 @@
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="/site.css">
 <script src="/status.js" defer></script>
+<script src="/deployment.js" defer></script>
 <script src="/overview.js" defer></script>
 <script src="/diagram.js" defer></script>
 <script src="/chart-help.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="deployment-banner" id="deployment-banner" role="status" hidden><span class="deployment-banner-text"></span></div>
 <header class="site-header">
   <a class="site-name" href="/">Voluntas demo</a>
   <nav class="site-nav" aria-label="Pages">
@@ -24,7 +26,7 @@
 <main id="main">
   <p class="notice" id="notice" hidden><span class="notice-text"></span></p>
   <section class="intro" aria-labelledby="intro-heading">
-    <h1 id="intro-heading">A live order book for every open Polymarket market, written to an SBE file.</h1>
+    <h1 id="intro-heading">A live order book for every open Polymarket market, streamed as SBE.</h1>
     <p>This page shows the collector running right now, then walks through how it is built.</p>
   </section>
   <section class="page-section" aria-labelledby="running-heading">
@@ -47,7 +49,7 @@
     <div class="figure">
       <h2 class="figure-label"><button class="chart-help" type="button" aria-describedby="help-figure-latency" aria-expanded="false">Time inside the collector</button></h2>
       <div class="chart-tooltip" id="help-figure-latency" role="tooltip" popover="auto">
-        <p>Monotonic time from receiving a WebSocket frame to completing SBE encoding, per published price-level record. Only the publishing copy counts. Snapshots, source switches and later file writes are excluded. p50 and p99 are histogram estimates over five-minute windows.</p>
+        <p>Monotonic time from receiving a WebSocket frame to completing SBE encoding, per published price-level record. Only the publishing copy counts. In stream mode, only records encoded for at least one stream subscriber count. Snapshots, source switches and later file or socket writes are excluded. p50 and p99 are histogram estimates over five-minute windows.</p>
       </div>
       <p class="figure-value" id="fig-latency"><span class="unavailable">No data yet</span></p>
     </div>
@@ -65,7 +67,7 @@
     <div class="figure">
       <h2 class="figure-label"><button class="chart-help" type="button" aria-describedby="help-figure-updates" aria-expanded="false">Book updates per second</button></h2>
       <div class="chart-tooltip" id="help-figure-updates" role="tooltip" popover="auto">
-        <p>Encoded price-level records per second over one minute. Messages received counts decoded data events on both pools, so each exchange message is counted about twice. Heartbeats are excluded.</p>
+        <p>Encoded price-level records per second over one minute. In stream mode, only records encoded for at least one stream subscriber count, so this reads zero while no one is subscribed. Messages received counts decoded data events on both pools, so each exchange message is counted about twice. Heartbeats are excluded.</p>
       </div>
       <p class="figure-value" id="fig-updates"><span class="unavailable">No data yet</span></p>
       <p class="figure-note" id="fig-updates-note"></p>

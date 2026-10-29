@@ -1,0 +1,103 @@
+'use strict';
+// Deployment metadata: a site-wide banner while a deployment is in progress, and restart markers for the charts.
+// Charts subscribe with DemoDeployment.page.subscribe. Requires status.js for polling.
+(function (root) {
+  const METADATA_PATH = '/deployment.json';
+  const INTERVAL = 7500;
+  const DEFAULT_MESSAGE = 'A new deployment is in progress. Connections and charts may take a few minutes to recover.';
+  const MAX_MESSAGE = 300;
+  const MAX_LABEL = 80;
+  const MAX_DETAILS = 300;
+  const MAX_MARKERS = 50;
+  // Plausible Unix seconds only: rejects zero, and millisecond values fail the upper bound.
+  const MIN_AT = Date.UTC(2026, 0, 1) / 1000;
+  const MAX_AT = Date.UTC(2100, 0, 1) / 1000;
+
+  const isNumber = value => typeof value === 'number' && Number.isFinite(value);
+  const isTime = value => isNumber(value) && value >= MIN_AT && value < MAX_AT;
+  const clean = (value, max) => typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, max) : '';
+
+  /** Valid markers, sorted by time, one per instant. Malformed entries are dropped individually. */
+  function markers(list) {
+    const seen = new Set();
+    const out = [];
+    for (const item of Array.isArray(list) ? list : []) {
+      if (!item || typeof item !== 'object' || !isTime(item.at)) continue;
+      const label = clean(item.label, MAX_LABEL);
+      if (!label || seen.has(item.at)) continue;
+      seen.add(item.at);
+      out.push({at: item.at, label, details: clean(item.details, MAX_DETAILS)});
+    }
+    return out.sort((a, b) => a.at - b.at).slice(-MAX_MARKERS);
+  }
+
+  /** Parses a metadata body. Returns null for anything that is not schema 1, so callers keep their last good state. */
+  function parse(body) {
+    if (!body || typeof body !== 'object' || Array.isArray(body) || body.schema_version !== 1) return null;
+    if (typeof body.in_progress !== 'boolean') return null;
+    if (body.markers !== undefined && !Array.isArray(body.markers)) return null;
+    return {
+      inProgress: body.in_progress,
+      message: clean(body.message, MAX_MESSAGE) || DEFAULT_MESSAGE,
+      startedAt: isTime(body.started_at) ? body.started_at : null,
+      markers: markers(body.markers),
+    };
+  }
+
+  const signature = state => JSON.stringify(state);
+
+  /** Polls the metadata file while the page is visible; transient failures keep the last known state. */
+  function createDeployment(env = root, S = root.DemoStatus) {
+    const listeners = new Set();
+    let state = null;
+
+    const poller = S.createPoller({
+      env,
+      interval: INTERVAL,
+      url: () => METADATA_PATH,
+      onResult(result) {
+        const next = result.ok ? parse(result.body) : null;
+        if (!next) return false;
+        if (!state || signature(next) !== signature(state)) {
+          state = next;
+          for (const listener of listeners) listener(state);
+        }
+        return true;
+      },
+    });
+
+    return {
+      subscribe(listener) { listeners.add(listener); if (state) listener(state); return () => listeners.delete(listener); },
+      start: () => poller.start(),
+      refresh: () => poller.now(),
+      get state() { return state; },
+      get failures() { return poller.failures; },
+    };
+  }
+
+  function bannerText(state, clock) {
+    const started = state.startedAt && clock ? clock(state.startedAt) : null;
+    return started ? `${state.message} Started ${started}.` : state.message;
+  }
+
+  /** Shows the top banner only while the last valid metadata says a deployment is in progress. */
+  function bindBanner(deployment, doc, clock) {
+    const element = doc.getElementById('deployment-banner');
+    if (!element) return;
+    const text = element.querySelector('.deployment-banner-text') || element;
+    deployment.subscribe(state => {
+      element.hidden = !state.inProgress;
+      text.textContent = state.inProgress ? bannerText(state, clock) : '';
+    });
+  }
+
+  root.DemoDeployment = {parse, markers, bannerText, createDeployment, bindBanner, DEFAULT_MESSAGE, INTERVAL, METADATA_PATH};
+
+  if (root.document && root.document.getElementById && root.DemoStatus && root.DemoStatus.createPoller) {
+    const deployment = createDeployment(root, root.DemoStatus);
+    root.DemoDeployment.page = deployment;
+    bindBanner(deployment, root.document, root.DemoStatus.clock);
+    // Chart scripts subscribe before polling starts; subscribers also receive the current state.
+    root.addEventListener('DOMContentLoaded', () => deployment.start());
+  }
+})(typeof window !== 'undefined' ? window : globalThis);

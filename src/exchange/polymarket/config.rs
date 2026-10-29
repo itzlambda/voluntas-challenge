@@ -37,7 +37,7 @@ impl Settings {
 const USAGE: &str = "usage: engineering-challenge [--workers N] [--markets-per-connection N] \
 [--scan-interval-secs S] [--worker-queue N] [--writer-queue N] [--writer-stall-timeout-secs S] \
 [--max-frame-bytes N] [--output-mode file|stream] [--output PATH] [--stream-bind ADDRESS] \
-[--stream-client-queue N] [--stream-max-books N] [--decode-error-log PATH] [--ws-url URL] [--gamma-url URL] \
+[--stream-client-queue N] [--stream-max-books N] [--stream-max-clients N] [--stream-allow-origin ORIGIN] [--decode-error-log PATH] [--ws-url URL] [--gamma-url URL] \
 [--gamma-requests-per-second R] [--connection-opens-per-second R] [--lifecycle-connections N] \
 [--markets GAMMA_ID,...] [--capture PATH] [--metrics-bind ADDRESS]";
 
@@ -89,6 +89,8 @@ impl Settings {
                     config.collector.stream_client_queue = number()? as usize
                 }
                 "--stream-max-books" => config.collector.stream_max_books = number()? as usize,
+                "--stream-max-clients" => config.collector.stream_max_clients = number()? as usize,
+                "--stream-allow-origin" => config.collector.stream_allowed_origins.push(value),
                 "--decode-error-log" => config.collector.decode_error_log = value.into(),
                 "--ws-url" => config.ws_url = value,
                 "--gamma-url" => config.gamma_url = value,
@@ -174,6 +176,32 @@ mod tests {
         assert_eq!(config.collector.stream_bind.port(), 9200);
         assert!(parse(&["--output-mode", "both"]).is_err());
         assert!(parse(&["--stream-client-queue", "0"]).is_err());
+    }
+
+    #[test]
+    fn validates_stream_admission_settings() {
+        let config = parse(&[
+            "--stream-max-clients",
+            "32",
+            "--stream-allow-origin",
+            "https://demo.example.com",
+        ])
+        .unwrap();
+        assert_eq!(config.collector.stream_max_clients, 32);
+        assert_eq!(
+            config.collector.stream_allowed_origins,
+            ["https://demo.example.com"]
+        );
+        assert!(parse(&["--stream-max-clients", "0"]).is_err());
+        assert!(parse(&["--stream-max-clients", "18446744073709551615"]).is_err());
+        for origin in [
+            "null",
+            "https://demo.example.com/path",
+            "https://user:pass@demo.example.com",
+            "https://demo.example.com/",
+        ] {
+            assert!(parse(&["--stream-allow-origin", origin]).is_err());
+        }
     }
 
     #[test]

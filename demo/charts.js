@@ -21,6 +21,7 @@
   const WORKER_COLORS = [C.green, C.blue, C.light, C.grey, C.dark];
   // Approximate restart time, estimated from the reported dip just before the screenshot.
   const DEPLOYMENT_AT = Date.UTC(2026, 9, 27, 13, 8) / 1000;
+  const HISTORICAL_MARKER = {at: DEPLOYMENT_AT, label: 'New deployment', details: 'service restarted to bring in other changes.', approx: true};
   const RANGES = {'15m': 5000, '1h': 15000, '12h': 60000, '24h': 120000, all: 120000};
   // Legend swatches use classes because the page's CSP forbids inline styles.
   const SWATCH = {[C.green]: 'c-green', [C.blue]: 'c-blue', [C.light]: 'c-light', [C.grey]: 'c-grey', [C.dark]: 'c-dark', [C.miss]: 'c-miss'};
@@ -136,15 +137,28 @@
     return fromHistory.map((value, i) => current[i] || value);
   }
 
-  function deploymentInRange(history) {
-    return history && isNum(history.start) && isNum(history.end)
-      && history.start <= DEPLOYMENT_AT && DEPLOYMENT_AT <= history.end;
+  /** The historical marker plus exact-time markers from deployment metadata, sorted, one per instant. */
+  function deploymentMarkers(extra) {
+    const seen = new Set([DEPLOYMENT_AT]);
+    const out = [HISTORICAL_MARKER];
+    for (const marker of extra || []) {
+      if (!marker || !isNum(marker.at) || seen.has(marker.at)) continue;
+      seen.add(marker.at);
+      out.push({at: marker.at, label: String(marker.label || 'Deployment'), details: String(marker.details || ''), approx: false});
+    }
+    return out.sort((a, b) => a.at - b.at);
   }
 
-  function drawDeploymentMarker(u, history, ratio) {
-    if (!deploymentInRange(history)) return;
+  const inRange = (history, at) => history && isNum(history.start) && isNum(history.end) && history.start <= at && at <= history.end;
+
+  function deploymentInRange(history, markers = [HISTORICAL_MARKER]) {
+    return markers.some(marker => inRange(history, marker.at));
+  }
+
+  function drawDeploymentMarker(u, history, ratio, markers = [HISTORICAL_MARKER]) {
+    const visible = markers.filter(marker => inRange(history, marker.at));
+    if (!visible.length) return;
     const {ctx, bbox} = u;
-    const x = u.valToPos(DEPLOYMENT_AT, 'x', true) / ratio;
     const top = bbox.top / ratio;
     const bottom = (bbox.top + bbox.height) / ratio;
     ctx.save();
@@ -152,21 +166,34 @@
     ctx.strokeStyle = C.light;
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 4]);
-    ctx.beginPath();
-    ctx.moveTo(x, top);
-    ctx.lineTo(x, bottom);
-    ctx.stroke();
+    for (const marker of visible) {
+      const x = u.valToPos(marker.at, 'x', true) / ratio;
+      ctx.beginPath();
+      ctx.moveTo(x, top);
+      ctx.lineTo(x, bottom);
+      ctx.stroke();
+    }
     ctx.restore();
   }
 
-  function deploymentHovered(u, history, ratio) {
-    return deploymentInRange(history) && isNum(u.cursor.left) && isNum(u.cursor.top)
-      && u.cursor.top >= 0 && u.cursor.top <= u.bbox.height / ratio
-      && Math.abs(u.cursor.left - u.valToPos(DEPLOYMENT_AT, 'x')) <= 6;
+  /** The marker nearest the cursor within 6 px, or null. */
+  function deploymentHovered(u, history, ratio, markers = [HISTORICAL_MARKER]) {
+    if (!isNum(u.cursor.left) || !isNum(u.cursor.top) || u.cursor.top < 0 || u.cursor.top > u.bbox.height / ratio) return null;
+    let best = null;
+    let bestDistance = 6;
+    for (const marker of markers) {
+      if (!inRange(history, marker.at)) continue;
+      const distance = Math.abs(u.cursor.left - u.valToPos(marker.at, 'x'));
+      if (distance <= bestDistance) { best = marker; bestDistance = distance; }
+    }
+    return best;
   }
 
-  function deploymentText() {
-    return `New deployment · ${new Date(DEPLOYMENT_AT * 1000).toLocaleString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short'})} (approx.): service restarted to bring in other changes.`;
+  function deploymentText(marker = HISTORICAL_MARKER) {
+    const when = new Date(marker.at * 1000).toLocaleString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+      ...(marker.approx ? {} : {second: '2-digit'}), timeZoneName: 'short'});
+    const details = marker.details ? `: ${marker.details}` : '';
+    return `${marker.label} · ${when}${marker.approx ? ' (approx.)' : ''}${details}`;
   }
 
   function chartNote(id, history, stats) {
@@ -189,7 +216,7 @@
   // Rendering.
   function init(doc, win, uPlot, status) {
     const plots = new Map();
-    const view = {range: '15m', history: null, stats: null, retained: false, state: null};
+    const view = {range: '15m', history: null, stats: null, retained: false, state: null, markers: deploymentMarkers()};
     const sections = [...doc.querySelectorAll('[data-chart]')];
     const historyStatus = doc.getElementById('history-status');
     let generation = 0;
@@ -240,19 +267,23 @@
             markerTip = doc.createElement('div');
             markerTip.className = 'deployment-marker-tip';
             markerTip.setAttribute('role', 'tooltip');
-            markerTip.textContent = deploymentText();
             markerTip.hidden = true;
             u.over.append(markerTip);
           }],
           setData: [() => { if (markerTip) markerTip.hidden = true; }],
           drawAxes: [u => shadeGaps(u, id)],
-          draw: [u => { if (id === 'updates') drawDeploymentMarker(u, view.history, uPlot.pxRatio || win.devicePixelRatio || 1); }],
+          draw: [u => { if (id === 'updates') drawDeploymentMarker(u, view.history, uPlot.pxRatio || win.devicePixelRatio || 1, view.markers); }],
           setCursor: [u => {
             renderLegend(id, u.cursor.idx);
             if (!markerTip) return;
-            markerTip.hidden = !u.over.matches(':hover')
-              || !deploymentHovered(u, view.history, uPlot.pxRatio || win.devicePixelRatio || 1);
-            if (!markerTip.hidden) markerTip.style.left = `${Math.max(4, Math.min(u.cursor.left + 12, u.over.clientWidth - markerTip.offsetWidth - 4))}px`;
+            const marker = u.over.matches(':hover')
+              && deploymentHovered(u, view.history, uPlot.pxRatio || win.devicePixelRatio || 1, view.markers);
+            markerTip.hidden = !marker;
+            if (!marker) return;
+            // Metadata text is untrusted: textContent only.
+            const text = deploymentText(marker);
+            if (markerTip.textContent !== text) markerTip.textContent = text;
+            markerTip.style.left = `${Math.max(4, Math.min(u.cursor.left + 12, u.over.clientWidth - markerTip.offsetWidth - 4))}px`;
           }],
         },
       };
@@ -426,6 +457,17 @@
       }
     });
 
+    const deployments = root.DemoDeployment && root.DemoDeployment.page;
+    if (deployments) {
+      deployments.subscribe(state => {
+        const next = deploymentMarkers(state.markers);
+        if (JSON.stringify(next) === JSON.stringify(view.markers)) return;
+        view.markers = next;
+        const updates = plots.get('updates');
+        if (updates) updates.plot.redraw(false, false);
+      });
+    }
+
     if (win.ResizeObserver) {
       new win.ResizeObserver(() => {
         for (const [id, {plot}] of plots) {
@@ -438,7 +480,7 @@
     return view;
   }
 
-  root.DemoCharts = {stack, gaps, diff, definitions, legendValues, chartNote, deploymentInRange, drawDeploymentMarker, deploymentHovered};
+  root.DemoCharts = {stack, gaps, diff, definitions, legendValues, chartNote, deploymentMarkers, deploymentInRange, drawDeploymentMarker, deploymentHovered, deploymentText};
   if (root.document && root.document.getElementById && root.document.getElementById('charts') && root.uPlot && S.page) {
     root.DemoCharts.page = init(root.document, root, root.uPlot, S.page);
   }

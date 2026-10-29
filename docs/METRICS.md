@@ -204,6 +204,11 @@ exchange, or complete exchange-wide discovery. Component snapshots can briefly
 disagree during placement changes. A zero `desired` count makes the coverage
 ratio unavailable.
 
+In stream mode every output record is SBE-encoded, even without subscribers.
+Receive-to-encode latency and encoded-output counters therefore continue while
+clients are absent. Only delivery depends on subscriptions; unused encoded bytes
+are discarded after telemetry is recorded.
+
 ## Socket traffic
 
 Order-book sockets additionally expose cumulative event counts, connection state,

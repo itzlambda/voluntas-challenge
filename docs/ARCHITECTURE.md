@@ -134,8 +134,9 @@ live, not for archiving.
   The server sends binary frames, each holding one or more complete SBE
   messages back to back. Encoding, records, and per-book order match file
   mode.
-- **Routing.** A record with no subscriber is dropped without encoding. Otherwise
-  it is encoded once and the bytes are shared by every subscriber.
+- **Routing.** Every output record is encoded once and included in telemetry,
+  regardless of subscribers. Encoded bytes are shared by every subscriber, or
+  discarded after encoding when there are none.
 - **No catch-up.** A client joins mid-stream with no replay or history. It
   must ignore a book's updates until that book's next snapshot, which
   arrives within 60 seconds.
@@ -165,9 +166,10 @@ live, not for archiving.
   Bind to loopback and put a reverse proxy in front before exposing it.
 
 The hub reports as the writer in metrics: `collector_writer_busy_seconds_total`
-covers its routing and encoding time, and writer totals count records encoded
-for at least one subscriber. The worker-to-hub channel is unchanged from file
-mode: workers wait when it is full and the process exits after 30 seconds, so
+covers its routing and encoding time, and writer totals count every encoded
+output record independently of subscribers. The worker-to-hub channel is
+unchanged from file mode: workers wait when it is full and the process exits
+after 30 seconds, so
 records are never dropped before the hub.
 
 ## Book maintenance

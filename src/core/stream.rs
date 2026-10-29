@@ -1,8 +1,8 @@
 //! Stream output mode: replaces the file writer with one hub task that routes
 //! each record to the WebSocket clients subscribed to its order book.
 //!
-//! The hub never waits. A record with no subscriber is dropped before it is
-//! encoded. A record with subscribers is encoded once and its bytes shared. A
+//! The hub encodes every record once, including when there are no subscribers.
+//! Encoded bytes are shared with subscribers, or discarded if there are none. A
 //! client whose queue is full is disconnected with close code 1013: updates
 //! are deltas, so skipping one would silently corrupt that client's book.
 //!
@@ -81,7 +81,7 @@ pub struct StreamHandle {
 }
 
 /// Binds the listener and starts the hub on the current runtime. Totals
-/// count records encoded for at least one subscriber, not records received.
+/// count all encoded output records, independently of subscribers.
 pub fn spawn_stream(
     settings: StreamSettings,
     records: mpsc::Receiver<Vec<OutputRecord>>,
@@ -239,9 +239,7 @@ impl Hub {
     }
 
     fn route(&mut self, record: OutputRecord) -> anyhow::Result<()> {
-        let Some(ids) = self.subscribers.get(record.order_book()) else {
-            return Ok(());
-        };
+        let ids = self.subscribers.get(record.order_book());
         let received_instant = match &record {
             OutputRecord::LevelUpdate {
                 received_instant, ..
@@ -269,6 +267,9 @@ impl Hub {
                 .receive_to_encode
                 .record(received_instant.elapsed().as_secs_f64());
         }
+        let Some(ids) = ids else {
+            return Ok(());
+        };
         let mut slow = Vec::new();
         for id in ids {
             let Some(client) = self.clients.get(id) else {
@@ -714,6 +715,21 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn encodes_and_records_latency_without_clients() {
+        let (stream, records) = start(settings(64, 16));
+        records
+            .send(vec![snapshot("A", 2), update("A", 1), update("B", 3)])
+            .await
+            .unwrap();
+        drop(records);
+        let totals = stream.done.await.unwrap().unwrap();
+        assert_eq!(totals.snapshots, 1);
+        assert_eq!(totals.level_updates, 2);
+        assert_eq!(totals.receive_to_encode.count, 2);
+        assert!(totals.bytes > 0);
+    }
+
+    #[tokio::test]
     async fn routes_only_subscribed_books_in_order() {
         let (stream, records) = start(settings(64, 16));
         let mut a = connect(stream.address, &["A"]).await;
@@ -723,7 +739,7 @@ mod tests {
         records
             .send(vec![
                 snapshot("A", 2),
-                update("C", 9),
+                snapshot("C", 9),
                 update("B", 3),
                 update("A", 1),
             ])
@@ -752,8 +768,8 @@ mod tests {
         let codes = tokio::join!(close_code(&mut a), close_code(&mut b));
         assert_eq!(codes, (Some(CloseCode::Away), Some(CloseCode::Away)));
         let totals = stream.done.await.unwrap().unwrap();
-        // "C" had no subscriber and was never encoded.
-        assert_eq!(totals.snapshots, 1);
+        // The unsubscribed "C" snapshot was encoded but sent to neither client.
+        assert_eq!(totals.snapshots, 2);
     }
 
     #[tokio::test]

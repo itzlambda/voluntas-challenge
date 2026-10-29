@@ -319,6 +319,7 @@ name = "engineering-challenge"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "bytes",
  "chrono",
  "crossbeam",
  "ergo-sbe",

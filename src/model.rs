@@ -302,6 +302,14 @@ pub enum OutputRecord {
     },
 }
 
+impl OutputRecord {
+    pub fn order_book(&self) -> &OrderBookId {
+        match self {
+            Self::LevelUpdate { order_book, .. } | Self::Snapshot { order_book, .. } => order_book,
+        }
+    }
+}
+
 /// The IDs a connection is subscribed to. Decoders look IDs up here, so
 /// events reuse the connection's shared copies instead of allocating.
 pub trait SubscribedIds {

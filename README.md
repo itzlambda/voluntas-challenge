@@ -122,6 +122,9 @@ Output notes:
 |---|---|
 | `--markets ID,ID` | Collect a fixed list of Gamma market IDs instead of the full catalog. |
 | `--output PATH` | Write SBE to a file instead of stdout. |
+| `--output-mode file\|stream` | `file` (default) writes SBE to `--output`. `stream` writes nothing there and serves records over WebSocket instead; see [stream mode](docs/ARCHITECTURE.md#stream-mode). |
+| `--stream-bind IP:PORT` | Stream mode listener, default `127.0.0.1:9100`. |
+| `--stream-client-queue N`, `--stream-max-books N` | Messages a stream client may lag by before it is disconnected (default 4096), and books it may subscribe to (default 1024). |
 | `--workers N` | Number of book workers. Default: available CPU parallelism. |
 | `--markets-per-connection N` | Markets per WebSocket, default 256. Each market has one copy in each of two connection pools. |
 | `--scan-interval-secs S` | Full catalog reconciliation interval, default 900. |

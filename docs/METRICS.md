@@ -162,6 +162,8 @@ headroom. Disk stalls count as busy time because writes are synchronous.
 **`collector_writer_blocked_seconds_total`** sums the time workers wait for
 space in the writer's channel. It shows output backpressure. Because several
 workers can wait at once, it can increase by more than one second per second.
+It also counts the brief time of every send that finds space immediately, so
+it is never exactly zero; read its rate, not whether it moved.
 
 ### Freshness
 

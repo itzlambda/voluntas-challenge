@@ -1,20 +1,24 @@
-//! The offline pipeline: workers and the writer, fed from a fixture. The
+//! The pipeline: workers and the output sink (file writer or stream hub),
+//! plus the offline replay fed from a fixture. The
 //! fixture replay plays the subscription manager's and connections' parts.
 
 use std::collections::{HashMap, HashSet};
 use std::time::Duration;
 
 use anyhow::Context;
+use serde_json::json;
 use tokio::sync::{mpsc, oneshot};
 use tokio::task::JoinHandle;
 use tokio_tungstenite::tungstenite::Message;
 
-use crate::core::config::Config;
+use crate::core::config::{Config, OutputMode};
 use crate::core::connection::{ConnectionIds, FrameTotals, handle_frame};
 use crate::core::decode_log::DecodeErrorLog;
 use crate::core::fixture::{FixtureEvent, ProtocolCommand};
 use crate::core::metrics::{Component, Metrics};
 use crate::core::routing::Workers;
+use crate::core::stream::{StreamSettings, spawn_stream};
+use crate::core::telemetry;
 use crate::core::worker::{WorkerTotals, spawn_workers};
 use crate::core::writer::{WriterTotals, spawn_writer};
 use crate::exchange::protocol::BookProtocol;
@@ -44,11 +48,19 @@ impl Pipeline {
     pub fn start_with_metrics(config: &Config, metrics: &Metrics) -> anyhow::Result<Self> {
         config.validate()?;
         let (writer_tx, writer_rx) = mpsc::channel(config.writer_queue);
-        let writer_done = spawn_writer(
-            config.output.clone(),
-            writer_rx,
-            metrics.register(Component::Writer),
-        )?;
+        // The stream hub reports as the writer: it is the one output sink.
+        let writer_metrics = metrics.register(Component::Writer);
+        let writer_done = match config.output_mode {
+            OutputMode::File => spawn_writer(config.output.clone(), writer_rx, writer_metrics)?,
+            OutputMode::Stream => {
+                let stream = spawn_stream(StreamSettings::from(config), writer_rx, writer_metrics)?;
+                telemetry::emit(
+                    "stream_available",
+                    json!({"endpoint":format!("ws://{}",stream.address)}),
+                );
+                stream.done
+            }
+        };
         let (workers, worker_tasks) = spawn_workers(
             config.workers,
             config.worker_queue,

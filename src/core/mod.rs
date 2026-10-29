@@ -17,6 +17,7 @@ pub(crate) mod reconnect_backoff;
 pub mod recovery;
 pub mod registry;
 pub mod routing;
+pub mod stream;
 pub mod subscriptions;
 pub mod telemetry;
 pub mod worker;

@@ -1,5 +1,5 @@
 //! Polymarket endpoints, discovery settings, and the collector CLI.
-use crate::core::config::Config;
+use crate::core::config::{Config, OutputMode};
 use crate::model::ListingId;
 use anyhow::{Context, bail, ensure};
 use std::time::Duration;
@@ -36,7 +36,8 @@ impl Settings {
 
 const USAGE: &str = "usage: engineering-challenge [--workers N] [--markets-per-connection N] \
 [--scan-interval-secs S] [--worker-queue N] [--writer-queue N] [--writer-stall-timeout-secs S] \
-[--max-frame-bytes N] [--output PATH] [--decode-error-log PATH] [--ws-url URL] [--gamma-url URL] \
+[--max-frame-bytes N] [--output-mode file|stream] [--output PATH] [--stream-bind ADDRESS] \
+[--stream-client-queue N] [--stream-max-books N] [--decode-error-log PATH] [--ws-url URL] [--gamma-url URL] \
 [--gamma-requests-per-second R] [--connection-opens-per-second R] [--lifecycle-connections N] \
 [--markets GAMMA_ID,...] [--capture PATH] [--metrics-bind ADDRESS]";
 
@@ -72,7 +73,22 @@ impl Settings {
                     config.collector.writer_stall_timeout = Duration::from_secs(number()?)
                 }
                 "--max-frame-bytes" => config.collector.max_frame_bytes = number()? as usize,
+                "--output-mode" => {
+                    config.collector.output_mode = match value.as_str() {
+                        "file" => OutputMode::File,
+                        "stream" => OutputMode::Stream,
+                        _ => bail!("--output-mode expects file or stream, got {value:?}"),
+                    }
+                }
                 "--output" => config.collector.output = value.into(),
+                "--stream-bind" => {
+                    config.collector.stream_bind =
+                        value.parse().context("--stream-bind expects IP:port")?
+                }
+                "--stream-client-queue" => {
+                    config.collector.stream_client_queue = number()? as usize
+                }
+                "--stream-max-books" => config.collector.stream_max_books = number()? as usize,
                 "--decode-error-log" => config.collector.decode_error_log = value.into(),
                 "--ws-url" => config.ws_url = value,
                 "--gamma-url" => config.gamma_url = value,
@@ -147,6 +163,17 @@ mod tests {
             std::time::Duration::from_secs(900)
         );
         assert_eq!(config.gamma_requests_per_second, 10.0);
+    }
+
+    #[test]
+    fn output_mode_defaults_to_file() {
+        use crate::core::config::OutputMode;
+        assert_eq!(parse(&[]).unwrap().collector.output_mode, OutputMode::File);
+        let config = parse(&["--output-mode", "stream", "--stream-bind", "0.0.0.0:9200"]).unwrap();
+        assert_eq!(config.collector.output_mode, OutputMode::Stream);
+        assert_eq!(config.collector.stream_bind.port(), 9200);
+        assert!(parse(&["--output-mode", "both"]).is_err());
+        assert!(parse(&["--stream-client-queue", "0"]).is_err());
     }
 
     #[test]

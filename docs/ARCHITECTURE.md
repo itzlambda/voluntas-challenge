@@ -122,6 +122,51 @@ final flush at shutdown. A crash can lose the chunk in memory and anything
 still queued. There is no fsync. Redirect stdout to a regular file; the
 supplied reader cannot read a pipe.
 
+### Stream mode
+
+`--output-mode stream` replaces the writer with a hub task
+(`src/core/stream.rs`) that serves records over WebSocket. Only one sink runs;
+stream mode writes no file. It is meant for browsers watching a few books
+live, not for archiving.
+
+- **Protocol.** The client sends text frames
+  `{"op":"subscribe","books":["<token id>",...]}` or `"op":"unsubscribe"`.
+  The server sends binary frames, each holding one or more complete SBE
+  messages back to back. Encoding, records, and per-book order match file
+  mode.
+- **Routing.** A record with no subscriber is dropped without encoding. Otherwise
+  it is encoded once and the bytes are shared by every subscriber.
+- **No catch-up.** A client joins mid-stream with no replay or history. It
+  must ignore a book's updates until that book's next snapshot, which
+  arrives within 60 seconds.
+- **Slow clients are disconnected, never waited for.** Each client has a
+  bounded queue (`--stream-client-queue`). The hub only uses `try_send`, so a
+  client can never block the hub, the workers, or other clients. When a
+  client's queue is full, the hub removes that client instead of skipping
+  updates, which would silently corrupt its book. An idle client task closes
+  with code 1013. A task stuck mid-send on a stalled socket drops the
+  connection without a close frame, since a frame may be half written, so the
+  browser sees 1006. Either way the client reconnects and resubscribes.
+- **No added latency.** A client's task sends a message as soon as it is
+  queued, and coalesces into one frame only what queued during the previous
+  send.
+- **Other closes.** 1008 for too many books (`--stream-max-books`) or an
+  invalid request, 1003 for a binary request, 1001 at shutdown. After sending
+  a close frame the server waits up to 1 second for the client's reply. A
+  client that disconnects without a close handshake is normal for browsers
+  and is not logged.
+- **Telemetry.** stderr events `stream_available` (endpoint at startup),
+  `stream_client_kicked` (client, reason, book count), `stream_client_error`,
+  and `stream_accept_failed`. There are no per-client Prometheus metrics yet.
+- **Not built yet.** Authentication, `Origin` checks, per-IP limits, and TLS.
+  Bind to loopback and put a reverse proxy in front before exposing it.
+
+The hub reports as the writer in metrics: `collector_writer_busy_seconds_total`
+covers its routing and encoding time, and writer totals count records encoded
+for at least one subscriber. The worker-to-hub channel is unchanged from file
+mode: workers wait when it is full and the process exits after 30 seconds, so
+records are never dropped before the hub.
+
 ## Book maintenance
 
 Each worker keeps two books per outcome, one per source connection. A source

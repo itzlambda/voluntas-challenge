@@ -119,6 +119,26 @@ traffic the collector can handle.
   and a crash would lose less data. This requires changing both the supplied
   writer and reader, which assume 64 MiB chunks.
 
+### Stream mode
+
+- **Shared broadcast ring instead of per-client queues.** Under discussion.
+  Workers' records would be encoded once into one ring that overwrites its
+  oldest slot; each client reads at its own cursor, filters for its books,
+  and is disconnected when it lags past the ring. The sender cost no longer
+  depends on the number of clients, but every client scans the full stream,
+  and the lag a client survives is set by the whole stream's rate, so the ring
+  must be sized as peak rate times tolerated stall (about 1M slots and
+  150–250 MB for 10 seconds at peak).
+- **Server pings and an idle timeout.** A client on quiet books whose
+  connection died silently is never detected until its queue fills.
+- **Authentication, `Origin` checks, per-IP and per-client limits, TLS** before
+  exposing the endpoint beyond loopback.
+- **Prometheus metrics** for connected clients, kicks by reason, and routed
+  messages and bytes.
+- **Snapshot on subscribe**, so a new client does not wait up to 60 seconds for
+  a book.
+- **Browser SBE decoder.** `examples/stream_client.rs` shows the logic.
+
 ## Testing and validation
 
 - **Load and failure tests.** A full-catalog run at three times peak traffic,

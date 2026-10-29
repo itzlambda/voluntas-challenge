@@ -12,6 +12,7 @@ use crate::core::config::OUTPUT_CHUNK_BYTES;
 use crate::core::metrics::{Histogram, PUBLICATION_INTERVAL, Publisher};
 use crate::model::OutputRecord;
 use crate::util::AlignedSbeWriter;
+use crate::util::dtos::SbeEncode;
 use crate::util::dtos::challenge_orderbook::{
     PriceLevelUpdateDomain, SnapshotAsksEntryDomain, SnapshotBidsEntryDomain, SnapshotDomain,
 };
@@ -73,14 +74,7 @@ fn run(
     // Keep the symbol's allocation across updates instead of allocating a String
     // per record. write_msg encodes synchronously into its own buffer, so this
     // writer-owned message can be reused as soon as the call returns.
-    let mut reusable_update = PriceLevelUpdateDomain {
-        backtest_timestamp: chrono::DateTime::UNIX_EPOCH,
-        exchange_timestamp: chrono::DateTime::UNIX_EPOCH,
-        price_level: 0,
-        quantity: 0,
-        side: Side::Buy,
-        symbol: String::new(),
-    };
+    let mut reusable_update = reusable_update();
     loop {
         if metrics.is_due() {
             metrics.state.internal.clone_from(&totals.receive_to_encode);
@@ -133,6 +127,46 @@ fn write_record(
     record: OutputRecord,
     totals: &mut WriterTotals,
 ) -> anyhow::Result<()> {
+    let snapshot = matches!(record, OutputRecord::Snapshot { .. });
+    let len = with_message(record, reusable_update, |message| {
+        let len = message.encoded_length_with_header()?;
+        writer.write_msg(message)?;
+        Ok(len)
+    })
+    .context(if snapshot {
+        "write snapshot"
+    } else {
+        "write price level update"
+    })?;
+    if snapshot {
+        totals.snapshots += 1;
+    } else {
+        totals.level_updates += 1;
+    }
+    totals.bytes += len as u64;
+    Ok(())
+}
+
+/// A level update whose fields, including the symbol allocation, are
+/// overwritten by [`with_message`] for each record.
+pub(crate) fn reusable_update() -> PriceLevelUpdateDomain {
+    PriceLevelUpdateDomain {
+        backtest_timestamp: chrono::DateTime::UNIX_EPOCH,
+        exchange_timestamp: chrono::DateTime::UNIX_EPOCH,
+        price_level: 0,
+        quantity: 0,
+        side: Side::Buy,
+        symbol: String::new(),
+    }
+}
+
+/// Converts `record` into the supplied SBE domain type and passes it to
+/// `encode`. Both output modes use this, so they encode identically.
+pub(crate) fn with_message<R>(
+    record: OutputRecord,
+    reusable_update: &mut PriceLevelUpdateDomain,
+    encode: impl FnOnce(&dyn SbeEncode) -> anyhow::Result<R>,
+) -> anyhow::Result<R> {
     match record {
         OutputRecord::LevelUpdate {
             order_book,
@@ -151,13 +185,7 @@ fn write_record(
             reusable_update.side = side;
             reusable_update.symbol.clear();
             reusable_update.symbol.push_str(&order_book.0);
-            let len = reusable_update.encoded_length_with_header()?;
-            writer
-                .write_msg(reusable_update)
-                .context("write price level update")?;
-            totals.level_updates += 1;
-            totals.bytes += len as u64;
-            Ok(())
+            encode(reusable_update)
         }
         OutputRecord::Snapshot {
             order_book,
@@ -185,11 +213,7 @@ fn write_record(
                     .collect(),
                 symbol: order_book.0.to_string(),
             };
-            let len = message.encoded_length_with_header()?;
-            writer.write_msg(&message).context("write snapshot")?;
-            totals.snapshots += 1;
-            totals.bytes += len as u64;
-            Ok(())
+            encode(&message)
         }
     }
 }

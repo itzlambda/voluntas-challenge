@@ -39,6 +39,7 @@ Code comments cite "SPEC section N". The spec was condensed into
 | `src/core/routing.rs` | `condition_id mod N` worker routing. |
 | `src/core/worker.rs`, `order_book.rs` | Per-source books, publisher selection, snapshot timers. |
 | `src/core/writer.rs` | Single OS thread; encodes with the supplied SBE helpers. |
+| `src/core/stream.rs` | `--output-mode stream`: routes records to WebSocket subscribers instead of the writer. |
 | `src/core/metrics.rs`, `metrics_http.rs`, `telemetry.rs` | Prometheus metrics, HTTP endpoints, stderr JSON incidents. |
 | `src/core/fixture.rs`, `capture.rs`, `pipeline.rs` | Capture format and offline replay used by tests. |
 | `src/exchange/protocol.rs` | `BookProtocol` trait between the shared loop and an exchange. |
@@ -51,9 +52,10 @@ Code comments cite "SPEC section N". The spec was condensed into
 
 Breaking any of these corrupts output or ordering:
 
-- **The supplied helpers and schema stay unchanged.** All output goes through
-  `AlignedSbeWriter` with 64 MiB chunks, because the supplied reader assumes
-  that size.
+- **The supplied helpers and schema stay unchanged.** File-mode output goes
+  through `AlignedSbeWriter` with 64 MiB chunks, because the supplied reader
+  assumes that size. Stream mode encodes the same messages through the same
+  `with_message` conversion, without chunks.
 - **stdout carries SBE only.** Diagnostics go to stderr.
 - **No floats for prices or quantities.** Parse decimal strings exactly into
   fixed point (1,000,000 = 1).

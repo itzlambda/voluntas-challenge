@@ -666,13 +666,6 @@ impl Reference {
         ] {
             assert_eq!(actual, expected, "{name}, N={workers}");
         }
-        assert!(
-            totals
-                .pipeline
-                .workers
-                .iter()
-                .all(|w| w.writer_blocked.is_zero())
-        );
         assert_eq!(
             totals.pipeline.writer.snapshots,
             c.first + c.periodic + c.removed

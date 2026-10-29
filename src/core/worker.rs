@@ -8,7 +8,7 @@ use std::time::Duration;
 use anyhow::{Context, anyhow};
 use chrono::{DateTime, Utc};
 use serde_json::json;
-use tokio::sync::mpsc::{self, error::SendTimeoutError, error::TrySendError};
+use tokio::sync::mpsc::{self, error::SendTimeoutError};
 use tokio::time::Instant;
 use tokio_util::time::DelayQueue;
 use tokio_util::time::delay_queue::{Expired, Key};
@@ -241,25 +241,18 @@ impl Worker {
             return Ok(());
         }
         let batch = std::mem::take(&mut self.pending);
-        let batch = match writer.try_send(batch) {
-            Ok(()) => return Ok(()),
-            Err(TrySendError::Closed(_)) => return Err(anyhow!("writer channel closed")),
-            Err(TrySendError::Full(batch)) => batch,
-        };
-        let blocked_since = Instant::now();
+        // Includes the negligible time of sends that find space immediately.
+        let started = Instant::now();
         let result = writer.send_timeout(batch, stall_timeout).await;
-        self.totals.writer_blocked += blocked_since.elapsed();
+        self.totals.writer_blocked += started.elapsed();
         match result {
-            Ok(()) => {}
-            Err(SendTimeoutError::Timeout(_)) => {
-                return Err(anyhow!(
-                    "worker {}: writer channel full for more than {stall_timeout:?}",
-                    self.index
-                ));
-            }
-            Err(SendTimeoutError::Closed(_)) => return Err(anyhow!("writer channel closed")),
+            Ok(()) => Ok(()),
+            Err(SendTimeoutError::Timeout(_)) => Err(anyhow!(
+                "worker {}: writer channel full for more than {stall_timeout:?}",
+                self.index
+            )),
+            Err(SendTimeoutError::Closed(_)) => Err(anyhow!("writer channel closed")),
         }
-        Ok(())
     }
 
     /// Applies one input; output goes to `pending`.

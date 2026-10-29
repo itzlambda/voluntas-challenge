@@ -153,12 +153,13 @@
       <div class="chart-head">
         <h2 id="h-writer"><button class="chart-help" type="button" aria-describedby="help-writer" aria-expanded="false">Waiting on the writer</button></h2>
         <div class="chart-tooltip" id="help-writer" role="tooltip" popover="auto">
-          <p>Waiting on the writer sums the time all workers spend blocked on a full channel to the writer, or to the stream hub in stream mode. Values are worker-seconds per second and can exceed 1 when several workers wait at once.</p>
+          <p>Combined time all book workers wait after the output channel reports full, averaged over one minute. Output goes to the file writer or the stream hub. The value is milliseconds of worker wait per second, not time per event. Multiple workers can wait together, so the value can exceed 1,000.</p>
           <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p>Earlier history includes ordinary send overhead. See the measurement-change marker on the <a href="#h-updates">event-rate chart</a>.</p>
           <p class="small muted">Metrics: <code>collector_writer_blocked_seconds_total</code>.</p>
         </div>
       </div>
-      <div class="plot" data-plot role="img" aria-label="Worker time blocked on the writer channel"></div>
+      <div class="plot" data-plot role="img" aria-label="Combined worker wait in milliseconds per second after the output channel reports full"></div>
       <div class="legend" data-legend></div>
       <p class="chart-note" data-note></p>
     </section>

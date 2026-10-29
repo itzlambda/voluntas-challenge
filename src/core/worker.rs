@@ -8,7 +8,10 @@ use std::time::Duration;
 use anyhow::{Context, anyhow};
 use chrono::{DateTime, Utc};
 use serde_json::json;
-use tokio::sync::mpsc::{self, error::SendTimeoutError};
+use tokio::sync::mpsc::{
+    self,
+    error::{SendTimeoutError, TrySendError},
+};
 use tokio::time::Instant;
 use tokio_util::time::DelayQueue;
 use tokio_util::time::delay_queue::{Expired, Key};
@@ -241,7 +244,13 @@ impl Worker {
             return Ok(());
         }
         let batch = std::mem::take(&mut self.pending);
-        // Includes the negligible time of sends that find space immediately.
+        // Timing every send also counts ordinary send overhead as backpressure.
+        // Try once without timing; only measure the retry after the channel reports full.
+        let batch = match writer.try_send(batch) {
+            Ok(()) => return Ok(()),
+            Err(TrySendError::Closed(_)) => return Err(anyhow!("writer channel closed")),
+            Err(TrySendError::Full(batch)) => batch,
+        };
         let started = Instant::now();
         let result = writer.send_timeout(batch, stall_timeout).await;
         self.totals.writer_blocked += started.elapsed();
@@ -748,4 +757,124 @@ pub fn spawn_workers(
             )
         })
         .unzip()
+}
+
+#[cfg(test)]
+mod writer_wait_tests {
+    use std::time::Duration;
+
+    use crate::core::worker::Worker;
+    use crate::model::{OrderBookId, OutputRecord};
+    use tokio::sync::mpsc;
+
+    fn record(book: &str) -> OutputRecord {
+        OutputRecord::Snapshot {
+            order_book: OrderBookId::from(book),
+            bids: Vec::new(),
+            asks: Vec::new(),
+            received_at: chrono::DateTime::UNIX_EPOCH,
+            exchange_ts: chrono::DateTime::UNIX_EPOCH,
+        }
+    }
+
+    #[tokio::test]
+    async fn immediate_send_counts_no_wait() {
+        let (sender, mut receiver) = mpsc::channel(1);
+        let mut worker = Worker::new(0);
+        worker.pending.push(record("first"));
+        worker
+            .send_pending(&sender, Duration::from_secs(1))
+            .await
+            .unwrap();
+        assert_eq!(worker.totals.writer_blocked, Duration::ZERO);
+        assert_eq!(
+            receiver.recv().await.unwrap()[0].order_book(),
+            &OrderBookId::from("first")
+        );
+        assert!(receiver.try_recv().is_err());
+    }
+
+    #[tokio::test]
+    async fn closed_channel_without_wait_counts_zero() {
+        let (sender, receiver) = mpsc::channel(1);
+        drop(receiver);
+        let mut worker = Worker::new(0);
+        worker.pending.push(record("first"));
+        let error = worker
+            .send_pending(&sender, Duration::from_secs(1))
+            .await
+            .unwrap_err();
+        assert!(error.to_string().contains("writer channel closed"));
+        assert_eq!(worker.totals.writer_blocked, Duration::ZERO);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn full_channel_wait_preserves_order_and_counts_elapsed_time() {
+        let (sender, mut receiver) = mpsc::channel(1);
+        sender.try_send(vec![record("first")]).unwrap();
+        let mut worker = Worker::new(0);
+        worker.pending.push(record("second"));
+        {
+            let waiting = worker.send_pending(&sender, Duration::from_secs(1));
+            tokio::pin!(waiting);
+            assert!(futures_util::poll!(&mut waiting).is_pending());
+            tokio::time::advance(Duration::from_millis(250)).await;
+            assert_eq!(
+                receiver.recv().await.unwrap()[0].order_book(),
+                &OrderBookId::from("first")
+            );
+            waiting.await.unwrap();
+        }
+        assert_eq!(worker.totals.writer_blocked, Duration::from_millis(250));
+        assert_eq!(
+            receiver.recv().await.unwrap()[0].order_book(),
+            &OrderBookId::from("second")
+        );
+        assert!(receiver.try_recv().is_err());
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn timed_out_wait_counts_elapsed_time() {
+        let (sender, _receiver) = mpsc::channel(1);
+        sender.try_send(vec![record("first")]).unwrap();
+        let mut worker = Worker::new(0);
+        worker.pending.push(record("second"));
+        {
+            let waiting = worker.send_pending(&sender, Duration::from_secs(1));
+            tokio::pin!(waiting);
+            assert!(futures_util::poll!(&mut waiting).is_pending());
+            tokio::time::advance(Duration::from_secs(1)).await;
+            assert!(
+                waiting
+                    .await
+                    .unwrap_err()
+                    .to_string()
+                    .contains("writer channel full")
+            );
+        }
+        assert_eq!(worker.totals.writer_blocked, Duration::from_secs(1));
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn closed_channel_during_wait_counts_elapsed_time() {
+        let (sender, receiver) = mpsc::channel(1);
+        sender.try_send(vec![record("first")]).unwrap();
+        let mut worker = Worker::new(0);
+        worker.pending.push(record("second"));
+        {
+            let waiting = worker.send_pending(&sender, Duration::from_secs(1));
+            tokio::pin!(waiting);
+            assert!(futures_util::poll!(&mut waiting).is_pending());
+            tokio::time::advance(Duration::from_millis(250)).await;
+            drop(receiver);
+            assert!(
+                waiting
+                    .await
+                    .unwrap_err()
+                    .to_string()
+                    .contains("writer channel closed")
+            );
+        }
+        assert_eq!(worker.totals.writer_blocked, Duration::from_millis(250));
+    }
 }

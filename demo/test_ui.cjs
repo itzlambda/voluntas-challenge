@@ -257,7 +257,7 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
     assert.deepEqual(legend('checks'), ['4', null, null]);
     assert.deepEqual(legend('gaps'), ['2', '18']);
     assert.deepEqual(legend('writer_busy'), ['75%']);
-    assert.deepEqual(legend('writer'), ['0 s/s'], 'a measured zero stays zero');
+    assert.deepEqual(legend('writer'), ['0 ms waiting / second'], 'a measured zero stays zero');
     assert.deepEqual([...charts.legendValues('internal', defs0.internal, {})], ['20 µs', '1 ms'], 'history fills in when live stats are missing');
     assert.ok(['checks', 'disconnects', 'switches'].every(id => defs0[id].series.every(item => item.tip)), 'technical legend labels explain themselves');
     assert.match(charts.chartNote('connections', history, stats('live')), /^Open: [\d,]+ of [\d,]+ order-book, \d+ of \d+ discovery\.$/);
@@ -270,6 +270,23 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
     assert.deepEqual([...charts.legendValues('writer_busy', defs.writer_busy, stats('live'))], [null]);
     const idle = charts.definitions({series: {writer_busy: [0]}});
     assert.deepEqual([...charts.legendValues('writer_busy', idle.writer_busy, stats('live'))], ['0%'], 'measured idle differs from missing data');
+  });
+
+  await test('writer wait uses milliseconds per second without changing missing values', () => {
+    const source = [0, 0.013, null, 1.5];
+    const def = charts.definitions({series: {writer_blocked: source}}).writer;
+    assert.deepEqual([...def.series[0].values], [0, 13, null, 1500]);
+    assert.deepEqual(source, [0, 0.013, null, 1.5]);
+    assert.equal(def.format(13), '13 ms waiting / second');
+    assert.match(def.format(1500), /ms waiting \/ second$/);
+    assert.equal(def.axis(13), '13 ms');
+    assert.equal(def.format(null), '');
+    assert.equal(def.min0, 100);
+    assert.match(charts.chartNote('writer', {}, {}, [{at: 1793280930, label: 'Writer wait measurement corrected'}]), /2026-10-29 13:35:30 UTC/);
+    assert.match(charts.chartNote('writer', {}, {}), /ordinary send overhead/);
+    assert.deepEqual([...charts.legendValues('writer', def, {})], [def.format(1500)]);
+    const missing = charts.definitions({series: {writer_blocked: [null]}}).writer;
+    assert.deepEqual([...charts.legendValues('writer', missing, {})], [null]);
   });
 
   await test('deployment marker stays unobtrusive and reveals details only near its line', () => {

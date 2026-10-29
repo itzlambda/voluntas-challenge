@@ -29,7 +29,7 @@ Durations are in seconds. Timestamps are Unix seconds (UTC).
 | `collector_receive_to_encode_seconds` | Histogram | none | Our own processing latency, from receipt to SBE encoding. |
 | `collector_worker_busy_seconds_total` | Counter | `worker` | Time each book worker spends handling input. |
 | `collector_writer_busy_seconds_total` | Counter | none | Time the single output writer spends encoding and writing. |
-| `collector_writer_blocked_seconds_total` | Counter | none | Time workers spend waiting because the writer is full. |
+| `collector_writer_blocked_seconds_total` | Counter | none | Elapsed worker send time after the output channel reports full. |
 | `collector_last_successful_scan_timestamp_seconds` | Gauge | none | When the last full market-discovery scan completed. |
 | `collector_oldest_required_component_publication_timestamp_seconds` | Gauge | none | Whether every component is still reporting fresh numbers. |
 
@@ -159,11 +159,15 @@ thread spends converting, encoding, writing, and flushing, including snapshots
 and chunk rotation. A one-minute rate near 1 means the writer has little
 headroom. Disk stalls count as busy time because writes are synchronous.
 
-**`collector_writer_blocked_seconds_total`** sums the time workers wait for
-space in the writer's channel. It shows output backpressure. Because several
-workers can wait at once, it can increase by more than one second per second.
-It also counts the brief time of every send that finds space immediately, so
-it is never exactly zero; read its rate, not whether it moved.
+**`collector_writer_blocked_seconds_total`** sums elapsed send time after the
+output channel reports full, for both the file writer and the stream hub.
+Immediate sends add exactly zero. The timed retry includes scheduler delay;
+capacity can become available immediately after the full-channel result.
+Multiple workers can wait together, so the counter can increase by more than
+one second per second. The API keeps seconds per second; the chart displays
+milliseconds of combined worker wait per second, averaged over one minute.
+Historical samples from the previous every-send timer include ordinary send
+overhead. The corrective restart marker identifies the measurement change.
 
 ### Freshness
 

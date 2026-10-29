@@ -88,8 +88,8 @@
       writer_busy: {format: percent, axis: percentAxis, min0: 0.1, series: [
         {label: 'Writer busy', color: C.green, values: s.writer_busy || []},
       ]},
-      writer: {format: value => isNum(value) ? `${S.sig(value, 2)} s/s` : '', axis: value => S.sig(value, 2), min0: 0.1, series: [
-        {label: 'Blocked worker-seconds', color: C.green, values: s.writer_blocked || []},
+      writer: {format: value => isNum(value) ? `${S.sig(value, 2)} ms waiting / second` : '', axis: value => `${S.sig(value, 2)} ms`, min0: 100, series: [
+        {label: 'Combined worker wait', color: C.green, values: (s.writer_blocked || []).map(value => isNum(value) ? value * 1000 : null)},
       ]},
       exchange: {log: true, min: 1, top: 1000, format: S.duration, series: [
         {label: 'p50', color: C.green, values: s.exchange_p50 || []},
@@ -196,7 +196,12 @@
     return `${marker.label} · ${when}${marker.approx ? ' (approx.)' : ''}${details}`;
   }
 
-  function chartNote(id, history, stats) {
+  function chartNote(id, history, stats, markers = []) {
+    if (id === 'writer') {
+      const marker = markers.find(item => item.label === 'Writer wait measurement corrected');
+      const at = marker ? new Date(marker.at * 1000).toISOString().replace('T', ' ').replace('.000Z', ' UTC') : null;
+      return at ? `Before ${at}, this metric could also include ordinary send overhead. See the event-rate deployment marker; the one-minute window around restart mixes both measurements.` : 'Earlier history includes ordinary send overhead. The measurement change is recorded on the event-rate chart.';
+    }
     if (id === 'updates') return '';
     if (id === 'connections') {
       const ob = S.sockets(stats || {}, 'orderbook');
@@ -358,7 +363,7 @@
         const id = section.dataset.chart;
         if (hover[id] === null || hover[id] === undefined) renderLegend(id, null);
         section.classList.toggle('retained', view.retained);
-        const note = chartNote(id, view.history, view.stats);
+        const note = chartNote(id, view.history, view.stats, view.markers);
         if (note !== null) section.querySelector('[data-note]').textContent = note;
       }
     }
@@ -463,6 +468,7 @@
         const next = deploymentMarkers(state.markers);
         if (JSON.stringify(next) === JSON.stringify(view.markers)) return;
         view.markers = next;
+        renderHeaders();
         const updates = plots.get('updates');
         if (updates) updates.plot.redraw(false, false);
       });

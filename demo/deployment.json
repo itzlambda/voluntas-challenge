@@ -1,9 +1,15 @@
 {
   "schema_version": 1,
-  "in_progress": false,
-  "message": "Deployment complete.",
-  "started_at": 1793282307,
-  "markers": [],
+  "in_progress": true,
+  "message": "Polymarket's exchange is in cancel-only mode, so market data is far below normal. The collector is running normally.",
+  "started_at": 1793296610,
+  "markers": [
+    {
+      "at": 1793296610,
+      "label": "Polymarket outage",
+      "details": "Polymarket put its exchange in cancel-only mode. Trading stopped, so market data fell sharply; the collector kept running normally."
+    }
+  ],
   "windows": [
     {
       "start": 1793277637,
@@ -11,5 +17,9 @@
       "label": "Switched to stream output",
       "details": "Not part of the challenge. Before this band: the file output the challenge asks for. After it: the WebSocket stream we added for the browser. Ignore the band itself; it spans several restarts and fixes."
     }
-  ]
+  ],
+  "link": {
+    "url": "https://status.polymarket.com/",
+    "label": "Polymarket status"
+  }
 }

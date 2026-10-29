@@ -1,5 +1,5 @@
 'use strict';
-// Deployment metadata: a site-wide banner while a deployment is in progress, restart markers and rollout windows for the charts.
+// Deployment metadata: a site-wide banner while a deployment or incident is in progress, restart markers and rollout windows for the charts.
 // Charts subscribe with DemoDeployment.page.subscribe. Requires status.js for polling.
 (function (root) {
   const METADATA_PATH = '/deployment.json';
@@ -11,6 +11,7 @@
   const MAX_MARKERS = 50;
   const MAX_WINDOW_DETAILS = 600;
   const MAX_WINDOWS = 10;
+  const MAX_URL = 300;
   // Plausible Unix seconds only: rejects zero, and millisecond values fail the upper bound.
   const MIN_AT = Date.UTC(2026, 0, 1) / 1000;
   const MAX_AT = Date.UTC(2100, 0, 1) / 1000;
@@ -51,6 +52,19 @@
     return kept.slice(-MAX_WINDOWS);
   }
 
+  /** An optional banner link. Only absolute https URLs are kept; anything else drops the link, not the banner. */
+  function link(value) {
+    if (!value || typeof value !== 'object') return null;
+    const label = clean(value.label, MAX_LABEL);
+    if (!label || typeof value.url !== 'string' || value.url.length > MAX_URL) return null;
+    try {
+      const url = new URL(value.url);
+      return url.protocol === 'https:' ? {url: url.href, label} : null;
+    } catch {
+      return null;
+    }
+  }
+
   /** Parses a metadata body. Returns null for anything that is not schema 1, so callers keep their last good state. */
   function parse(body) {
     if (!body || typeof body !== 'object' || Array.isArray(body) || body.schema_version !== 1) return null;
@@ -63,6 +77,7 @@
       startedAt: isTime(body.started_at) ? body.started_at : null,
       markers: markers(body.markers),
       windows: windows(body.windows),
+      link: link(body.link),
     };
   }
 
@@ -102,14 +117,21 @@
     return started ? `${state.message} Started ${started}.` : state.message;
   }
 
-  /** Shows the top banner only while the last valid metadata says a deployment is in progress. */
+  /** Shows the top banner only while the last valid metadata says a deployment or incident is in progress. */
   function bindBanner(deployment, doc, clock) {
     const element = doc.getElementById('deployment-banner');
     if (!element) return;
     const text = element.querySelector('.deployment-banner-text') || element;
+    const anchor = element.querySelector('.deployment-banner-link');
     deployment.subscribe(state => {
       element.hidden = !state.inProgress;
       text.textContent = state.inProgress ? bannerText(state, clock) : '';
+      if (!anchor) return;
+      const shown = state.inProgress && state.link;
+      anchor.hidden = !shown;
+      anchor.textContent = shown ? state.link.label : '';
+      if (shown) anchor.href = state.link.url;
+      else anchor.removeAttribute('href');
     });
   }
 

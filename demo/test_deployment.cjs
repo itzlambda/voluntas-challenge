@@ -8,7 +8,7 @@ const vm = require('node:vm');
 const DEMO = __dirname;
 
 function load(files) {
-  const context = {console, Date, Math, JSON, Number, Promise, Object, Array, Set, Map, String, Boolean, Error, Symbol};
+  const context = {console, Date, Math, JSON, Number, Promise, Object, Array, Set, Map, String, Boolean, Error, Symbol, URL};
   context.globalThis = context;
   vm.createContext(context);
   for (const file of files) vm.runInContext(fs.readFileSync(path.join(DEMO, file), 'utf8'), context, {filename: file});
@@ -58,7 +58,9 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
 
 function fakeBanner() {
   const text = {textContent: ''};
-  const element = {hidden: true, querySelector: () => text, text};
+  const link = {hidden: true, textContent: '', attributes: {}, set href(value) { this.attributes.href = value; },
+    removeAttribute(name) { delete this.attributes[name]; }};
+  const element = {hidden: true, querySelector: selector => selector === '.deployment-banner-link' ? link : text, text, link};
   return {element, doc: {getElementById: id => id === 'deployment-banner' ? element : null}};
 }
 
@@ -173,6 +175,26 @@ function fakeBanner() {
     assert.equal(element.innerHTML, undefined, 'never written as markup');
   });
 
+  await test('banner link: https only, rendered as text with an href, hidden without a banner', () => {
+    const ok = D.parse(body({link: {url: 'https://status.example.com/incidents', label: ' Status '}})).link;
+    assert.deepEqual({...ok}, {url: 'https://status.example.com/incidents', label: 'Status'});
+    for (const bad of [{url: 'javascript:alert(1)', label: 'x'}, {url: 'http://status.example.com/', label: 'x'},
+      {url: '/relative', label: 'x'}, {url: 'https://status.example.com/', label: ' '}, {url: 7, label: 'x'}, 'https://x.example/']) {
+      assert.equal(D.parse(body({link: bad})).link, null, JSON.stringify(bad));
+    }
+    assert.equal(D.parse(body()).link, null, 'links are optional');
+    const {element, doc} = fakeBanner();
+    const listeners = [];
+    D.bindBanner({subscribe: fn => listeners.push(fn)}, doc, () => null);
+    listeners[0](D.parse(body({in_progress: true, message: 'Upstream incident.', link: {url: 'https://status.example.com/', label: '<b>Status</b>'}})));
+    assert.equal(element.link.hidden, false);
+    assert.equal(element.link.textContent, '<b>Status</b>', 'label is text, never markup');
+    assert.equal(element.link.attributes.href, 'https://status.example.com/');
+    listeners[0](D.parse(body({in_progress: false, link: {url: 'https://status.example.com/', label: 'Status'}})));
+    assert.equal(element.link.hidden, true, 'no link without the banner');
+    assert.equal(element.link.attributes.href, undefined);
+  });
+
   const charts = load(['status.js', 'deployment.js', 'charts.js']).DemoCharts;
   const historical = Date.UTC(2026, 9, 27, 13, 8) / 1000;
 
@@ -253,8 +275,9 @@ function fakeBanner() {
 
   await test('deployed metadata: one rollout window replaces the individual restart markers', () => {
     const state = D.parse(JSON.parse(fs.readFileSync(path.join(DEMO, 'deployment.json'), 'utf8')));
-    assert.ok(state && !state.inProgress);
-    assert.deepEqual([...state.markers], []);
+    assert.ok(state);
+    assert.deepEqual([...state.markers.map(marker => marker.label)], ['Polymarket outage']);
+    assert.equal(state.markers[0].at, Date.UTC(2026, 9, 29, 17, 56, 50) / 1000);
     assert.equal(state.windows.length, 1);
     assert.equal(state.windows[0].start, Date.UTC(2026, 9, 29, 12, 40, 37) / 1000);
     assert.equal(state.windows[0].end, Date.UTC(2026, 9, 29, 14, 8, 48) / 1000);

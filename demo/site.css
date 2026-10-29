@@ -335,12 +335,9 @@ button.num:hover { color: var(--strong); border-color: var(--muted); }
 }
 
 /* Landing page: statement, running stats, then architecture. */
-.intro { max-width: 900px; padding: 28px 0 36px; }
-.intro p { max-width: 60ch; }
-.intro h1 { font-size: 34px; line-height: 1.18; letter-spacing: -0.02em; text-wrap: balance; }
-.intro p { color: var(--muted); font-size: 17px; margin-top: 14px; }
 .page-section { padding-top: 32px; margin-top: 8px; border-top: 1px solid var(--line); }
 .page-section + .page-section { margin-top: 48px; }
+main > .page-section:first-of-type { border-top: 0; margin-top: 0; padding-top: 8px; }
 .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px 32px; flex-wrap: wrap; margin-bottom: 20px; }
 .section-head h2 { font-size: 22px; letter-spacing: -0.01em; }
 .section-lead { max-width: 72ch; color: var(--muted); margin-top: 6px; }
@@ -354,9 +351,6 @@ button.num:hover { color: var(--strong); border-color: var(--muted); }
 .figure-rows .figure { padding: 20px 24px 22px; }
 .figure-rows .figure-value { font-size: 36px; margin-top: 8px; }
 @media (max-width: 640px) {
-  .intro { padding: 16px 0 24px; }
-  .intro h1 { font-size: 26px; }
-  .intro p { font-size: 16px; }
   .page-section { padding-top: 24px; }
   .page-section + .page-section { margin-top: 32px; }
   .section-action { width: 100%; justify-content: center; }

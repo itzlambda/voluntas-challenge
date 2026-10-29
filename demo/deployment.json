@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "in_progress": true,
-  "message": "A redeployment is in progress. We are investigating gaps in the telemetry charts; some values may be unavailable.",
+  "in_progress": false,
+  "message": "Deployment complete. Continuous SBE encoding and latency telemetry are restored.",
   "started_at": 1793280095,
   "markers": [
     {
@@ -12,7 +12,12 @@
     {
       "at": 1793278529,
       "label": "Stream mode enabled",
-      "details": "Collector restarted to stream SBE over WebSocket. File output stopped; encoded output metrics now count subscribed books only."
+      "details": "Collector restarted to stream SBE over WebSocket. File output stopped. Subscriber-dependent encoding was corrected in the later deployment."
+    },
+    {
+      "at": 1793280930,
+      "label": "Continuous SBE encoding restored",
+      "details": "Collector restarted to encode every output record, even without subscribers. Encoding latency and output counters no longer depend on connected clients."
     }
   ]
 }

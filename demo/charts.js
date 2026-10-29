@@ -6,6 +6,7 @@
     green: '#2abc89', blue: '#5ba9e7', light: '#c9c9c9', grey: '#8b9094', dark: '#767d82', miss: '#f05d4d',
     axis: '#8b9094', grid: '#2f3336', gap: 'rgba(139, 144, 148, 0.07)',
     rollout: '#d9a441', rolloutFill: 'rgba(217, 164, 65, 0.09)',
+    incident: '#f05d4d', incidentFill: 'rgba(240, 93, 77, 0.10)',
   };
   const REASON_COLORS = {remote_close: C.green, io_error: C.blue, silence: C.light, decode_error: C.grey,
     protocol_error: C.dark, sequence_gap: C.dark};
@@ -199,7 +200,7 @@
 
   const overlaps = (history, item) => history && isNum(history.start) && isNum(history.end) && item.start <= history.end && history.start <= item.end;
 
-  /** Shades each rollout window in range and draws solid lines at the edges that fall inside the range. */
+  /** Shades each window in range (amber for rollouts, red for incidents) and draws solid lines at the edges that fall inside the range. */
   function drawRolloutWindows(u, history, ratio, windows = []) {
     const visible = windows.filter(item => overlaps(history, item));
     if (!visible.length) return;
@@ -210,10 +211,11 @@
     const bottom = (bbox.top + bbox.height) / ratio;
     ctx.save();
     ctx.scale(ratio, ratio);
-    ctx.fillStyle = C.rolloutFill;
-    ctx.strokeStyle = C.rollout;
     ctx.lineWidth = 1;
     for (const item of visible) {
+      const incident = item.kind === 'incident';
+      ctx.fillStyle = incident ? C.incidentFill : C.rolloutFill;
+      ctx.strokeStyle = incident ? C.incident : C.rollout;
       const a = Math.max(left, u.valToPos(item.start, 'x', true) / ratio);
       const b = Math.min(right, u.valToPos(item.end, 'x', true) / ratio);
       if (b > a) ctx.fillRect(a, top, b - a, bottom - top);
@@ -229,7 +231,7 @@
     ctx.restore();
   }
 
-  /** The rollout window under the cursor, or null. */
+  /** The window under the cursor, or null. */
   function rolloutHovered(u, history, ratio, windows = []) {
     if (!isNum(u.cursor.left) || !isNum(u.cursor.top) || u.cursor.top < 0 || u.cursor.top > u.bbox.height / ratio) return null;
     return windows.find(item => overlaps(history, item)
@@ -237,7 +239,7 @@
   }
 
   // The band already shows when it happened, so the text carries only the context.
-  const rolloutText = item => item.details ? `${item.label}. ${item.details}` : item.label;
+  const rolloutText = item => `${item.details ? `${item.label}. ${item.details}` : item.label}${item.url ? ' Click for details.' : ''}`;
 
   function chartNote(id, history, stats, markers = [], windows = []) {
     if (id === 'writer_busy') {
@@ -315,11 +317,12 @@
             markerTip.setAttribute('role', 'tooltip');
             markerTip.hidden = true;
             u.over.append(markerTip);
-            if (id !== 'updates') return;
-            // A marker with a link opens it, for example an exchange status page.
+            // A marker or window with a link opens it, for example an exchange status page.
             u.over.addEventListener('click', () => {
-              const marker = deploymentHovered(u, view.history, uPlot.pxRatio || win.devicePixelRatio || 1, view.markers);
-              if (marker && marker.url) win.open(marker.url, '_blank', 'noopener,noreferrer');
+              const ratio = uPlot.pxRatio || win.devicePixelRatio || 1;
+              const marker = id === 'updates' && deploymentHovered(u, view.history, ratio, view.markers);
+              const target = marker || rolloutHovered(u, view.history, ratio, view.windows);
+              if (target && target.url) win.open(target.url, '_blank', 'noopener,noreferrer');
             });
           }],
           setData: [() => { if (markerTip) markerTip.hidden = true; }],
@@ -336,7 +339,7 @@
             const hovering = u.over.matches(':hover');
             const marker = hovering && id === 'updates' && deploymentHovered(u, view.history, ratio, view.markers);
             const rollout = hovering && !marker && rolloutHovered(u, view.history, ratio, view.windows);
-            u.over.classList.toggle('marker-link', Boolean(marker && marker.url));
+            u.over.classList.toggle('marker-link', Boolean((marker || rollout || {}).url));
             markerTip.hidden = !marker && !rollout;
             if (!marker && !rollout) return;
             // Metadata text is untrusted: textContent only.

@@ -251,7 +251,16 @@ function fakeBanner() {
       {start: STAGE * 1000, end: STAGE * 1000 + 1, label: 'Milliseconds'}, {start: STAGE, end: STREAM}, null,
     ]})).windows;
     assert.deepEqual(JSON.parse(JSON.stringify(parsed)), [
-      {start: STAGE, end: STREAM, label: 'First', details: 'a'}, {start: STREAM, end: STREAM + 600, label: 'Second', details: 'b'}]);
+      {start: STAGE, end: STREAM, label: 'First', details: 'a', kind: 'rollout', url: null},
+      {start: STREAM, end: STREAM + 600, label: 'Second', details: 'b', kind: 'rollout', url: null}]);
+    const [incident, unknown] = D.parse(body({windows: [
+      {start: STAGE, end: STREAM, label: 'Outage', kind: 'incident', url: 'https://status.example.com/'},
+      {start: STREAM, end: STREAM + 60, label: 'Other', kind: 'weird', url: 'javascript:alert(1)'},
+    ]})).windows;
+    assert.equal(incident.kind, 'incident');
+    assert.equal(incident.url, 'https://status.example.com/');
+    assert.equal(unknown.kind, 'rollout', 'unknown kinds fall back to rollout');
+    assert.equal(unknown.url, null, 'only https links are kept');
   });
 
   await test('rollout windows: shaded with edge lines in range, hover anywhere inside explains it', () => {
@@ -280,18 +289,40 @@ function fakeBanner() {
     assert.equal(charts.rolloutHovered(plot, history, 2, windows), null, 'leaving the plot hides the tooltip');
     assert.equal(charts.rolloutText(windows[0]), 'Switched to stream output. Ignore the band itself.', 'no timestamps: the band shows when');
     assert.equal(charts.rolloutText({...windows[0], details: ''}), 'Switched to stream output');
+    assert.equal(charts.rolloutText({...windows[0], url: 'https://status.example.com/'}),
+      'Switched to stream output. Ignore the band itself. Click for details.');
   });
 
-  await test('deployed metadata: one rollout window replaces the individual restart markers', () => {
-    const state = D.parse(JSON.parse(fs.readFileSync(path.join(DEMO, 'deployment.json'), 'utf8')));
+  await test('incident windows: shaded red, rollouts stay amber', () => {
+    const fills = [];
+    const context = new Proxy({}, {
+      get: (target, name) => name in target ? target[name] : (...args) => { if (name === 'fillRect') fills.push(target.fillStyle); },
+      set: (target, name, value) => { target[name] = value; return true; },
+    });
+    const plot = {ctx: context, bbox: {left: 0, top: 0, width: 1000, height: 100}, valToPos: (at, _axis, canvas) => (at - STAGE) / 10 * (canvas ? 2 : 1)};
+    charts.drawRolloutWindows(plot, {start: STAGE, end: STAGE + 5000}, 2, [
+      {start: STAGE + 100, end: STAGE + 200, label: 'Rollout', kind: 'rollout'},
+      {start: STAGE + 300, end: STAGE + 400, label: 'Outage', kind: 'incident'}]);
+    assert.deepEqual(fills, ['rgba(217, 164, 65, 0.09)', 'rgba(240, 93, 77, 0.10)']);
+  });
+
+  await test('deployed metadata: stream rollout window and the resolved Polymarket outage', () => {
+    const raw = JSON.parse(fs.readFileSync(path.join(DEMO, 'deployment.json'), 'utf8'));
+    const state = D.parse(raw);
     assert.ok(state);
-    assert.deepEqual([...state.markers.map(marker => marker.label)], ['Polymarket outage']);
-    assert.equal(state.markers[0].at, Date.UTC(2026, 9, 29, 17, 56, 50) / 1000);
-    assert.equal(state.markers[0].url, 'https://status.polymarket.com/');
-    assert.equal(state.windows.length, 1);
-    assert.equal(state.windows[0].start, Date.UTC(2026, 9, 29, 12, 40, 37) / 1000);
-    assert.equal(state.windows[0].end, Date.UTC(2026, 9, 29, 14, 8, 48) / 1000);
-    assert.equal(state.windows[0].details, JSON.parse(fs.readFileSync(path.join(DEMO, 'deployment.json'), 'utf8')).windows[0].details, 'details are not truncated');
+    assert.equal(state.inProgress, false, 'the outage is over, so no banner');
+    const began = Date.UTC(2026, 9, 29, 18, 5) / 1000;
+    const resolved = Date.UTC(2026, 9, 29, 19, 5) / 1000;
+    assert.deepEqual([...state.markers.map(marker => [marker.label, marker.at, marker.url])], [
+      ['Polymarket outage began', began, 'https://status.polymarket.com/'],
+      ['Polymarket outage resolved', resolved, 'https://status.polymarket.com/']]);
+    assert.equal(state.windows.length, 2);
+    const [rollout, outage] = state.windows;
+    assert.equal(rollout.start, Date.UTC(2026, 9, 29, 12, 40, 37) / 1000);
+    assert.equal(rollout.end, Date.UTC(2026, 9, 29, 14, 8, 48) / 1000);
+    assert.equal(rollout.kind, 'rollout');
+    assert.equal(rollout.details, raw.windows[0].details, 'details are not truncated');
+    assert.deepEqual([outage.start, outage.end, outage.kind, outage.url], [began, resolved, 'incident', 'https://status.polymarket.com/']);
   });
 
   await test('pages: hidden status banner first, metadata script before charts, no inline markup', () => {

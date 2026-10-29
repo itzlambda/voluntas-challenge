@@ -46,8 +46,9 @@
   }
 
   /**
-   * Valid rollout windows, sorted by start. A window brackets a period whose data should be ignored,
-   * such as several restarts in one rollout. Malformed or overlapping entries are dropped individually.
+   * Valid windows, sorted by start. A rollout window brackets a period whose data should be ignored,
+   * such as several restarts in one rollout; an incident window marks an external outage and may link to
+   * its status page. Malformed or overlapping entries are dropped individually.
    */
   function windows(list) {
     const out = [];
@@ -55,7 +56,8 @@
       if (!item || typeof item !== 'object' || !isTime(item.start) || !isTime(item.end) || item.start >= item.end) continue;
       const label = clean(item.label, MAX_LABEL);
       if (!label) continue;
-      out.push({start: item.start, end: item.end, label, details: clean(item.details, MAX_WINDOW_DETAILS)});
+      out.push({start: item.start, end: item.end, label, details: clean(item.details, MAX_WINDOW_DETAILS),
+        kind: item.kind === 'incident' ? 'incident' : 'rollout', url: httpsUrl(item.url)});
     }
     out.sort((a, b) => a.start - b.start);
     const kept = [];

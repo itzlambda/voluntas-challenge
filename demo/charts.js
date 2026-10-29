@@ -5,6 +5,7 @@
   const C = {
     green: '#2abc89', blue: '#5ba9e7', light: '#c9c9c9', grey: '#8b9094', dark: '#767d82', miss: '#f05d4d',
     axis: '#8b9094', grid: '#2f3336', gap: 'rgba(139, 144, 148, 0.07)',
+    rollout: '#d9a441', rolloutFill: 'rgba(217, 164, 65, 0.09)',
   };
   const REASON_COLORS = {remote_close: C.green, io_error: C.blue, silence: C.light, decode_error: C.grey,
     protocol_error: C.dark, sequence_gap: C.dark};
@@ -196,11 +197,57 @@
     return `${marker.label} · ${when}${marker.approx ? ' (approx.)' : ''}${details}`;
   }
 
-  function chartNote(id, history, stats, markers = []) {
-    if (id === 'writer') {
-      const marker = markers.find(item => item.label === 'Writer wait measurement corrected');
-      const at = marker ? new Date(marker.at * 1000).toISOString().replace('T', ' ').replace('.000Z', ' UTC') : null;
-      return at ? `Before ${at}, this metric could also include ordinary send overhead. See the event-rate deployment marker; the one-minute window around restart mixes both measurements.` : 'Earlier history includes ordinary send overhead. The measurement change is recorded on the event-rate chart.';
+  const overlaps = (history, item) => history && isNum(history.start) && isNum(history.end) && item.start <= history.end && history.start <= item.end;
+
+  /** Shades each rollout window in range and draws solid lines at the edges that fall inside the range. */
+  function drawRolloutWindows(u, history, ratio, windows = []) {
+    const visible = windows.filter(item => overlaps(history, item));
+    if (!visible.length) return;
+    const {ctx, bbox} = u;
+    const left = bbox.left / ratio;
+    const right = (bbox.left + bbox.width) / ratio;
+    const top = bbox.top / ratio;
+    const bottom = (bbox.top + bbox.height) / ratio;
+    ctx.save();
+    ctx.scale(ratio, ratio);
+    ctx.fillStyle = C.rolloutFill;
+    ctx.strokeStyle = C.rollout;
+    ctx.lineWidth = 1;
+    for (const item of visible) {
+      const a = Math.max(left, u.valToPos(item.start, 'x', true) / ratio);
+      const b = Math.min(right, u.valToPos(item.end, 'x', true) / ratio);
+      if (b > a) ctx.fillRect(a, top, b - a, bottom - top);
+      for (const at of [item.start, item.end]) {
+        if (!inRange(history, at)) continue;
+        const x = u.valToPos(at, 'x', true) / ratio;
+        ctx.beginPath();
+        ctx.moveTo(x, top);
+        ctx.lineTo(x, bottom);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  /** The rollout window under the cursor, or null. */
+  function rolloutHovered(u, history, ratio, windows = []) {
+    if (!isNum(u.cursor.left) || !isNum(u.cursor.top) || u.cursor.top < 0 || u.cursor.top > u.bbox.height / ratio) return null;
+    return windows.find(item => overlaps(history, item)
+      && u.valToPos(item.start, 'x') <= u.cursor.left && u.cursor.left <= u.valToPos(item.end, 'x')) || null;
+  }
+
+  const clockTime = at => new Date(at * 1000).toLocaleString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short'});
+  const utcTime = at => new Date(at * 1000).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+
+  function rolloutText(item) {
+    const end = new Date(item.end * 1000).toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit', hourCycle: 'h23'});
+    return `${item.label} · ${clockTime(item.start)} to ${end}${item.details ? `: ${item.details}` : ''}`;
+  }
+
+  function chartNote(id, history, stats, markers = [], windows = []) {
+    if (id === 'writer_busy') {
+      const item = windows.find(window => window.label.startsWith('Stream output rollout'));
+      return item ? `Not comparable across the shaded rollout. Before ${utcTime(item.start)} the writer wrote the challenge's SBE file; after ${utcTime(item.end)} the stream hub encodes the same records and routes them to WebSocket clients, with no file writes.` : '';
     }
     if (id === 'updates') return '';
     if (id === 'connections') {
@@ -221,7 +268,7 @@
   // Rendering.
   function init(doc, win, uPlot, status) {
     const plots = new Map();
-    const view = {range: '15m', history: null, stats: null, retained: false, state: null, markers: deploymentMarkers()};
+    const view = {range: '15m', history: null, stats: null, retained: false, state: null, markers: deploymentMarkers(), windows: []};
     const sections = [...doc.querySelectorAll('[data-chart]')];
     const historyStatus = doc.getElementById('history-status');
     let generation = 0;
@@ -268,7 +315,6 @@
         series: [{}, ...series],
         hooks: {
           ready: [u => {
-            if (id !== 'updates') return;
             markerTip = doc.createElement('div');
             markerTip.className = 'deployment-marker-tip';
             markerTip.setAttribute('role', 'tooltip');
@@ -277,16 +323,22 @@
           }],
           setData: [() => { if (markerTip) markerTip.hidden = true; }],
           drawAxes: [u => shadeGaps(u, id)],
-          draw: [u => { if (id === 'updates') drawDeploymentMarker(u, view.history, uPlot.pxRatio || win.devicePixelRatio || 1, view.markers); }],
+          draw: [u => {
+            const ratio = uPlot.pxRatio || win.devicePixelRatio || 1;
+            drawRolloutWindows(u, view.history, ratio, view.windows);
+            if (id === 'updates') drawDeploymentMarker(u, view.history, ratio, view.markers);
+          }],
           setCursor: [u => {
             renderLegend(id, u.cursor.idx);
             if (!markerTip) return;
-            const marker = u.over.matches(':hover')
-              && deploymentHovered(u, view.history, uPlot.pxRatio || win.devicePixelRatio || 1, view.markers);
-            markerTip.hidden = !marker;
-            if (!marker) return;
+            const ratio = uPlot.pxRatio || win.devicePixelRatio || 1;
+            const hovering = u.over.matches(':hover');
+            const marker = hovering && id === 'updates' && deploymentHovered(u, view.history, ratio, view.markers);
+            const rollout = hovering && !marker && rolloutHovered(u, view.history, ratio, view.windows);
+            markerTip.hidden = !marker && !rollout;
+            if (!marker && !rollout) return;
             // Metadata text is untrusted: textContent only.
-            const text = deploymentText(marker);
+            const text = marker ? deploymentText(marker) : rolloutText(rollout);
             if (markerTip.textContent !== text) markerTip.textContent = text;
             markerTip.style.left = `${Math.max(4, Math.min(u.cursor.left + 12, u.over.clientWidth - markerTip.offsetWidth - 4))}px`;
           }],
@@ -363,7 +415,7 @@
         const id = section.dataset.chart;
         if (hover[id] === null || hover[id] === undefined) renderLegend(id, null);
         section.classList.toggle('retained', view.retained);
-        const note = chartNote(id, view.history, view.stats, view.markers);
+        const note = chartNote(id, view.history, view.stats, view.markers, view.windows);
         if (note !== null) section.querySelector('[data-note]').textContent = note;
       }
     }
@@ -466,11 +518,12 @@
     if (deployments) {
       deployments.subscribe(state => {
         const next = deploymentMarkers(state.markers);
-        if (JSON.stringify(next) === JSON.stringify(view.markers)) return;
+        const windows = state.windows || [];
+        if (JSON.stringify(next) === JSON.stringify(view.markers) && JSON.stringify(windows) === JSON.stringify(view.windows)) return;
         view.markers = next;
+        view.windows = windows;
         renderHeaders();
-        const updates = plots.get('updates');
-        if (updates) updates.plot.redraw(false, false);
+        for (const {plot} of plots.values()) plot.redraw(false, false);
       });
     }
 
@@ -486,7 +539,8 @@
     return view;
   }
 
-  root.DemoCharts = {stack, gaps, diff, definitions, legendValues, chartNote, deploymentMarkers, deploymentInRange, drawDeploymentMarker, deploymentHovered, deploymentText};
+  root.DemoCharts = {stack, gaps, diff, definitions, legendValues, chartNote, deploymentMarkers, deploymentInRange, drawDeploymentMarker, deploymentHovered, deploymentText,
+    drawRolloutWindows, rolloutHovered, rolloutText};
   if (root.document && root.document.getElementById && root.document.getElementById('charts') && root.uPlot && S.page) {
     root.DemoCharts.page = init(root.document, root, root.uPlot, S.page);
   }

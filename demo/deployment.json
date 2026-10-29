@@ -1,28 +1,15 @@
 {
   "schema_version": 1,
   "in_progress": false,
-  "message": "Deployment complete. Writer wait now measures full-channel waits and is displayed in milliseconds per second.",
+  "message": "Deployment complete.",
   "started_at": 1793282307,
-  "markers": [
+  "markers": [],
+  "windows": [
     {
-      "at": 1793277637,
-      "label": "Socket telemetry deployment",
-      "details": "Collector restarted with per-socket telemetry. Books and subscriptions rebuilt after restart."
-    },
-    {
-      "at": 1793278529,
-      "label": "Stream mode enabled",
-      "details": "Collector restarted to stream SBE over WebSocket. File output stopped. Subscriber-dependent encoding was corrected in the later deployment."
-    },
-    {
-      "at": 1793280930,
-      "label": "Continuous SBE encoding restored",
-      "details": "Collector restarted to encode every output record, even without subscribers. Encoding latency and output counters no longer depend on connected clients."
-    },
-    {
-      "at": 1793282928,
-      "label": "Writer wait measurement corrected",
-      "details": "Collector restarted to count wait only after the output channel reports full. Earlier samples may include ordinary send overhead. The chart now displays milliseconds waiting per second."
+      "start": 1793277637,
+      "end": 1793282928,
+      "label": "Stream output rollout, outside the challenge",
+      "details": "The challenge output is SBE written to a file. Afterwards we added an optional WebSocket stream output for the same SBE records; only the output step changed. Before this window: the challenge's file output. After it: stream output, which may differ slightly. Inside it the collector restarted four times (12:40, 12:55, 13:35 and 14:08 UTC) while stream mode was enabled and two measurement errors were fixed, so ignore this period."
     }
   ]
 }

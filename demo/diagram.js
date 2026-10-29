@@ -100,8 +100,9 @@
         ['Runs as', 'A plain OS thread, because file writes block'],
         ['Timestamps', 'Time inside the collector ends when a level update finishes encoding'],
         ['Why', 'I originally planned to move encoding to the book workers. That required changes to the supplied encoding path, so I kept it unchanged. Benchmark a single book worker before retaining the pool or parallelizing encoding.'],
+        ['Stream mode', 'Not part of the challenge. Since 29 October this demo runs with --output-mode stream: a hub task replaces this thread, encodes the same records with the same helpers, and sends the bytes over WebSocket instead of to a file. Nothing upstream changes.'],
       ],
-      code: ['src/core/writer.rs'],
+      code: ['src/core/writer.rs', 'src/core/stream.rs'],
     },
     output: {
       title: 'books.sbe',
@@ -138,8 +139,8 @@
       text: 'The worker applies each copy to that source\'s book only. Only the publishing copy produces output records; the standby copy stays current privately.',
       time: 'No new timestamp. The records carry the receive time and monotonic instant.', code: ['src/core/worker.rs']},
     {title: 'The writer encodes it', lit: ['writer', 'output'], link: 7,
-      text: 'The writer encodes each record into SBE. That ends time inside the collector. The bytes reach the file later, when the 64 MiB chunk is written.',
-      time: 'Encoding complete: time inside the collector is measured here', code: ['src/core/writer.rs']},
+      text: 'The writer encodes each record into SBE. That ends time inside the collector. The bytes reach the file later, when the 64 MiB chunk is written. This is the only step stream mode changes: outside the challenge, the live demo now sends the same SBE bytes over WebSocket instead of writing the file.',
+      time: 'Encoding complete: time inside the collector is measured here', code: ['src/core/writer.rs', 'src/core/stream.rs']},
   ];
 
   const EXAMPLE = `<p class="example">Condition ID <code>0x233e…703f6406</code>. Low 64 bits <code>0x62aefdf0703f6406</code>. With four workers this is the last hex digit, 6, and 6 mod 4 = 2, so both outcome books go to <code>W2</code>.</p>`;

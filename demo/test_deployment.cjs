@@ -209,6 +209,57 @@ function fakeBanner() {
     assert.doesNotMatch(charts.deploymentText(markers[2]), /: $/, 'no dangling colon without details');
   });
 
+  await test('rollout windows: valid, sorted, non-overlapping, malformed entries dropped', () => {
+    assert.equal(D.parse(body({windows: {}})), null, 'windows must be an array');
+    assert.deepEqual([...D.parse(body()).windows], [], 'windows are optional');
+    const parsed = D.parse(body({windows: [
+      {start: STREAM, end: STREAM + 600, label: '  Second  ', details: 'b'},
+      {start: STAGE, end: STREAM, label: 'First', details: ' a '},
+      {start: STAGE + 60, end: STAGE + 120, label: 'Overlaps first', details: ''},
+      {start: STAGE, end: STAGE, label: 'Empty'}, {start: STAGE, end: STAGE - 1, label: 'Reversed'},
+      {start: STAGE * 1000, end: STAGE * 1000 + 1, label: 'Milliseconds'}, {start: STAGE, end: STREAM}, null,
+    ]})).windows;
+    assert.deepEqual(JSON.parse(JSON.stringify(parsed)), [
+      {start: STAGE, end: STREAM, label: 'First', details: 'a'}, {start: STREAM, end: STREAM + 600, label: 'Second', details: 'b'}]);
+  });
+
+  await test('rollout windows: shaded with edge lines in range, hover anywhere inside explains it', () => {
+    const windows = [{start: STAGE, end: STREAM, label: 'Stream output rollout, outside the challenge', details: 'Ignore this period.'}];
+    const calls = [];
+    const context = new Proxy({}, {get: (_, name) => (...args) => { calls.push([name, ...args]); }});
+    const pos = at => at === STAGE ? 200 : at === STREAM ? 500 : at < STAGE ? 50 : 650;
+    const plot = {ctx: context, bbox: {left: 100, top: 20, width: 1200, height: 360}, valToPos: (at, _axis, canvas) => canvas ? pos(at) * 2 : pos(at)};
+    charts.drawRolloutWindows(plot, {start: STAGE - 60, end: STREAM + 60}, 2, windows);
+    assert.deepEqual(calls.filter(call => call[0] === 'fillRect').map(call => call.slice(1)), [[200, 10, 300, 180]]);
+    assert.equal(calls.filter(call => call[0] === 'stroke').length, 2, 'start and end lines');
+    assert.ok(!calls.some(call => call[0] === 'fillText'), 'no permanent label covers the data');
+    calls.length = 0;
+    charts.drawRolloutWindows(plot, {start: STAGE + 60, end: STREAM + 60}, 2, windows);
+    assert.equal(calls.filter(call => call[0] === 'stroke').length, 1, 'only the edge inside the range is drawn');
+    assert.equal(calls.filter(call => call[0] === 'fillRect').length, 1, 'the window is still shaded');
+    calls.length = 0;
+    charts.drawRolloutWindows(plot, {start: STREAM + 1, end: STREAM + 900}, 2, windows);
+    assert.equal(calls.length, 0, 'nothing drawn for unrelated history');
+    const history = {start: STAGE - 60, end: STREAM + 60};
+    plot.cursor = {left: 350, top: 50};
+    assert.equal(charts.rolloutHovered(plot, history, 2, windows).label, windows[0].label);
+    plot.cursor.left = 520;
+    assert.equal(charts.rolloutHovered(plot, history, 2, windows), null);
+    plot.cursor = {left: 350, top: -1};
+    assert.equal(charts.rolloutHovered(plot, history, 2, windows), null, 'leaving the plot hides the tooltip');
+    assert.match(charts.rolloutText(windows[0]), /^Stream output rollout, outside the challenge · .+ to \d\d:\d\d: Ignore this period\.$/);
+  });
+
+  await test('deployed metadata: one rollout window replaces the individual restart markers', () => {
+    const state = D.parse(JSON.parse(fs.readFileSync(path.join(DEMO, 'deployment.json'), 'utf8')));
+    assert.ok(state && !state.inProgress);
+    assert.deepEqual([...state.markers], []);
+    assert.equal(state.windows.length, 1);
+    assert.equal(state.windows[0].start, Date.UTC(2026, 9, 29, 12, 40, 37) / 1000);
+    assert.equal(state.windows[0].end, Date.UTC(2026, 9, 29, 14, 8, 48) / 1000);
+    assert.equal(state.windows[0].details, JSON.parse(fs.readFileSync(path.join(DEMO, 'deployment.json'), 'utf8')).windows[0].details, 'details are not truncated');
+  });
+
   await test('pages: hidden status banner first, metadata script before charts, no inline markup', () => {
     for (const file of ['index.html', 'live.html']) {
       const raw = fs.readFileSync(path.join(DEMO, file), 'utf8');

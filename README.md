@@ -11,7 +11,8 @@ The collector:
 - spreads about 250,000 markets across many WebSockets and keeps both outcome
   books for each market;
 - writes every price-level change, plus a full snapshot of each book every
-  60 seconds, as SBE to stdout using the supplied encoding helpers;
+  60 seconds, as SBE to stdout using the supplied encoding helpers (or,
+  [outside the challenge](#beyond-the-challenge-stream-output), over WebSocket);
 - subscribes every market on two independent connections and switches to the
   backup, with replacement snapshots, when a connection fails;
 - exposes live Prometheus metrics, with a small dashboard to view them.
@@ -68,6 +69,34 @@ candidates is a contained change, not a redesign. The remaining work is
 matching the same update across feeds, since Polymarket timestamps and hashes
 are not unique, plus a promotion policy. This and the other latency ideas are
 in [future improvements](docs/FUTURE_IMPROVEMENTS.md#latency-extension-4).
+
+## Beyond the challenge: stream output
+
+The challenge asks for SBE written to a file, and that remains the default.
+After completing it, we added an optional `--output-mode stream` that sends the
+same SBE records over WebSocket so a browser can watch books live. Only the
+output step changes (step 7, "The writer encodes it", in the dashboard's
+architecture diagram): a hub task replaces the writer thread and encodes the
+same records with the same supplied helpers. Discovery, sockets, routing,
+workers, and books are unchanged. See [stream mode](docs/ARCHITECTURE.md#stream-mode).
+
+The public demo switched to stream mode on 29 October 2026. Its charts shade
+the rollout window from 12:40:37 to 14:08:48 UTC:
+
+- **Before the window:** the challenge configuration, writing the SBE file. Use
+  this period to evaluate the challenge submission. The last file stopped
+  growing at 12:55:29 UTC and was preserved.
+- **Inside the window:** ignore the data. The collector restarted four times,
+  and two measurement errors were found and fixed. From 12:55 to 13:35 UTC the
+  hub skipped encoding when no client was subscribed. From 12:40 to 14:08 UTC
+  writer wait also counted ordinary send overhead.
+- **After the window:** stream output.
+
+Every metric keeps its name and meaning in both modes, with one exception.
+Writer busy time measures different work: file writes and flushes before the
+window, routing to WebSocket clients after it. It cannot be compared across the
+window. Latency, throughput, and writer wait can be compared; small differences
+are expected.
 
 ## Build
 

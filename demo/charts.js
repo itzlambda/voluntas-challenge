@@ -145,7 +145,7 @@
     for (const marker of extra || []) {
       if (!marker || !isNum(marker.at) || seen.has(marker.at)) continue;
       seen.add(marker.at);
-      out.push({at: marker.at, label: String(marker.label || 'Deployment'), details: String(marker.details || ''), approx: false});
+      out.push({at: marker.at, label: String(marker.label || 'Deployment'), details: String(marker.details || ''), approx: false, url: marker.url || null});
     }
     return out.sort((a, b) => a.at - b.at);
   }
@@ -194,7 +194,7 @@
     const when = new Date(marker.at * 1000).toLocaleString(undefined, {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
       ...(marker.approx ? {} : {second: '2-digit'}), timeZoneName: 'short'});
     const details = marker.details ? `: ${marker.details}` : '';
-    return `${marker.label} · ${when}${marker.approx ? ' (approx.)' : ''}${details}`;
+    return `${marker.label} · ${when}${marker.approx ? ' (approx.)' : ''}${details}${marker.url ? ' Click for details.' : ''}`;
   }
 
   const overlaps = (history, item) => history && isNum(history.start) && isNum(history.end) && item.start <= history.end && history.start <= item.end;
@@ -315,6 +315,12 @@
             markerTip.setAttribute('role', 'tooltip');
             markerTip.hidden = true;
             u.over.append(markerTip);
+            if (id !== 'updates') return;
+            // A marker with a link opens it, for example an exchange status page.
+            u.over.addEventListener('click', () => {
+              const marker = deploymentHovered(u, view.history, uPlot.pxRatio || win.devicePixelRatio || 1, view.markers);
+              if (marker && marker.url) win.open(marker.url, '_blank', 'noopener,noreferrer');
+            });
           }],
           setData: [() => { if (markerTip) markerTip.hidden = true; }],
           drawAxes: [u => shadeGaps(u, id)],
@@ -330,6 +336,7 @@
             const hovering = u.over.matches(':hover');
             const marker = hovering && id === 'updates' && deploymentHovered(u, view.history, ratio, view.markers);
             const rollout = hovering && !marker && rolloutHovered(u, view.history, ratio, view.windows);
+            u.over.classList.toggle('marker-link', Boolean(marker && marker.url));
             markerTip.hidden = !marker && !rollout;
             if (!marker && !rollout) return;
             // Metadata text is untrusted: textContent only.

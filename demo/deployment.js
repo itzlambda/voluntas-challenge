@@ -20,6 +20,17 @@
   const isTime = value => isNumber(value) && value >= MIN_AT && value < MAX_AT;
   const clean = (value, max) => typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, max) : '';
 
+  /** An absolute https URL, normalized, or null. */
+  function httpsUrl(value) {
+    if (typeof value !== 'string' || value.length > MAX_URL) return null;
+    try {
+      const url = new URL(value);
+      return url.protocol === 'https:' ? url.href : null;
+    } catch {
+      return null;
+    }
+  }
+
   /** Valid markers, sorted by time, one per instant. Malformed entries are dropped individually. */
   function markers(list) {
     const seen = new Set();
@@ -29,7 +40,7 @@
       const label = clean(item.label, MAX_LABEL);
       if (!label || seen.has(item.at)) continue;
       seen.add(item.at);
-      out.push({at: item.at, label, details: clean(item.details, MAX_DETAILS)});
+      out.push({at: item.at, label, details: clean(item.details, MAX_DETAILS), url: httpsUrl(item.url)});
     }
     return out.sort((a, b) => a.at - b.at).slice(-MAX_MARKERS);
   }
@@ -56,13 +67,8 @@
   function link(value) {
     if (!value || typeof value !== 'object') return null;
     const label = clean(value.label, MAX_LABEL);
-    if (!label || typeof value.url !== 'string' || value.url.length > MAX_URL) return null;
-    try {
-      const url = new URL(value.url);
-      return url.protocol === 'https:' ? {url: url.href, label} : null;
-    } catch {
-      return null;
-    }
+    const url = httpsUrl(value.url);
+    return label && url ? {url, label} : null;
   }
 
   /** Parses a metadata body. Returns null for anything that is not schema 1, so callers keep their last good state. */

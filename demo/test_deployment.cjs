@@ -95,6 +95,11 @@ function fakeBanner() {
     ]})).markers;
     assert.deepEqual([...parsed.map(m => m.label)], ['File telemetry stage', 'No details', 'Stream activation']);
     assert.equal(parsed[1].details, '');
+    assert.equal(parsed[1].url, null, 'links are optional');
+    const linked = D.parse(body({markers: [{at: STAGE, label: 'Exchange outage', url: 'https://status.example.com/'},
+      {at: STREAM, label: 'Bad link', url: 'javascript:alert(1)'}]})).markers;
+    assert.equal(linked[0].url, 'https://status.example.com/');
+    assert.equal(linked[1].url, null, 'a bad link drops the link, not the marker');
   });
 
   await test('polling: immediate fetch, normal interval, failures keep the banner and back off', async () => {
@@ -229,6 +234,10 @@ function fakeBanner() {
     assert.doesNotMatch(text, /approx/, 'metadata markers are exact');
     assert.match(charts.deploymentText(markers[0]), /\(approx\.\): service restarted/);
     assert.doesNotMatch(charts.deploymentText(markers[2]), /: $/, 'no dangling colon without details');
+    assert.doesNotMatch(text, /Click/, 'no click hint without a link');
+    const [, linked] = charts.deploymentMarkers([{at: STAGE, label: 'Exchange outage', details: 'Trading stopped.', url: 'https://status.example.com/'}]);
+    assert.equal(linked.url, 'https://status.example.com/');
+    assert.match(charts.deploymentText(linked), /Trading stopped\. Click for details\.$/);
   });
 
   await test('rollout windows: valid, sorted, non-overlapping, malformed entries dropped', () => {
@@ -278,6 +287,7 @@ function fakeBanner() {
     assert.ok(state);
     assert.deepEqual([...state.markers.map(marker => marker.label)], ['Polymarket outage']);
     assert.equal(state.markers[0].at, Date.UTC(2026, 9, 29, 17, 56, 50) / 1000);
+    assert.equal(state.markers[0].url, 'https://status.polymarket.com/');
     assert.equal(state.windows.length, 1);
     assert.equal(state.windows[0].start, Date.UTC(2026, 9, 29, 12, 40, 37) / 1000);
     assert.equal(state.windows[0].end, Date.UTC(2026, 9, 29, 14, 8, 48) / 1000);

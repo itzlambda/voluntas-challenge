@@ -154,16 +154,18 @@ button.num:hover { color: var(--strong); border-color: var(--muted); }
 .rules li { border: 1px solid var(--line); background: var(--bg); padding: 8px 12px; font-size: 14px; border-radius: var(--radius); }
 
 /* Live */
+.u-over.marker-link { cursor: pointer; }
 .deployment-marker-tip { position: absolute; top: 8px; max-width: min(300px, calc(100% - 8px)); box-sizing: border-box; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); color: var(--text); font: 12px/1.5 system-ui, sans-serif; white-space: normal; pointer-events: none; z-index: 20; }
 .toolbar { display: flex; align-items: center; gap: 12px 20px; flex-wrap: wrap; margin-bottom: var(--gap); }
 .range { display: inline-flex; border: 1px solid var(--line); border-radius: var(--radius); }
 .range button { font: inherit; font-size: 14px; background: transparent; color: var(--text); border: 0; border-left: 1px solid var(--line); padding: 6px 16px; cursor: pointer; min-height: 34px; }
 .range button:first-child { border-left: 0; }
 .range button[aria-pressed="true"] { color: var(--green); background: #1f2c27; box-shadow: inset 0 0 0 1px var(--green); }
-/* Six columns: the two latency charts share a row, the others sit three per row. */
+/* Six columns: event rate across the top, the two latency charts share a row, the others sit three per row. */
 .charts { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap); }
 .chart { padding: 12px 16px 10px; min-width: 0; grid-column: span 2; }
-.chart.big { grid-column: span 3; }
+.chart.big, .chart.half { grid-column: span 3; }
+.charts .chart.wide { grid-column: 1 / -1; }
 .chart-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-bottom: 6px; }
 .chart-head h2 { font-size: 15px; }
 /* Legend below each plot. A fixed grid with unwrapped items keeps the card height steady while values change on hover. */
@@ -215,7 +217,7 @@ button.num:hover { color: var(--strong); border-color: var(--muted); }
   .links a { flex: 1 1 240px; border-top: 0; border-left: 1px solid var(--line); }
   .links a:first-child { border-left: 0; }
   .charts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .chart, .chart.big { grid-column: span 1; }
+  .chart, .chart.big, .chart.half { grid-column: span 1; }
   .architecture { grid-template-columns: minmax(0, 1fr) 340px; }
   .rules ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tall { grid-template-columns: 28px minmax(0, 1fr) 28px; }
@@ -243,7 +245,7 @@ button.num:hover { color: var(--strong); border-color: var(--muted); }
   main { padding: 14px 16px 40px; }
   .site-footer { padding: 16px; }
   .charts { grid-template-columns: minmax(0, 1fr); }
-  .chart, .chart.big { grid-column: span 1; }
+  .chart, .chart.big, .chart.half { grid-column: span 1; }
   .figure { padding: 14px 14px 16px; }
   .figure-value { font-size: 24px; }
   .figures.latency { grid-template-columns: minmax(0, 1fr); }

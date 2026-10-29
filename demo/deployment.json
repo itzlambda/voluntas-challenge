@@ -7,7 +7,8 @@
     {
       "at": 1793296610,
       "label": "Polymarket outage",
-      "details": "Polymarket put its exchange in cancel-only mode. Trading stopped, so market data fell sharply; the collector kept running normally."
+      "details": "Polymarket's exchange went cancel-only and trading stopped. The collector kept running.",
+      "url": "https://status.polymarket.com/"
     }
   ],
   "windows": [

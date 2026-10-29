@@ -39,6 +39,19 @@
     <p class="small muted" id="history-status" aria-live="polite">Loading history</p>
   </div>
   <div class="charts" id="charts">
+    <section class="panel chart big wide" data-chart="updates" aria-labelledby="h-updates">
+      <div class="chart-head">
+        <h2 id="h-updates"><button class="chart-help" type="button" aria-describedby="help-updates" aria-expanded="false">Book updates per second</button></h2>
+        <div class="chart-tooltip" id="help-updates" role="tooltip" popover="auto">
+          <p>Encoded price-level records per second over one minute, from the latency histogram's count. In stream mode, all output records are encoded and counted, including when no clients are subscribed. Messages received counts decoded data events on both pools, so each exchange message is counted about twice. Heartbeats are excluded.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_receive_to_encode_seconds</code>, <code>collector_events_total</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Book updates per second and messages received per second, with a new deployment marker when its approximate time is in view" aria-describedby="deployment-note"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note id="deployment-note"></p>
+    </section>
     <section class="panel chart big" data-chart="internal" aria-labelledby="h-internal">
       <div class="chart-head">
         <h2 id="h-internal"><button class="chart-help" type="button" aria-describedby="help-internal" aria-expanded="false">Time inside the collector</button></h2>
@@ -70,19 +83,6 @@
       <div class="legend" data-legend></div>
       <p class="chart-note" data-note>Log scale.</p>
     </section>
-    <section class="panel chart" data-chart="updates" aria-labelledby="h-updates">
-      <div class="chart-head">
-        <h2 id="h-updates"><button class="chart-help" type="button" aria-describedby="help-updates" aria-expanded="false">Book updates per second</button></h2>
-        <div class="chart-tooltip" id="help-updates" role="tooltip" popover="auto">
-          <p>Encoded price-level records per second over one minute, from the latency histogram's count. In stream mode, all output records are encoded and counted, including when no clients are subscribed. Messages received counts decoded data events on both pools, so each exchange message is counted about twice. Heartbeats are excluded.</p>
-          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
-          <p class="small muted">Metrics: <code>collector_receive_to_encode_seconds</code>, <code>collector_events_total</code>.</p>
-        </div>
-      </div>
-      <div class="plot" data-plot role="img" aria-label="Book updates per second and messages received per second, with a new deployment marker when its approximate time is in view" aria-describedby="deployment-note"></div>
-      <div class="legend" data-legend></div>
-      <p class="chart-note" data-note id="deployment-note"></p>
-    </section>
     <section class="panel chart" data-chart="gaps" aria-labelledby="h-gaps">
       <div class="chart-head">
         <h2 id="h-gaps"><button class="chart-help" type="button" aria-describedby="help-gaps" aria-expanded="false">Markets without a book or standby</button></h2>
@@ -94,6 +94,19 @@
         </div>
       </div>
       <div class="plot" data-plot role="img" aria-label="Markets without a current book and markets without a ready standby"></div>
+      <div class="legend" data-legend></div>
+      <p class="chart-note" data-note></p>
+    </section>
+    <section class="panel chart" data-chart="connections" aria-labelledby="h-connections">
+      <div class="chart-head">
+        <h2 id="h-connections"><button class="chart-help" type="button" aria-describedby="help-connections" aria-expanded="false">Sockets not open</button></h2>
+        <div class="chart-tooltip" id="help-connections" role="tooltip" popover="auto">
+          <p>Expected sockets minus open sockets, for order-book and discovery connections. Reconnecting sockets count as expected.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_connections</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Expected sockets that are not open, order-book and discovery"></div>
       <div class="legend" data-legend></div>
       <p class="chart-note" data-note></p>
     </section>
@@ -123,6 +136,18 @@
       <div class="legend" data-legend></div>
       <p class="chart-note" data-note></p>
     </section>
+    <section class="panel chart" data-chart="checks" aria-labelledby="h-checks">
+      <div class="chart-head">
+        <h2 id="h-checks"><button class="chart-help" type="button" aria-describedby="help-checks" aria-expanded="false">Full books out of order from Polymarket</button></h2>
+        <div class="chart-tooltip" id="help-checks" role="tooltip" popover="auto">
+          <p>Full books Polymarket sent out of order with its own price changes. Mismatched counts accepted full books differing from the book built from that source's updates. Skipped as older counts full books older than price changes already applied. Decode errors counts messages that could not be decoded. Hover or focus a legend label for more detail.</p>
+          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
+          <p class="small muted">Metrics: <code>collector_book_mismatches_total</code>, <code>collector_older_full_books_skipped_total</code>, <code>collector_decode_errors_total</code>.</p>
+        </div>
+      </div>
+      <div class="plot" data-plot role="img" aria-label="Full books from Polymarket that differed from the book built from its updates, older full books skipped, and decode errors per interval"></div>
+      <div class="legend" data-legend></div>
+    </section>
     <section class="panel chart" data-chart="workers" aria-labelledby="h-workers">
       <div class="chart-head">
         <h2 id="h-workers"><button class="chart-help" type="button" aria-describedby="help-workers" aria-expanded="false">Worker busy time</button></h2>
@@ -136,7 +161,7 @@
       <div class="legend" data-legend></div>
       <p class="chart-note" data-note></p>
     </section>
-    <section class="panel chart" data-chart="writer_busy" aria-labelledby="h-writer-busy">
+    <section class="panel chart half" data-chart="writer_busy" aria-labelledby="h-writer-busy">
       <div class="chart-head">
         <h2 id="h-writer-busy"><button class="chart-help" type="button" aria-describedby="help-writer-busy" aria-expanded="false">Writer busy time</button></h2>
         <div class="chart-tooltip" id="help-writer-busy" role="tooltip" popover="auto">
@@ -150,7 +175,7 @@
       <div class="legend" data-legend></div>
       <p class="chart-note" data-note></p>
     </section>
-    <section class="panel chart" data-chart="writer" aria-labelledby="h-writer">
+    <section class="panel chart half" data-chart="writer" aria-labelledby="h-writer">
       <div class="chart-head">
         <h2 id="h-writer"><button class="chart-help" type="button" aria-describedby="help-writer" aria-expanded="false">Waiting on the writer</button></h2>
         <div class="chart-tooltip" id="help-writer" role="tooltip" popover="auto">
@@ -163,31 +188,6 @@
       <div class="plot" data-plot role="img" aria-label="Combined worker wait in milliseconds per second after the output channel reports full"></div>
       <div class="legend" data-legend></div>
       <p class="chart-note" data-note></p>
-    </section>
-    <section class="panel chart" data-chart="connections" aria-labelledby="h-connections">
-      <div class="chart-head">
-        <h2 id="h-connections"><button class="chart-help" type="button" aria-describedby="help-connections" aria-expanded="false">Sockets not open</button></h2>
-        <div class="chart-tooltip" id="help-connections" role="tooltip" popover="auto">
-          <p>Expected sockets minus open sockets, for order-book and discovery connections. Reconnecting sockets count as expected.</p>
-          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
-          <p class="small muted">Metrics: <code>collector_connections</code>.</p>
-        </div>
-      </div>
-      <div class="plot" data-plot role="img" aria-label="Expected sockets that are not open, order-book and discovery"></div>
-      <div class="legend" data-legend></div>
-      <p class="chart-note" data-note></p>
-    </section>
-    <section class="panel chart" data-chart="checks" aria-labelledby="h-checks">
-      <div class="chart-head">
-        <h2 id="h-checks"><button class="chart-help" type="button" aria-describedby="help-checks" aria-expanded="false">Full books out of order from Polymarket</button></h2>
-        <div class="chart-tooltip" id="help-checks" role="tooltip" popover="auto">
-          <p>Full books Polymarket sent out of order with its own price changes. Mismatched counts accepted full books differing from the book built from that source's updates. Skipped as older counts full books older than price changes already applied. Decode errors counts messages that could not be decoded. Hover or focus a legend label for more detail.</p>
-          <p>Prometheus scrapes the collector every second. A point is drawn only if the scrape succeeded and the collector published within the previous 15 seconds. Missing periods are left blank, never drawn as zero. Bars show the increase per interval; intervals without a successful scrape are blank. Counters restart from zero when the collector restarts.</p>
-          <p class="small muted">Metrics: <code>collector_book_mismatches_total</code>, <code>collector_older_full_books_skipped_total</code>, <code>collector_decode_errors_total</code>.</p>
-        </div>
-      </div>
-      <div class="plot" data-plot role="img" aria-label="Full books from Polymarket that differed from the book built from its updates, older full books skipped, and decode errors per interval"></div>
-      <div class="legend" data-legend></div>
     </section>
   </div>
   <section class="panel socket-panel" id="sockets" aria-labelledby="h-sockets">

@@ -107,11 +107,25 @@ copies are spread across sockets.
   15-minute comparison saw 3 slow-consumer closes and 228 switches against 12
   and 1,984 before, which is suggestive, not proof.
 
+### Hash-ordered, least-loaded placement with spare sockets
+
+- **Instead of:** filling the lowest primary socket with room, in Gamma
+  listing-ID order.
+- **Why:** on 2026-10-29, all 97 `1013 slow consumer` closes in a 90-minute
+  journal window came from eight primary sockets in the highest-listing-ID
+  band, which held recently listed, busy markets together. The busiest
+  primary averaged 936 events per second against 132 for the busiest
+  replica, which was already spread. Spare sockets let new markets spread
+  instead of filling one new socket.
+- **Cost:** about 20% more sockets. Markets never move, so a market that
+  becomes busy after placement can still make its socket hot, and a restart
+  with the same market set rebuilds the same layout.
+
 ### 256 markets per connection
 
 - **Instead of:** the earlier 100.
-- **Why:** hot standby doubled subscriptions. At 256, a 250,000-market
-  catalog needs 977 sockets per pool, 1,954 in total.
+- **Why:** hot standby doubled subscriptions. At 256 with 20% spare, a
+  250,000-market catalog needs 1,172 sockets per pool, 2,344 in total.
 - **Cost:** 256 works in our 15-minute full-catalog AWS run but is not shown
   to be optimal. Slow-consumer closes also happened at 100, so market count
   alone does not set a safe limit.

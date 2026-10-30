@@ -5,6 +5,7 @@
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 
 use anyhow::Context;
+use serde_json::json;
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 
@@ -12,6 +13,7 @@ use crate::core::book_connection::ConnectionCommand;
 use crate::core::capture::Capture;
 use crate::core::fixture::FixtureEvent;
 use crate::core::routing::Workers;
+use crate::core::telemetry;
 use crate::model::{
     ConnectionId, MarketBooks, MarketId, MarketSources, OrderBookId, WorkerMessage,
 };
@@ -49,15 +51,44 @@ pub struct ManagerTotals {
     pub removed: u64,
 }
 
+/// Primary sockets have even IDs, replicas odd.
+const PRIMARY: usize = 0;
+const REPLICA: usize = 1;
+/// Mixed into each pool's placement key so the two pools see unrelated
+/// market orders.
+const POOL_SALT: [u64; 2] = [0x9e37_79b9_7f4a_7c15, 0xc2b2_ae3d_27d4_eb4f];
+/// A batch larger than the pools (the first scan) sizes them with 20% spare
+/// sockets, so later markets spread across the fleet.
+const SPARE_NUMERATOR: usize = 6;
+const SPARE_DENOMINATOR: usize = 5;
+/// When a later batch does not fit, each pool grows by this fraction of its
+/// sockets, at least one.
+const GROWTH_DIVISOR: usize = 10;
+const MAX_PER_POOL: usize = (u16::MAX as usize).div_ceil(2);
+
+/// Placement order of a market within one pool: a fixed hash of the
+/// condition ID (FNV-1a, then the splitmix64 finalizer). The standard
+/// library hasher is not used because its output may change between Rust
+/// releases, and the same market set must give the same layout.
+fn placement_key(market: &MarketId, pool: usize) -> u64 {
+    let mut hash: u64 = 0xcbf2_9ce4_8422_2325;
+    for byte in market.0.bytes() {
+        hash ^= u64::from(byte);
+        hash = hash.wrapping_mul(0x0000_0100_0000_01b3);
+    }
+    hash ^= POOL_SALT[pool];
+    hash = (hash ^ (hash >> 30)).wrapping_mul(0xbf58_476d_1ce4_e5b9);
+    hash = (hash ^ (hash >> 27)).wrapping_mul(0x94d0_49bb_1331_11eb);
+    hash ^ (hash >> 31)
+}
+
 pub struct SubscriptionManager {
     workers: Workers,
     spawn: SpawnConnection,
     capacity: usize,
     connections: Vec<Connection>,
-    /// Even IDs: fill the lowest primary connection with room.
-    primary_room: BTreeSet<ConnectionId>,
-    /// Odd IDs: fill the least-loaded replica, breaking ties by ID.
-    replica_room: BTreeSet<(usize, ConnectionId)>,
+    /// Per pool: sockets with room, least-loaded first, ties by lowest ID.
+    room: [BTreeSet<(usize, ConnectionId)>; 2],
     placement: HashMap<MarketId, Placement>,
     capture: Option<Capture>,
     totals: ManagerTotals,
@@ -75,8 +106,7 @@ impl SubscriptionManager {
             spawn,
             capacity: markets_per_connection,
             connections: Vec::new(),
-            primary_room: BTreeSet::new(),
-            replica_room: BTreeSet::new(),
+            room: [BTreeSet::new(), BTreeSet::new()],
             placement: HashMap::new(),
             capture,
             totals: ManagerTotals::default(),
@@ -120,13 +150,19 @@ impl SubscriptionManager {
         markets.retain(|books| {
             !self.placement.contains_key(&books.market) && seen.insert(books.market.clone())
         });
-        // Plan both pools before assigning the batch. Empty replica sockets
-        // then fill round-robin instead of reproducing sequential groups.
-        let needed = (self.placement.len() + markets.len()).div_ceil(self.capacity);
-        self.open_to(needed)?;
+        if markets.is_empty() {
+            return Ok(());
+        }
+        // Size both pools for the whole batch before registering any market.
+        self.grow_for(markets.len())?;
+        // Each pool deals the batch in its own hash order to its least-loaded
+        // sockets, so listing-order neighbours land apart and a primary's
+        // markets map to many replicas.
+        let replicas = self.assign(&markets, REPLICA)?;
+        let primaries = self.assign(&markets, PRIMARY)?;
         let mut per_connection: BTreeMap<u16, Vec<MarketBooks>> = BTreeMap::new();
-        for books in markets {
-            let sources = self.place()?;
+        for (index, books) in markets.into_iter().enumerate() {
+            let sources = MarketSources::mirrored(primaries[index], replicas[index])?;
             self.attach(books, sources, &mut per_connection).await?;
         }
         self.send_all(per_connection, ConnectionCommand::Subscribe);
@@ -201,16 +237,11 @@ impl SubscriptionManager {
             });
         }
         for &connection in placement.sources.connections() {
+            let room = &mut self.room[usize::from(connection.0 % 2)];
             let slot = &mut self.connections[usize::from(connection.0)];
-            if connection.0 % 2 == 1 {
-                self.replica_room.remove(&(slot.markets, connection));
-            }
+            room.remove(&(slot.markets, connection));
             slot.markets -= 1;
-            if connection.0 % 2 == 0 {
-                self.primary_room.insert(connection);
-            } else {
-                self.replica_room.insert((slot.markets, connection));
-            }
+            room.insert((slot.markets, connection));
             per_connection
                 .entry(connection.0)
                 .or_default()
@@ -237,32 +268,74 @@ impl SubscriptionManager {
         }
     }
 
-    fn place(&mut self) -> anyhow::Result<MarketSources> {
-        let primary = *self.primary_room.first().context("primary pool is full")?;
-        let (_, replica) = self
-            .replica_room
-            .pop_first()
-            .context("replica pool is full")?;
-        let slot = &mut self.connections[usize::from(primary.0)];
-        slot.markets += 1;
-        if slot.markets == self.capacity {
-            self.primary_room.remove(&primary);
+    /// One socket per market in `pool`, returned in batch order. Markets are
+    /// dealt in the pool's hash order, each to the least-loaded socket with
+    /// room, ties broken by lowest ID.
+    fn assign(
+        &mut self,
+        markets: &[MarketBooks],
+        pool: usize,
+    ) -> anyhow::Result<Vec<ConnectionId>> {
+        let mut order: Vec<(u64, &MarketId, usize)> = markets
+            .iter()
+            .enumerate()
+            .map(|(index, books)| (placement_key(&books.market, pool), &books.market, index))
+            .collect();
+        order.sort_unstable();
+        let mut sockets = vec![ConnectionId(0); markets.len()];
+        for (_, _, index) in order {
+            let (load, id) = self.room[pool]
+                .pop_first()
+                .context("connection pool is full")?;
+            let slot = &mut self.connections[usize::from(id.0)];
+            debug_assert_eq!(slot.markets, load);
+            slot.markets += 1;
+            if slot.markets < self.capacity {
+                self.room[pool].insert((slot.markets, id));
+            }
+            sockets[index] = id;
         }
-        let slot = &mut self.connections[usize::from(replica.0)];
-        slot.markets += 1;
-        if slot.markets < self.capacity {
-            self.replica_room.insert((slot.markets, replica));
-        }
-        MarketSources::mirrored(primary, replica)
+        Ok(sockets)
     }
 
-    /// Grow both pools to the required batch capacity. Check the complete
+    /// Opens sockets only when `batch` markets do not fit in the free slots.
+    /// Both pools always hold the same number of markets and sockets.
+    fn grow_for(&mut self, batch: usize) -> anyhow::Result<()> {
+        let per_pool = self.connections.len() / 2;
+        let total = self.placement.len() + batch;
+        let fits = |sockets: usize| sockets * self.capacity >= total;
+        if fits(per_pool) {
+            return Ok(());
+        }
+        let target = if batch > per_pool * self.capacity {
+            (total * SPARE_NUMERATOR).div_ceil(self.capacity * SPARE_DENOMINATOR)
+        } else {
+            let mut sockets = per_pool;
+            while !fits(sockets) {
+                sockets += (sockets / GROWTH_DIVISOR).max(1);
+            }
+            sockets
+        };
+        // Spare capacity is a target; only the batch itself must fit.
+        let target = if target > MAX_PER_POOL && fits(MAX_PER_POOL) {
+            MAX_PER_POOL
+        } else {
+            target
+        };
+        self.open_to(target)?;
+        if per_pool > 0 {
+            telemetry::emit(
+                "connection_pools_grown",
+                json!({ "from_per_pool": per_pool, "to_per_pool": target, "markets": total }),
+            );
+        }
+        Ok(())
+    }
+
+    /// Grow both pools to `per_pool` sockets each. Check the complete
     /// allocation before starting tasks or registering any market.
     fn open_to(&mut self, per_pool: usize) -> anyhow::Result<()> {
-        anyhow::ensure!(
-            per_pool <= usize::from(u16::MAX).div_ceil(2),
-            "connection ID capacity exceeded"
-        );
+        anyhow::ensure!(per_pool <= MAX_PER_POOL, "connection ID capacity exceeded");
         while self.connections.len() / 2 < per_pool {
             let primary = ConnectionId(u16::try_from(self.connections.len())?);
             let replica = ConnectionId(u16::try_from(self.connections.len() + 1)?);
@@ -272,8 +345,8 @@ impl SubscriptionManager {
                     markets: 0,
                 });
             }
-            self.primary_room.insert(primary);
-            self.replica_room.insert((0, replica));
+            self.room[PRIMARY].insert((0, primary));
+            self.room[REPLICA].insert((0, replica));
         }
         Ok(())
     }
@@ -281,6 +354,7 @@ impl SubscriptionManager {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::{HashMap, HashSet};
     use std::sync::{Arc, Mutex};
 
     use crate::core::subscriptions::*;
@@ -289,7 +363,7 @@ mod tests {
 
     /// A manager whose connections are fake: commands are recorded.
     fn manager(capacity: usize) -> (SubscriptionManager, Vec<mpsc::Receiver<WorkerMessage>>, Log) {
-        let (workers, inputs): (Vec<_>, Vec<_>) = (0..2).map(|_| mpsc::channel(1024)).unzip();
+        let (workers, inputs): (Vec<_>, Vec<_>) = (0..2).map(|_| mpsc::channel(32_768)).unzip();
         let log: Log = Arc::default();
         let spawn_log = log.clone();
         let spawn: SpawnConnection = Box::new(move |id| {
@@ -308,6 +382,9 @@ mod tests {
             log,
         )
     }
+
+    const PINNED_PRIMARY: u64 = 2_018_097_179_610_769_946;
+    const PINNED_REPLICA: u64 = 17_275_474_291_222_178_132;
 
     fn market(n: usize) -> MarketBooks {
         MarketBooks {
@@ -336,11 +413,44 @@ mod tests {
         }
     }
 
+    fn sources(manager: &SubscriptionManager, n: usize) -> [ConnectionId; 2] {
+        let connections = manager.placement[&market(n).market].sources.connections();
+        [connections[0], connections[1]]
+    }
+
+    /// Market counts per socket in one pool, by socket ID.
+    fn loads(manager: &SubscriptionManager, pool: usize) -> Vec<usize> {
+        manager
+            .connections
+            .iter()
+            .skip(pool)
+            .step_by(2)
+            .map(|c| c.markets)
+            .collect()
+    }
+
+    fn spread(loads: &[usize]) -> usize {
+        loads.iter().max().unwrap() - loads.iter().min().unwrap()
+    }
+
+    #[test]
+    fn placement_keys_are_fixed_and_differ_by_pool() {
+        let id = MarketId::from("0xabc");
+        // Pinned so a hasher change cannot silently reshuffle layouts.
+        assert_eq!(placement_key(&id, PRIMARY), placement_key(&id, PRIMARY));
+        assert_ne!(placement_key(&id, PRIMARY), placement_key(&id, REPLICA));
+        assert_eq!(
+            [placement_key(&id, PRIMARY), placement_key(&id, REPLICA)],
+            [PINNED_PRIMARY, PINNED_REPLICA]
+        );
+    }
+
     #[tokio::test]
-    async fn fills_connections_and_batches_subscriptions() {
+    async fn startup_batch_sizes_pools_with_spare_and_batches_subscriptions() {
         let (mut manager, mut inputs, log) = manager(2);
         manager.add((1..=5).map(market).collect()).await.unwrap();
         settle().await;
+        // ceil(5 × 1.2 / 2) = 3 sockets per pool.
         assert_eq!(manager.connections(), 6);
         // AddMarket reached the workers before any subscribe was sent.
         let adds = drain(&mut inputs);
@@ -351,69 +461,34 @@ mod tests {
         );
         let log = log.lock().unwrap().clone();
         assert_eq!(log.len(), 6, "one subscribe per connection for the batch");
-        let by_connection: BTreeMap<_, _> = log.into_iter().collect();
-        assert_eq!(
-            by_connection,
-            BTreeMap::from([
-                (0, ConnectionCommand::Subscribe(vec![market(1), market(2)])),
-                (1, ConnectionCommand::Subscribe(vec![market(1), market(4)])),
-                (2, ConnectionCommand::Subscribe(vec![market(3), market(4)])),
-                (3, ConnectionCommand::Subscribe(vec![market(2), market(5)])),
-                (4, ConnectionCommand::Subscribe(vec![market(5)])),
-                (5, ConnectionCommand::Subscribe(vec![market(3)])),
-            ])
-        );
-    }
-
-    #[tokio::test]
-    async fn removal_frees_a_slot_for_reuse() {
-        let (mut manager, mut inputs, log) = manager(2);
-        manager.add((1..=4).map(market).collect()).await.unwrap();
-        let original = manager.placement.clone();
-        manager
-            .remove(vec![market(1).market, market(1).market])
-            .await
-            .unwrap();
-        manager.add(vec![market(9)]).await.unwrap();
-        settle().await;
-        assert_eq!(manager.connections(), 4, "freed slots reused");
-        let messages = drain(&mut inputs);
-        assert_eq!(
-            messages
-                .iter()
-                .filter(|message| matches!(message, WorkerMessage::RemoveMarket(_)))
-                .count(),
-            1
-        );
-        for n in 2..=4 {
-            assert_eq!(
-                manager.placement[&market(n).market],
-                original[&market(n).market]
-            );
+        for (id, command) in log {
+            let ConnectionCommand::Subscribe(markets) = command else {
+                panic!("unexpected command");
+            };
+            for books in markets {
+                assert!(
+                    manager.placement[&books.market]
+                        .sources
+                        .connections()
+                        .contains(&ConnectionId(id))
+                );
+            }
         }
-        assert_eq!(
-            manager.placement[&market(9).market].sources.connections(),
-            [ConnectionId(0), ConnectionId(1)]
-        );
-        assert_eq!(manager.totals.removed, 1);
-        let log = log.lock().unwrap();
-        for id in [0, 1] {
-            assert!(log.iter().any(|(connection, c)| *connection == id
-                && matches!(c, ConnectionCommand::Unsubscribe(m) if m == &vec![market(1)])));
-            assert!(log.iter().any(|(connection, c)| *connection == id
-                && matches!(c, ConnectionCommand::Subscribe(m) if m == &vec![market(9)])));
+        for pool in [PRIMARY, REPLICA] {
+            assert_eq!(loads(&manager, pool).iter().sum::<usize>(), 5);
+            assert!(spread(&loads(&manager, pool)) <= 1);
         }
     }
 
     #[tokio::test]
-    async fn removes_and_reuses_the_actual_cross_pool_sources() {
+    async fn removal_frees_slots_that_the_next_addition_reuses() {
         let (mut manager, mut inputs, log) = manager(2);
-        manager.add((1..=4).map(market).collect()).await.unwrap();
+        manager.add((1..=5).map(market).collect()).await.unwrap();
+        manager.add(vec![market(6)]).await.unwrap();
+        assert_eq!(manager.connections(), 6);
+        assert!(manager.connections.iter().all(|c| c.markets == 2));
         let original = manager.placement.clone();
-        assert_eq!(
-            original[&market(2).market].sources.connections(),
-            [ConnectionId(0), ConnectionId(3)]
-        );
+        let freed = sources(&manager, 2);
         settle().await;
         log.lock().unwrap().clear();
         drain(&mut inputs);
@@ -423,22 +498,20 @@ mod tests {
             .unwrap();
         manager.add(vec![market(9)]).await.unwrap();
         settle().await;
-        assert_eq!(manager.connections(), 4);
-        assert_eq!(
-            manager.placement[&market(9).market].sources,
-            original[&market(2).market].sources
-        );
-        for n in [1, 3, 4] {
+        assert_eq!(manager.connections(), 6, "freed slots reused");
+        assert_eq!(sources(&manager, 9), freed);
+        for n in [1, 3, 4, 5, 6] {
             assert_eq!(
                 manager.placement[&market(n).market],
                 original[&market(n).market]
             );
         }
+        assert_eq!(manager.totals.removed, 1);
         let commands = log.lock().unwrap().clone();
         assert_eq!(commands.len(), 4);
-        for id in [0, 3] {
-            assert!(commands.contains(&(id, ConnectionCommand::Unsubscribe(vec![market(2)]))));
-            assert!(commands.contains(&(id, ConnectionCommand::Subscribe(vec![market(9)]))));
+        for id in freed {
+            assert!(commands.contains(&(id.0, ConnectionCommand::Unsubscribe(vec![market(2)]))));
+            assert!(commands.contains(&(id.0, ConnectionCommand::Subscribe(vec![market(9)]))));
         }
         let messages = drain(&mut inputs);
         assert_eq!(
@@ -448,75 +521,85 @@ mod tests {
                 .count(),
             1
         );
-        assert!(
-            messages
-                .iter()
-                .any(|m| matches!(m, WorkerMessage::AddMarket { sources, .. }
-            if sources.connections() == [ConnectionId(0), ConnectionId(3)]))
-        );
     }
 
     #[tokio::test]
-    async fn later_additions_use_least_loaded_replica_without_moving_markets() {
-        let (mut manager, mut inputs, _) = manager(3);
-        manager.add((1..=7).map(market).collect()).await.unwrap();
+    async fn later_additions_go_to_the_least_loaded_socket_without_moving_markets() {
+        let (mut manager, mut inputs, _) = manager(4);
+        manager.add((1..=10).map(market).collect()).await.unwrap();
+        // ceil(10 × 1.2 / 4) = 3 sockets per pool, holding 4, 3 and 3.
+        assert_eq!(manager.connections(), 6);
         let original = manager.placement.clone();
         drain(&mut inputs);
-        manager.add(vec![market(8)]).await.unwrap();
-        manager.add(vec![market(9)]).await.unwrap();
+        manager.add(vec![market(11)]).await.unwrap();
+        manager.add(vec![market(12)]).await.unwrap();
         assert_eq!(manager.connections(), 6);
-        assert_eq!(
-            manager.placement[&market(8).market].sources.connections(),
-            [ConnectionId(4), ConnectionId(3)]
-        );
-        assert_eq!(
-            manager.placement[&market(9).market].sources.connections(),
-            [ConnectionId(4), ConnectionId(5)]
-        );
+        for pool in [PRIMARY, REPLICA] {
+            assert_eq!(loads(&manager, pool), [4, 4, 4]);
+        }
+        assert_ne!(sources(&manager, 11)[0], sources(&manager, 12)[0]);
+        assert_ne!(sources(&manager, 11)[1], sources(&manager, 12)[1]);
         for (market, placement) in original {
             assert_eq!(manager.placement[&market], placement);
         }
-        assert!(manager.connections.iter().all(|c| c.markets == 3));
     }
 
     #[tokio::test]
-    async fn bulk_placement_spreads_primary_neighbours_and_balances_capacity() {
-        let (mut manager, mut inputs, _) = manager(3);
+    async fn bulk_placement_spreads_markets_within_and_across_pools() {
+        let count = 20_000;
+        let (mut manager, mut inputs, _) = manager(256);
         manager
-            .add((1..=10).flat_map(|n| [market(n), market(n)]).collect())
+            .add((1..=count).flat_map(|n| [market(n), market(n)]).collect())
             .await
             .unwrap();
-        assert_eq!(manager.markets(), 10);
-        assert_eq!(
-            manager.connections(),
-            8,
-            "duplicates do not grow either pool"
-        );
-        assert_eq!(drain(&mut inputs).len(), 10);
-        for start in [1, 4, 7] {
-            let replicas: BTreeSet<_> = (start..start + 3)
-                .map(|n| {
-                    let sources = manager.placement[&market(n).market].sources.connections();
-                    assert_eq!(sources[0].0 % 2, 0);
-                    assert_eq!(sources[1].0 % 2, 1);
-                    assert_eq!(sources[0], ConnectionId(((start - 1) / 3 * 2) as u16));
-                    sources[1]
-                })
-                .collect();
-            assert_eq!(replicas.len(), 3, "neighbours use distinct replica sockets");
+        assert_eq!(manager.markets(), count);
+        // ceil(20,000 × 1.2 / 256) = 94 sockets per pool.
+        assert_eq!(manager.connections(), 188, "duplicates do not grow pools");
+        assert_eq!(drain(&mut inputs).len(), count);
+        for pool in [PRIMARY, REPLICA] {
+            assert!(spread(&loads(&manager, pool)) <= 1);
+            assert!(loads(&manager, pool).iter().all(|&load| load <= 256));
         }
-        let loads: Vec<_> = manager
-            .connections
-            .iter()
-            .skip(1)
-            .step_by(2)
-            .map(|c| c.markets)
-            .collect();
-        assert_eq!(loads, [3, 3, 2, 2]);
-        assert!(manager.connections.iter().all(|c| c.markets <= 3));
-        manager.add((1..=10).map(market).collect()).await.unwrap();
-        assert_eq!(manager.connections(), 8);
+        // Listing-order neighbours land on different primaries.
+        let together = (1..count)
+            .filter(|&n| sources(&manager, n)[0] == sources(&manager, n + 1)[0])
+            .count();
+        assert!(
+            together < count / 50,
+            "{together} neighbour pairs share a primary"
+        );
+        // A primary's markets map to many different replicas.
+        let mut replicas: HashMap<ConnectionId, (usize, HashSet<ConnectionId>)> = HashMap::new();
+        for n in 1..=count {
+            let [primary, replica] = sources(&manager, n);
+            assert_eq!(primary.0 % 2, 0);
+            assert_eq!(replica.0 % 2, 1);
+            let entry = replicas.entry(primary).or_default();
+            entry.0 += 1;
+            entry.1.insert(replica);
+        }
+        let pool = manager.connections() / 2;
+        for (markets, distinct) in replicas.values() {
+            assert!(distinct.len() * 4 >= (*markets).min(pool) * 3);
+        }
+        manager
+            .add((1..=count).map(market).collect())
+            .await
+            .unwrap();
+        assert_eq!(manager.connections(), 188);
         assert!(drain(&mut inputs).is_empty());
+    }
+
+    #[tokio::test]
+    async fn the_same_market_set_gives_the_same_layout() {
+        let (mut forward, _forward_inputs, _) = manager(8);
+        let (mut reversed, _reversed_inputs, _) = manager(8);
+        forward.add((1..=100).map(market).collect()).await.unwrap();
+        reversed
+            .add((1..=100).rev().map(market).collect())
+            .await
+            .unwrap();
+        assert_eq!(forward.placement, reversed.placement);
     }
 
     #[tokio::test]
@@ -528,6 +611,7 @@ mod tests {
         manager.capture = Some(capture);
         manager.add((1..=4).map(market).collect()).await.unwrap();
         drain(&mut inputs);
+        let [primary, replica] = sources(&manager, 2);
         drop(manager);
         file.finish().unwrap();
         let events =
@@ -536,38 +620,53 @@ mod tests {
             events
                 .iter()
                 .any(|event| matches!(event, FixtureEvent::AddMarket {
-                generation: 0,
-            market: id, connection: 0, standby: Some(3), ..
-        } if id == &market(2).market.to_string()))
+                generation: 0, market: id, connection, standby: Some(standby), ..
+            } if id == &market(2).market.to_string()
+                && *connection == primary.0 && *standby == replica.0))
         );
     }
 
     #[tokio::test]
-    async fn market_257_grows_both_pools() {
-        let (mut manager, mut inputs, log) = manager(256);
-        manager.add((1..=256).map(market).collect()).await.unwrap();
-        assert_eq!(manager.connections(), 2);
-        let messages = drain(&mut inputs);
-        assert_eq!(messages.len(), 256);
-        assert!(messages.iter().all(|message| matches!(message,
-            WorkerMessage::AddMarket { sources, .. } if sources.connections() == [ConnectionId(0), ConnectionId(1)])));
-        manager.add(vec![market(257), market(257)]).await.unwrap();
-        assert_eq!(manager.connections(), 4);
-        assert_eq!(manager.markets(), 257);
-        assert_eq!(manager.totals.added, 257);
-        assert!(matches!(drain(&mut inputs).as_slice(),
-            [WorkerMessage::AddMarket { sources, .. }] if sources.connections() == [ConnectionId(2), ConnectionId(3)]));
+    async fn a_batch_that_does_not_fit_grows_each_pool_by_a_tenth() {
+        let (mut manager, mut inputs, log) = manager(1);
+        manager.add((1..=17).map(market).collect()).await.unwrap();
+        // ceil(17 × 1.2) = 21 sockets per pool.
+        assert_eq!(manager.connections(), 42);
+        manager.add((18..=21).map(market).collect()).await.unwrap();
+        assert_eq!(manager.connections(), 42, "free slots used before growing");
+        let original = manager.placement.clone();
+        drain(&mut inputs);
+        settle().await;
+        log.lock().unwrap().clear();
+        manager.add(vec![market(22), market(22)]).await.unwrap();
+        assert_eq!(manager.connections(), 46, "21 + 2 sockets per pool");
+        assert_eq!(manager.markets(), 22);
+        assert_eq!(manager.totals.added, 22);
+        let [primary, replica] = sources(&manager, 22);
+        assert!(primary.0 >= 42 && replica.0 >= 42);
+        for (market, placement) in original {
+            assert_eq!(manager.placement[&market], placement);
+        }
         settle().await;
         let log = log.lock().unwrap();
-        assert_eq!(log.len(), 4);
-        for id in [0, 1] {
-            assert!(log.iter().any(|(connection, command)| *connection == id
-                && *command == ConnectionCommand::Subscribe((1..=256).map(market).collect())));
-        }
-        for id in [2, 3] {
-            assert!(log.iter().any(|(connection, command)| *connection == id
-                && *command == ConnectionCommand::Subscribe(vec![market(257)])));
-        }
+        assert_eq!(
+            *log,
+            [
+                (primary.0, ConnectionCommand::Subscribe(vec![market(22)])),
+                (replica.0, ConnectionCommand::Subscribe(vec![market(22)])),
+            ]
+        );
+    }
+
+    #[tokio::test]
+    async fn a_batch_larger_than_the_pools_resizes_them_with_spare() {
+        let (mut manager, _inputs, _) = manager(2);
+        manager.add((1..=5).map(market).collect()).await.unwrap();
+        assert_eq!(manager.connections(), 6);
+        manager.add((6..=15).map(market).collect()).await.unwrap();
+        // ceil(15 × 1.2 / 2) = 9 sockets per pool.
+        assert_eq!(manager.connections(), 18);
+        assert!(manager.connections.iter().all(|c| c.markets <= 2));
     }
 
     #[tokio::test]
@@ -580,7 +679,7 @@ mod tests {
             receivers.lock().unwrap().push(rx);
             tx
         });
-        let mut manager = SubscriptionManager::new(Workers::from(vec![worker]), 2, spawn, None);
+        let mut manager = SubscriptionManager::new(Workers::from(vec![worker]), 4, spawn, None);
         let add = tokio::spawn(async move {
             manager.add(vec![market(1), market(2)]).await.unwrap();
             manager

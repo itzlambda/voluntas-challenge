@@ -89,8 +89,9 @@ traffic the collector can handle.
   does.
 - **Fail back and rotate connections.** Today we switch only when a
   connection fails, and never return to the original publisher.
-- **Balance sockets by traffic.** Markets are placed by count, so a few busy
-  ones can trigger slow-consumer disconnects.
+- **Balance sockets by traffic.** Markets are spread by hash and count, and
+  never move, so markets that become busy later can still crowd one socket
+  and trigger slow-consumer disconnects.
 - **Tune connection settings.** The 256 markets per socket, 10-second
   heartbeat, and 30-second silence limit work, but have not been optimized.
 

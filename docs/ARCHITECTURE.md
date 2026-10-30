@@ -14,7 +14,7 @@ flowchart LR
     mgr[Subscription manager]
     subgraph pools[Order-book WebSockets]
         direction TB
-        pa["Primary pool<br/>256 markets per socket"]
+        pa["Primary pool<br/>up to 256 markets per socket"]
         pb["Replica pool<br/>second copy of every market"]
     end
     subgraph workers[Book workers]
@@ -212,11 +212,22 @@ Rules that matter for correctness:
 ### Pools and placement
 
 Each market has one copy in the primary pool and one in the replica pool,
-with 256 markets (512 outcome assets) per socket. A 250,000-market catalog
-needs 977 sockets per pool, 1,954 in total. Primary sockets fill in order.
-Replica copies go to the least-loaded replica socket, so the markets on one
-busy primary socket fail over to many different sockets. Assignments never
-move once made, and connection opens are rate-limited.
+with at most 256 markets (512 outcome assets) per socket.
+
+- **Order.** Each pool places a batch in its own order: a fixed hash of the
+  condition ID mixed with a per-pool constant (FNV-1a, then the splitmix64
+  finalizer). Markets listed together land on different sockets, and the
+  markets on one primary socket fail over to many different replicas. The
+  same market set always gives the same layout.
+- **Socket.** Each market goes to the least-loaded socket in the pool, ties
+  to the lowest ID. Startup deals markets one per socket; later, slots freed
+  by resolved markets fill first.
+- **Spare capacity.** The startup scan sizes each pool to 20% more sockets
+  than needed: 255,600 markets give 1,199 sockets per pool, about 213 markets
+  each. When a later batch does not fit, each pool grows by 10% of its
+  sockets and the collector emits `connection_pools_grown`.
+
+Assignments never move once made, and connection opens are rate-limited.
 
 When a market is added, the manager registers both source connections with
 the worker first, then asks the sockets to subscribe. When it is removed, the

@@ -1,8 +1,6 @@
 {
   "schema_version": 1,
-  "in_progress": true,
-  "message": "A new deployment is in progress: markets are being spread more evenly across connections. Connections and charts may take a few minutes to recover.",
-  "started_at": 1793341754,
+  "in_progress": false,
   "markers": [
     {
       "at": 1793297100,
@@ -15,6 +13,11 @@
       "label": "Polymarket outage resolved",
       "details": "Trading resumed.",
       "url": "https://status.polymarket.com/"
+    },
+    {
+      "at": 1793341807,
+      "label": "Markets spread across sockets",
+      "details": "Collector restarted with hash-ordered placement and 20% spare sockets."
     }
   ],
   "windows": [

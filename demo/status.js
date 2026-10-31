@@ -170,7 +170,7 @@
       inFlight = true;
       let next = false;
       try {
-        const response = await env.fetch(options.url(), {cache: 'no-store', signal: env.AbortSignal && env.AbortSignal.timeout ? env.AbortSignal.timeout(8000) : undefined});
+        const response = await env.fetch(options.url(), {cache: 'no-store', signal: env.AbortSignal && env.AbortSignal.timeout ? env.AbortSignal.timeout(options.timeout || 8000) : undefined});
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const body = await response.json();
         next = options.onResult({ok: true, body});

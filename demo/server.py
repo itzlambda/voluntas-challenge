@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Serve the demo and read queries for its dedicated collector-only Prometheus."""
 import argparse
+import gzip
 import json
 import math
 import re
@@ -81,17 +82,20 @@ FIRST_DATA_QUERY = labelled({"first_data": f"min_over_time((timestamp({PUBLISHED
 HISTORY_FIELDS = ("up", "published_at", "markets_desired", "markets_synced",
                   "markets_standby_ready", "publisher_switches_total",
                   "books_desired", "books_synced", "events_per_second", "book_updates_per_second",
-                  "internal_p50", "internal_p99", "internal_finite_share",
-                  "exchange_p50", "exchange_p99", "exchange_finite_share")
-HISTORY_SERIES = {field: (QUERIES[field], ()) for field in HISTORY_FIELDS}
+                  "internal_p50", "internal_p99", "exchange_p50", "exchange_p99")
+HISTORY_SERIES = {field: (QUERIES[field], ()) for field in HISTORY_FIELDS
+                  if not field.startswith(("internal_", "exchange_"))}
 HISTORY_SERIES.update({
     "connections": (QUERIES["connections"], ("kind", "state")),
     "worker_busy": (f"rate(collector_worker_busy_seconds_total{SELECTOR}[1m])", ("worker",)),
     "writer_busy": (f"rate(collector_writer_busy_seconds_total{SELECTOR}[1m])", ()),
     "writer_blocked": (f"sum(rate(collector_writer_blocked_seconds_total{SELECTOR}[1m]))", ()),
 })
+for prefix, name in HISTOGRAMS.items():
+    HISTORY_SERIES[prefix + "_buckets"] = (
+        f"sum by (le) (rate({name}_bucket{SELECTOR}[5m]))", ("le",))
 HISTORY_QUERY = labelled({field: expression for field, (expression, _) in HISTORY_SERIES.items()})
-MASK_FIELDS = ("up", "published_at", "internal_finite_share", "exchange_finite_share")
+MASK_FIELDS = ("up", "published_at")
 
 
 def bar_series(bucket):
@@ -131,9 +135,59 @@ def matrix(payload, definitions):
     return fields
 
 
+def histogram_percentiles(buckets):
+    """Classic positive-duration histogram interpolation, matching Prometheus."""
+    if len(buckets) < 2 or buckets[-1][0] != math.inf or buckets[-1][1] <= 0:
+        return (None, None)
+    # Prometheus suppresses tiny relative changes and repairs decreasing counts.
+    cumulative = []
+    previous = 0.0
+    for bound, count in buckets:
+        if count < previous or (previous and abs(count - previous) < 1e-12 * (abs(count) + abs(previous))):
+            count = previous
+        cumulative.append((bound, count))
+        previous = count
+    total = cumulative[-1][1]
+    finite_count = next((count for bound, count in buckets if bound == 60), None)
+    values = []
+    for quantile in (0.5, 0.99):
+        if finite_count is None or finite_count / buckets[-1][1] < quantile:
+            values.append(None)
+            continue
+        rank = quantile * total
+        lower, below = 0.0, 0.0
+        for bound, count in cumulative:
+            if count >= rank:
+                values.append(lower if bound == math.inf else
+                              lower + (bound - lower) * ((rank - below) / (count - below)))
+                break
+            lower, below = bound, count
+    return values
+
+
+def decode_histograms(fields):
+    """Consume each histogram once; keep only the two chart percentile series."""
+    for prefix in HISTOGRAMS:
+        samples = {}
+        for key in list(fields):
+            if not key.startswith(prefix + "_buckets:"):
+                continue
+            bound = float(key.split(":")[1])
+            for timestamp, value in fields.pop(key).items():
+                if value is not None:
+                    counts = samples.setdefault(timestamp, {})
+                    counts[bound] = counts.get(bound, 0) + value
+        for quantile in (50, 99):
+            fields[f"{prefix}_p{quantile}"] = {}
+        for timestamp, counts in samples.items():
+            for quantile, value in zip((50, 99), histogram_percentiles(sorted(counts.items()))):
+                fields[f"{prefix}_p{quantile}"][timestamp] = value
+
+
 def decode_history(payload, end, window, settings=None):
     duration, step, _ = settings or HISTORY_WINDOWS[window]
     fields = matrix(payload, HISTORY_SERIES)
+    decode_histograms(fields)
     start = end - duration
     timestamps = list(range(start, end + 1, step))
     series = {key: [] for key in sorted(fields) if key not in MASK_FIELDS}
@@ -147,11 +201,7 @@ def decode_history(payload, end, window, settings=None):
         for key, values in series.items():
             value = fields.get(key, {}).get(timestamp) if fresh else None
             if key.startswith(("internal_", "exchange_")):
-                prefix, quantile = key.split("_")
-                share = fields.get(prefix + "_finite_share", {}).get(timestamp)
-                if share is None or share < int(quantile[1:]) / 100:
-                    value = None
-                elif value is not None:
+                if value is not None:
                     value *= 1000
             values.append(compact(value))
     return {"schema_version": 1, "status": "ok", "window": window, "start": start,
@@ -276,14 +326,19 @@ class Reader:
         self.first_data_cache = (-math.inf, None)
         self.socket_reader = SocketReader(self.query, self.stats)
 
-    def query(self, endpoint, parameters, limit=1_048_576):
+    def query(self, endpoint, parameters, limit=1_048_576, timeout_seconds=2):
         request = urllib.request.Request(
             self.url.removesuffix("query") + endpoint,
-            data=urllib.parse.urlencode({**parameters, "timeout": "2s"}).encode())
+            data=urllib.parse.urlencode({**parameters, "timeout": f"{timeout_seconds}s"}).encode(),
+            headers={"Accept-Encoding": "gzip"})
         try:
-            with urllib.request.urlopen(request, timeout=3) as response:
-                raw = response.read(limit + 1)
-        except HTTPException as error:
+            with urllib.request.urlopen(request, timeout=timeout_seconds + 1) as response:
+                if response.headers.get("Content-Encoding") == "gzip":
+                    with gzip.GzipFile(fileobj=response) as source:
+                        raw = source.read(limit + 1)
+                else:
+                    raw = response.read(limit + 1)
+        except (HTTPException, EOFError) as error:
             raise OSError("incomplete metrics response") from error
         if len(raw) > limit:
             raise ValueError("metrics response exceeds limit")
@@ -345,7 +400,7 @@ class Reader:
                 bar_end = end // bucket * bucket
                 bar_settings = (math.ceil(duration / bucket) * bucket, step, bucket)
                 payload = self.query("query_range", {"query": HISTORY_QUERY, "start": end - duration,
-                                     "end": end, "step": step}, limit=4_194_304)
+                                     "end": end, "step": step}, limit=4_194_304, timeout_seconds=4)
                 result = decode_history(payload, end, window, settings)
                 bars = self.bars_cache.get(window)
                 bar_key = (bar_end, bar_settings)

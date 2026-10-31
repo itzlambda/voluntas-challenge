@@ -203,6 +203,10 @@ class Timeline:
         for q in (50, 99):
             values[f"internal_p{q}"] = lambda q=q: self.internal(q, t)
             values[f"exchange_p{q}"] = lambda q=q: self.exchange(q, t)
+        if field in ("internal_buckets", "exchange_buckets"):
+            percentile = self.internal if field == "internal_buckets" else self.exchange
+            return [({"le": str(bound)}, count) for bound, count in
+                    [(percentile(50, t), 50), (percentile(99, t), 99), (60, 100), (math.inf, 100)]]
         if field in values:
             return [({}, float(values[field]()))]
         if field == "connections":

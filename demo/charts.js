@@ -478,6 +478,7 @@
       poller = S.createPoller({
         env: win,
         interval: RANGES[range],
+        timeout: 15000,
         url: () => `/api/demo/history?window=${range}`,
         onResult(result) {
           if (mine !== generation) return true;

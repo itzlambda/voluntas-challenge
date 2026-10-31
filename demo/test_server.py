@@ -1,4 +1,6 @@
+import gzip
 import json
+import math
 import threading
 import time
 import unittest
@@ -8,8 +10,12 @@ import urllib.request
 import io
 from unittest.mock import patch
 from fake_prometheus import FakePrometheus
-from server import (ASSETS, HISTORY_WINDOWS, PAGES, QUERY, Reader, Server, bar_query,
-                    decode_bars, decode_history, decode_stats)
+from server import (ASSETS, HISTORY_QUERY, HISTORY_WINDOWS, PAGES, QUERY, Reader, Server, bar_query,
+                    decode_bars, decode_history, decode_stats, histogram_percentiles)
+
+
+class MetricsResponse(io.BytesIO):
+    headers = {}
 
 
 def fixture(**values):
@@ -136,14 +142,46 @@ class ReaderTests(unittest.TestCase):
         self.assertIn('le=~"60(\\\\.0)?"', QUERY)
         self.assertIn("increase(collector_session_ends_total", bar_query(30))
 
+    def test_histogram_empty_overflow_and_monotonicity(self):
+        for buckets in ([], [(60, 100)], [(60, 0), (math.inf, 0)],
+                        [(60, 49), (math.inf, 100)]):
+            with self.subTest(buckets=buckets):
+                self.assertEqual(tuple(histogram_percentiles(buckets)), (None, None))
+        result = histogram_percentiles([(0.001, 50), (0.01, 99), (60, 99), (math.inf, 100)])
+        self.assertAlmostEqual(result[0], 0.001)
+        self.assertAlmostEqual(result[1], 0.01)
+        for middle in (49, 50 + 1e-11):
+            result = histogram_percentiles([(0.001, 50), (0.01, middle), (60, 100), (math.inf, 100)])
+            self.assertEqual(result[0], 0.001)
+            self.assertAlmostEqual(result[1], 58.8002)
+
+    def test_history_derives_latency_from_bucket_rates(self):
+        rows = [
+            {"metric": {"field": "up"}, "values": [[100, "1"], [101, "1"], [102, "1"]]},
+            {"metric": {"field": "published_at"}, "values": [[100, "100"], [101, "101"], [102, "102"]]},
+        ]
+        for prefix in ("internal", "exchange"):
+            for bound, values in [("0.001", [50, 50, 0]), ("0.01", [99, 98, 0]),
+                                  ("60.0", [100, 98, 0]), ("+Inf", [100, 100, 0])]:
+                rows.append({"metric": {"field": prefix + "_buckets", "le": bound},
+                             "values": [[100 + i, str(value)] for i, value in enumerate(values)]})
+        payload = {"status": "success", "data": {"resultType": "matrix", "result": rows}}
+        result = decode_history(payload, 1000, "15m")
+        for prefix in ("internal", "exchange"):
+            self.assertEqual(result["series"][prefix + "_p50"][:3], [1, 1, None])
+            self.assertEqual(result["series"][prefix + "_p99"][:3], [10, None, None])
+        self.assertFalse(any("buckets" in key for key in result["series"]))
+
     def test_history_masks_outages_and_preserves_zero_and_latency_units(self):
         fields = {"up": [(100, 1), (101, 0), (102, 1)],
                   "published_at": [(100, 100), (101, 100), (102, 80)],
                   "events_per_second": [(100, 0), (101, 8), (102, 9)],
-                  "internal_p99": [(100, .005)], "internal_finite_share": [(100, 1)],
-                  "exchange_p99": [(100, 60)], "exchange_finite_share": [(100, .98)]}
+                  "internal_buckets:0.005": [(100, 99)], "internal_buckets:60": [(100, 100)],
+                  "internal_buckets:+Inf": [(100, 100)],
+                  "exchange_buckets:60": [(100, 98)], "exchange_buckets:+Inf": [(100, 100)]}
         payload = {"status": "success", "data": {"resultType": "matrix", "result": [
-            {"metric": {"field": name}, "values": values} for name, values in fields.items()]}}
+            {"metric": {"field": name.split(":")[0], **({"le": name.split(":")[1]} if ":" in name else {})},
+             "values": values} for name, values in fields.items()]}}
         result = decode_history(payload, 1000, "15m")
         self.assertEqual(result["series"]["events_per_second"][:3], [0, None, None])
         self.assertEqual(result["series"]["internal_p99"][0], 5)
@@ -191,11 +229,54 @@ class ReaderTests(unittest.TestCase):
         self.assertEqual(bars["series"]["session_ends:remote_close"][:2], [3, None])
         self.assertEqual(bars["series"]["book_mismatches"][:2], [0, None], "zero stays zero; a missed scrape is a gap")
 
+    def test_prometheus_gzip_response_keeps_the_decoded_size_limit(self):
+        reader = Reader("http://127.0.0.1:9091")
+        payload = {"status": "success", "data": "x" * 4096}
+        raw = json.dumps(payload).encode()
+        def response(*args, **kwargs):
+            result = MetricsResponse(gzip.compress(raw))
+            result.headers = {"Content-Encoding": "gzip"}
+            return result
+        with patch("urllib.request.urlopen", side_effect=response):
+            self.assertEqual(reader.query("query", {"query": "up"}), payload)
+            with self.assertRaisesRegex(ValueError, "exceeds limit"):
+                reader.query("query", {"query": "up"}, limit=1024)
+
+    def test_truncated_gzip_is_an_incomplete_metrics_response(self):
+        response = MetricsResponse(gzip.compress(b'{"status":"success"}')[:-8])
+        response.headers = {"Content-Encoding": "gzip"}
+        with patch("urllib.request.urlopen", return_value=response):
+            with self.assertRaisesRegex(OSError, "incomplete metrics response"):
+                Reader("http://127.0.0.1:9091").query("query", {"query": "up"})
+
+    def test_all_history_survives_a_line_query_needing_three_seconds(self):
+        reader = Reader("http://127.0.0.1:9091")
+        payload = {"status": "success", "data": {"resultType": "matrix", "result": []}}
+
+        def prometheus(request, timeout):
+            parameters = urllib.parse.parse_qs(request.data.decode())
+            if parameters["query"] == [HISTORY_QUERY]:
+                deadline = float(parameters["timeout"][0].removesuffix("s"))
+                if deadline < 3:
+                    raise urllib.error.HTTPError(request.full_url, 503, "query timed out", {}, None)
+                if timeout < 3:
+                    raise TimeoutError("HTTP read timed out")
+            return MetricsResponse(json.dumps(payload).encode())
+
+        with patch.object(reader, "stats", return_value={"status": "live"}), \
+                patch.object(reader, "first_data", return_value=1000 - 2 * 86400), \
+                patch("server.time.time", return_value=1000), \
+                patch("urllib.request.urlopen", side_effect=prometheus):
+            result = reader.history("all")
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["window"], "all")
+        self.assertIn("bars", result)
+
     def test_history_shares_cached_query_and_rejects_custom_windows(self):
         reader = Reader("http://127.0.0.1:9091")
         payload = {"status": "success", "data": {"resultType": "matrix", "result": []}}
         with patch.object(reader, "stats", return_value={"status": "live"}), \
-                patch("urllib.request.urlopen", side_effect=lambda *a, **k: io.BytesIO(json.dumps(payload).encode())) as query:
+                patch("urllib.request.urlopen", side_effect=lambda *a, **k: MetricsResponse(json.dumps(payload).encode())) as query:
             with patch("server.time.time", return_value=1000):
                 first = reader.history("15m")
                 self.assertEqual(reader.history("15m"), first)
@@ -376,7 +457,7 @@ class HttpTests(unittest.TestCase):
                 self.assertEqual(query.call_count, 2)
             error_payload = {"status": "error", "errorType": "bad_data", "error": "invalid expression"}
             upstream = urllib.error.HTTPError("http://127.0.0.1:9091", 400, "bad query", {},
-                                             io.BytesIO(json.dumps(error_payload).encode()))
+                                             MetricsResponse(json.dumps(error_payload).encode()))
             with patch.object(reader, "query", side_effect=upstream):
                 with self.assertRaises(urllib.error.HTTPError) as error:
                     urllib.request.urlopen(base + "?query=invalid")

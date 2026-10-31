@@ -348,8 +348,14 @@ serves `/` and `/live` from an asset allowlist, plus:
   seven-day retention period, using about 900 line points and 72 bar buckets.
   Its start is discovered from retained samples, including across collector restarts.
   When the collector has stopped, All ends at its last data. Each window has a
-  shared cache. Responses are limited to 4 MiB. If the collector stopped
-  before the window, history ends at the last data and sets
+  shared cache. Each latency histogram's five-minute bucket rates are queried
+  once; the demo derives both percentiles with classic histogram interpolation
+  and masks values beyond the finite buckets. Prometheus responses use gzip
+  when available, with the size limit applied after decompression. Line queries
+  have a four-second Prometheus deadline and a five-second HTTP timeout; chart requests allow 15 seconds for the full cold
+  load, including retained-range discovery and bars. Other queries retain their
+  two-second Prometheus deadline. Responses are limited to 4 MiB. If the
+  collector stopped before the window, history ends at the last data and sets
   `anchored_to_last_data`.
 - `GET /api/demo/sockets`: current fleet rates and state, cached for five seconds.
 - `GET /api/demo/socket-history?socket=ID&window=15m|1h|6h|24h`: selected-socket
@@ -359,8 +365,7 @@ serves `/` and `/live` from an asset allowlist, plus:
   `start`, `end`, and `step`). Expressions are limited to 8,192 characters.
 - `GET /healthz`: checks the demo HTTP server.
 
-Prometheus queries have a two-second timeout and the network call three
-seconds. At most 16 requests run at once. Unknown paths and query-string
+At most 16 requests run at once. Unknown paths and query-string
 variants of the fixed APIs are rejected.
 
 The `status` field is one of:

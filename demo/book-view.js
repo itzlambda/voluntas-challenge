@@ -124,14 +124,33 @@
       label: text(raw.groupItemTitle), event: Array.isArray(raw.events) ? text(raw.events[0]?.title) : null, volume24hr: volume};
   }
 
-  // Every new session discards its baselines. A late callback from an older session is ignored.
-  function createFeed(env, url, tokens, changed) {
-    let socket = null, timer = null, stopped = false, failures = 0, decodeFailures = 0;
-    const state = {status: 'connecting', books: new Map()};
-    function reset() { state.books = new Map(tokens.map(token => [token, emptyBook()])); }
+  // A socket that had been receiving and then goes this long without any message is treated as
+  // dead. Every published book gets a snapshot every 60 s, so a live subscription is never this quiet.
+  const LIVENESS_MS = 150000;
+
+  // The stream never skips a record: a client that falls behind is disconnected instead. So while
+  // the socket stays open the books are complete, and only a close or a silent socket means events
+  // may have been missed. Every new session discards its baselines; the last ready books are kept
+  // in `previous` for display only, until the new session's snapshot replaces them.
+  // `options.paused()` defers reconnecting (e.g. while the tab is hidden) until `check()` runs.
+  function createFeed(env, url, tokens, changed, options = {}) {
+    const paused = options.paused || (() => false);
+    const now = () => (env.Date || Date).now();
+    let socket = null, timer = null, stopped = false, pending = false, failures = 0, decodeFailures = 0;
+    const state = {status: 'connecting', books: new Map(), previous: new Map(), lastMessageAt: null};
+    function keep() { for (const [token, book] of state.books) if (book.ready) state.previous.set(token, book); }
+    function reset() { state.books = new Map(tokens.map(token => [token, emptyBook()])); state.lastMessageAt = null; }
+    function detach() {
+      const old = socket; socket = null;
+      if (old) { old.onopen = null; old.onmessage = null; old.onclose = null; old.close(); }
+    }
+    function later(delay) {
+      timer = env.setTimeout(() => { timer = null; if (stopped) return; if (paused()) pending = true; else connect(); }, delay);
+    }
     function connect() {
       if (stopped) return;
-      reset(); state.status = 'connecting'; changed(state);
+      pending = false; detach();
+      keep(); reset(); state.status = 'connecting'; changed(state);
       const current = new env.WebSocket(url); socket = current; current.binaryType = 'arraybuffer';
       current.onopen = () => {
         if (stopped || socket !== current) return;
@@ -140,35 +159,46 @@
       };
       current.onmessage = event => {
         if (stopped || socket !== current) return;
+        state.lastMessageAt = now();
         try {
           const records = decodeFrame(event.data);
           for (const record of records) {
             const book = state.books.get(record.symbol);
             if (book) {
               apply(book, record);
-              if (record.type === 'snapshot') book.snapshotAt = (env.Date || Date).now();
+              if (record.type === 'snapshot') { book.snapshotAt = now(); state.previous.delete(record.symbol); }
             }
           }
           state.status = [...state.books.values()].every(book => book.ready) ? 'live' : 'waiting';
           if (state.status === 'live') { failures = 0; decodeFailures = 0; }
           changed(state);
         } catch (_) {
-          reset(); decodeFailures += 1;
+          reset(); state.previous = new Map(); decodeFailures += 1;
           state.status = decodeFailures >= 2 ? 'incompatible' : 'invalid'; changed(state);
           current.onmessage = null; current.close();
         }
       };
       current.onclose = event => {
         if (stopped || socket !== current) return;
-        reset();
+        socket = null; keep(); reset();
         if (decodeFailures >= 2) { state.status = 'incompatible'; changed(state); return; }
-        if ([1008, 1003].includes(event.code)) { state.status = 'rejected'; changed(state); return; }
+        if ([1008, 1003].includes(event.code)) { state.status = 'rejected'; state.previous = new Map(); changed(state); return; }
         state.status = 'reconnecting'; changed(state);
-        timer = env.setTimeout(connect, Math.min(30000, 1000 * 2 ** Math.min(failures++, 5)));
+        if (paused()) pending = true; else later(Math.min(30000, 1000 * 2 ** Math.min(failures++, 5)));
       };
     }
+    // `resume()` runs a reconnect that was deferred while paused. `check()` also replaces a socket
+    // that went silent. Both do nothing while paused.
+    function resume() {
+      if (stopped || paused() || !pending) return false;
+      connect(); return true;
+    }
+    function check(at = now()) {
+      if (resume() || stopped || paused()) return;
+      if (socket && state.lastMessageAt !== null && at - state.lastMessageAt > LIVENESS_MS) connect();
+    }
     reset(); connect();
-    return {state, stop() { stopped = true; env.clearTimeout(timer); if (socket) { socket.onmessage = null; socket.close(); } }};
+    return {state, resume, check, stop() { stopped = true; pending = false; env.clearTimeout(timer); detach(); }};
   }
 
   function feedStatus(state, now) {
@@ -217,8 +247,16 @@
     const toggle = q('outcomes'), bookStatus = q('status'), ladder = q('ladder'), meta = q('meta');
     const make = (tag, cls, text) => { const node = doc.createElement(tag); if (cls) node.className = cls; if (text !== undefined) node.textContent = text; return node; };
     let feed = null, renderTimer = null, demoTimer = null, freshnessTimer = null, generation = 0;
-    let selectedMarket = null, side = 0, view = null, waitingSince = null;
+    let selectedMarket = null, side = 0, view = null, waitingSince = null, visibleAt = 0;
+    const hidden = () => doc.visibilityState === 'hidden';
     function setText(node, text) { if (node.textContent !== text) node.textContent = text; }
+    // The selected outcome's book: the live one once ready, otherwise the last known one, if any.
+    function shown() {
+      const token = selectedMarket.tokens[side], book = view.books.get(token);
+      if (book && book.ready) return {book, old: false};
+      const previous = view.previous && view.previous.get(token);
+      return previous ? {book: previous, old: true} : {book, old: false};
+    }
     function stop() {
       ++generation;
       if (feed) feed.stop(); feed = null; view = null;
@@ -230,17 +268,22 @@
     function freshness() {
       if (!selectedMarket || !view) return;
       const now = env.Date.now();
+      // Messages held while the tab was frozen arrive just after it becomes visible; give them time.
+      if (feed && !hidden() && now - visibleAt >= 3000) feed.check(now);
+      const {book, old} = shown();
       let status = feedStatus(view, now);
       if (status === 'waiting') { if (waitingSince === null) waitingSince = now; } else waitingSince = null;
-      if (status === 'waiting' && now - waitingSince > 90000) status = 'missing';
+      if (status === 'waiting' && now - waitingSince > 90000 && !old) status = 'missing';
       const messages = {connecting: 'Connecting…', waiting: 'Waiting for the first snapshot. This can take up to 60 seconds.',
         missing: 'No book has arrived. The collector may not be collecting this market yet.',
         live: demo ? 'Live (synthetic)' : 'Live', stale: 'Snapshots are delayed. Showing the last known orders.',
         reconnecting: 'Connection interrupted. Reconnecting…',
         rejected: 'Live viewing is unavailable for this market. Select it again to retry.', invalid: 'Book data could not be read. Reconnecting…',
         incompatible: 'Book data is not compatible with this page. Reload the page before trying again.'};
-      setText(bookStatus, messages[status]); bookStatus.classList.toggle('live', status === 'live');
-      const book = view.books.get(selectedMarket.tokens[side]);
+      let text = messages[status];
+      if (old && ['connecting', 'waiting'].includes(status)) text = 'Reconnected. Showing the last known orders until a new snapshot arrives, up to 60 seconds.';
+      else if (old && ['reconnecting', 'invalid'].includes(status)) text += ' Showing the last known orders.';
+      setText(bookStatus, text); bookStatus.classList.toggle('live', status === 'live');
       const age = book?.snapshotAt === null || !book ? '' : `Last snapshot ${Math.max(0, Math.floor((now - book.snapshotAt) / 1000))}s ago`;
       const end = selectedMarket.end ? `Ends ${new Date(selectedMarket.end).toLocaleDateString()}` : '';
       setText(meta, [end, age].filter(Boolean).join(' · '));
@@ -265,7 +308,8 @@
     }
     function render() {
       if (!selectedMarket || !view) return;
-      const book = view.books.get(selectedMarket.tokens[side]);
+      const {book, old} = shown();
+      ladder.classList.toggle('ladder-old', old);
       if (!book || !book.ready) {
         if (!ladder.querySelector('.ladder-wait')) {
           const wait = make('div', 'ladder-wait'), spinner = make('span', 'market-spinner'); spinner.setAttribute('aria-hidden', 'true');
@@ -304,7 +348,7 @@
         const button = make('button', '', outcome); button.type = 'button'; button.setAttribute('aria-pressed', String(i === 0));
         button.addEventListener('click', () => chooseSide(i)); return button;
       }));
-      ladder.replaceChildren(); setText(meta, ''); setText(bookStatus, 'Connecting…'); bookStatus.classList.remove('live');
+      ladder.replaceChildren(); ladder.classList.remove('ladder-old'); setText(meta, ''); setText(bookStatus, 'Connecting…'); bookStatus.classList.remove('live');
       if (options.scroll !== false) body.scrollIntoView({block: 'nearest'});
       if (demo) {
         view = {status: 'live', books: new Map(market.tokens.map(token => [token, emptyBook()]))};
@@ -326,20 +370,23 @@
       try {
         feed = createFeed(env, options.streamOrigin(), market.tokens, state => {
           view = state;
-          if (mine !== generation || renderTimer !== null) return;
+          // Hidden tabs keep applying records but draw once when shown again.
+          if (mine !== generation || renderTimer !== null || hidden()) return;
           renderTimer = env.setTimeout(() => { renderTimer = null; if (mine === generation) render(); }, 100);
-        });
+        }, {paused: hidden});
         view = feed.state;
         freshnessTimer = env.setInterval(freshness, 1000);
       } catch (_) { bookStatus.textContent = 'Unable to connect. Select the market again to retry.'; }
     }
+    // Hidden tabs keep the subscription. Reconnects wait until the tab is visible again.
     doc.addEventListener('visibilitychange', () => {
-      if (!selectedMarket) return;
-      if (doc.visibilityState === 'hidden') {
-        stop(); ladder.replaceChildren(); setText(meta, ''); bookStatus.classList.remove('live');
-        setText(bookStatus, 'Live viewing is paused while this tab is hidden.');
-      } else select(selectedMarket);
+      if (hidden()) return;
+      visibleAt = env.Date.now();
+      if (feed) feed.resume();
+      if (selectedMarket && view) render();
     });
+    // After a network change the socket may be dead without a close; let the liveness check run now.
+    if (typeof env.addEventListener === 'function') env.addEventListener('online', () => { if (feed) feed.check(); });
     return {select, clear, selected: () => selectedMarket};
   }
 

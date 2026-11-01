@@ -455,8 +455,17 @@ socket selected in the table. Closing the popup closes that subscription and
 cancels directory and metadata requests. The browser decodes schema 1 version 2
 SBE frames, including coalesced records, using exact fixed-point `BigInt`
 values. Each outcome ignores updates until its own replacement snapshot.
-Reconnects discard both baselines before resubscribing. Hidden tabs release
-their subscriptions and start fresh on return.
+Reconnects discard both baselines before resubscribing, but keep showing the
+last known book, dimmed, until each outcome's new snapshot arrives. The stream
+disconnects a client rather than skip a record, so an open socket always has a
+complete book. The page therefore reconnects only when the socket closes or
+goes silent for 150 seconds after receiving data, since every book gets a
+snapshot every 60 seconds. This catches sockets that die without a close
+event, for example after sleep, a network change, or iOS suspending the tab.
+Hidden tabs keep their subscriptions and keep applying records, and draw once
+when shown again. While a tab is hidden it does not reconnect: a reconnect
+waits until the tab is visible, and the silence check waits 3 seconds after
+that so records held by a frozen tab arrive first.
 
 The book shows one outcome at a time, with a toggle between outcomes. Asks sit
 above the midpoint and bids below, the best 10 levels per side, with prices

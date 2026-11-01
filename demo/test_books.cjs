@@ -137,4 +137,51 @@ test('metadata carries the group label, event title, and 24-hour volume when pre
   const bare = B.metadata({...raw, groupItemTitle: '', events: 'x', volume24hr: -1});
   assert.equal(bare.label, null); assert.equal(bare.event, null); assert.equal(bare.volume24hr, null);
 });
+function clockEnv() { const e = env(); e.clock = 0; e.Date = {now: () => e.clock}; return e; }
+test('a close keeps the last ready books for display until a new snapshot replaces them', () => {
+  const e = env(), feed = B.createFeed(e, 'wss://stream.example.com', ['123', '456'], () => {}), first = e.sockets[0];
+  first.onopen(); first.onmessage({data: frame(record(1), record(1, '456'))});
+  first.onclose({code: 1006});
+  assert.equal(feed.state.books.get('123').ready, false, 'the live baseline is still discarded');
+  assert.equal(feed.state.previous.get('123').bids.get(450001n), 12345678901234567n);
+  [...e.timers.values()][0](); const second = e.sockets[1]; second.onopen();
+  second.onmessage({data: frame(record(1))});
+  assert.equal(feed.state.previous.has('123'), false); assert.equal(feed.state.previous.has('456'), true);
+  feed.stop();
+  const f = env(), rejected = B.createFeed(f, 'wss://stream.example.com', ['123'], () => {});
+  f.sockets[0].onopen(); f.sockets[0].onmessage({data: frame(record(1))}); f.sockets[0].onclose({code: 1008});
+  assert.equal(rejected.state.previous.size, 0, 'a rejected market shows no old orders'); rejected.stop();
+});
+test('hidden tabs keep the socket; reconnects wait until visible', () => {
+  let hidden = false;
+  const e = env(), feed = B.createFeed(e, 'wss://stream.example.com', ['123'], () => {}, {paused: () => hidden}), first = e.sockets[0];
+  first.onopen(); first.onmessage({data: frame(record(1))});
+  hidden = true;
+  first.onmessage({data: frame(record(2, '123', {quantity: 5n}))});
+  assert.equal(feed.state.books.get('123').bids.get(450001n), 5n, 'records still apply while hidden');
+  assert.equal(first.closed, undefined, 'hiding does not close the socket');
+  first.onclose({code: 1006});
+  assert.equal(e.timers.size, 0, 'no reconnect while hidden'); assert.equal(e.sockets.length, 1);
+  feed.check(); assert.equal(e.sockets.length, 1, 'check does nothing while hidden');
+  hidden = false; feed.check(); assert.equal(e.sockets.length, 2, 'shown again: reconnect now');
+  feed.check(); assert.equal(e.sockets.length, 2, 'only once');
+  feed.stop();
+  // A backoff timer that fires while hidden also defers.
+  const f = env(); let away = false;
+  const other = B.createFeed(f, 'wss://stream.example.com', ['123'], () => {}, {paused: () => away});
+  f.sockets[0].onclose({code: 1013}); away = true; [...f.timers.values()][0]();
+  assert.equal(f.sockets.length, 1); away = false; other.check(); assert.equal(f.sockets.length, 2); other.stop();
+});
+test('a socket silent for 150 s after receiving data is replaced', () => {
+  const e = clockEnv(), feed = B.createFeed(e, 'wss://stream.example.com', ['123'], () => {}), first = e.sockets[0];
+  first.onopen(); e.clock = 1000; feed.check(); e.clock = 500000; feed.check();
+  assert.equal(e.sockets.length, 1, 'no data yet: a market that is not collected does not loop');
+  e.clock = 1000000; first.onmessage({data: frame(record(1))});
+  e.clock = 1150000; feed.check(); assert.equal(e.sockets.length, 1, 'exactly 150 s is still alive');
+  e.clock = 1150001; feed.check(); assert.equal(e.sockets.length, 2, 'silent socket replaced');
+  assert.equal(first.closed, true); assert.equal(first.onmessage, null, 'the old socket can no longer change books');
+  assert.equal(feed.state.previous.has('123'), true, 'the last book stays visible while resyncing');
+  assert.equal(feed.state.status, 'connecting');
+  feed.stop();
+});
 console.log(`${passed} book tests passed`);

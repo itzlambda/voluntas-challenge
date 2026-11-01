@@ -138,12 +138,13 @@ const id = `0x${'a'.repeat(64)}`;
     assert.deepEqual(await page.locator('.ladder-row.bid').allInnerTexts(), ['45.0001¢\n12,345,678,901.234567'], 'the No outcome shows its own book');
     await page.locator('[data-book-outcomes] button', {hasText: 'Yes'}).click();
     sockets[0].close({code: 1013, reason: 'test reconnect'});
-    await page.waitForFunction(() => document.querySelector('[data-book-status]').textContent.includes('Reconnecting') || document.querySelector('[data-book-status]').textContent.includes('Waiting for the first snapshot'));
-    await page.waitForFunction(() => document.querySelector('[data-book-status]').textContent.includes('Waiting for the first snapshot'));
+    await page.getByText('Reconnected. Showing the last known orders until a new snapshot arrives, up to 60 seconds.', {exact: true}).waitFor();
     assert.equal(connections, 2);
-    assert.equal(await page.locator('.ladder-row').count(), 0);
+    assert.equal(await page.locator('.ladder.ladder-old').count(), 1, 'the last known book stays visible, dimmed');
+    assert.deepEqual(await page.locator('.ladder-row.ask').allInnerTexts(), ['55¢\n2.5'], 'the new session\'s pre-snapshot update is ignored');
     sockets[1].send(Buffer.concat([record(1), record(1, '456')]));
     await page.locator('[data-book-status]').filter({hasText: /^Live$/}).waitFor();
+    await page.waitForFunction(() => !document.querySelector('.ladder.ladder-old'), null, {timeout: 2000}); // a fresh snapshot replaces the old book
     await page.mouse.click(2, 2);
     await page.waitForTimeout(200);
     assert.equal(await page.locator('dialog').evaluate(d => d.open), false, 'outside click closes live books');
@@ -152,22 +153,32 @@ const id = `0x${'a'.repeat(64)}`;
     await page.getByRole('button', {name: /Live wire test market/}).waitFor();
     assert.equal(directoryRequests, 2, 'reopening fetches current assignments');
     await page.keyboard.press('Escape');
-    // Hidden tabs release the subscription and start fresh when visible again.
+    // Hidden tabs keep the subscription and its books. A close while hidden reconnects only once visible.
+    const visibility = value => page.evaluate(state => {
+      Object.defineProperty(document, 'visibilityState', {configurable: true, value: state});
+      document.dispatchEvent(new Event('visibilitychange'));
+    }, value);
     await page.locator('.socket-id').first().click();
     await page.getByRole('button', {name: /Live wire test market/}).click();
     await page.waitForFunction(() => document.querySelector('[data-book-status]').textContent.includes('Waiting for the first snapshot'));
-    const beforeHidden = connections;
-    await page.evaluate(() => {
-      Object.defineProperty(document, 'visibilityState', {configurable: true, value: 'hidden'});
-      document.dispatchEvent(new Event('visibilitychange'));
-    });
-    await page.getByText('Live viewing is paused while this tab is hidden.', {exact: true}).waitFor();
-    await page.evaluate(() => {
-      Object.defineProperty(document, 'visibilityState', {configurable: true, value: 'visible'});
-      document.dispatchEvent(new Event('visibilitychange'));
-    });
-    await page.waitForFunction(() => document.querySelector('[data-book-status]').textContent.includes('Waiting for the first snapshot'));
-    assert.equal(connections, beforeHidden + 1);
+    const beforeHidden = connections, closedBeforeHidden = closed, live = sockets[sockets.length - 1];
+    live.send(Buffer.concat([record(1), record(1, '456')]));
+    await page.locator('[data-book-status]').filter({hasText: /^Live$/}).waitFor();
+    await visibility('hidden');
+    live.send(record(2, '123', {quantity: 321000000n}));
+    await page.waitForTimeout(400);
+    assert.equal(connections, beforeHidden, 'hiding does not reconnect');
+    assert.equal(closed, closedBeforeHidden, 'hiding keeps the socket open');
+    await visibility('visible');
+    await page.waitForFunction(() => [...document.querySelectorAll('.ladder-row.bid')].some(row => row.textContent === '45.0001¢321'));
+    assert.equal(await page.locator('[data-book-status]').innerText(), 'Live', 'no snapshot wait after returning');
+    await visibility('hidden');
+    live.close({code: 1013, reason: 'closed while hidden'});
+    await page.waitForTimeout(1600);
+    assert.equal(connections, beforeHidden, 'no reconnect while hidden');
+    await visibility('visible');
+    await page.getByText('Reconnected. Showing the last known orders until a new snapshot arrives, up to 60 seconds.', {exact: true}).waitFor();
+    assert.equal(connections, beforeHidden + 1, 'reconnects once visible');
     await page.keyboard.press('Escape');
     // An unresolvable Polymarket host gets its own explanation; other failures do not blame the region.
     gammaMode = 'dns';
@@ -196,6 +207,6 @@ const id = `0x${'a'.repeat(64)}`;
     await page.getByText('Market viewing could not be loaded. Reload the page to retry.', {exact: true}).waitFor();
     await page.keyboard.press('Escape');
     assert.deepEqual(errors, []);
-    console.log('Browser checks passed: synthetic popup/history/ladder/outcome toggle, page-by-page Gamma lookup, unreachable-Polymarket message, mobile overflow, exact SBE snapshots/updates, waiting state, reconnect reset, close cleanup, and assignment refresh.');
+    console.log('Browser checks passed: synthetic popup/history/ladder/outcome toggle, page-by-page Gamma lookup, unreachable-Polymarket message, mobile overflow, exact SBE snapshots/updates, waiting state, reconnect with last known book, hidden-tab keepalive and deferred reconnect, close cleanup, and assignment refresh.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

@@ -18,16 +18,6 @@
       "at": 1793341807,
       "label": "Markets spread across sockets",
       "details": "Collector restarted with hash-ordered placement and 20% spare sockets."
-    },
-    {
-      "at": 1793525118,
-      "label": "Socket market directory enabled",
-      "details": "Collector restarted to publish per-socket market lists for live browser order books."
-    },
-    {
-      "at": 1793525917,
-      "label": "WebSocket close handshake corrected",
-      "details": "Collector restarted to finish client-initiated close handshakes cleanly."
     }
   ],
   "windows": [
@@ -44,6 +34,12 @@
       "label": "Polymarket outage",
       "details": "Polymarket halted trading, so market data was far below normal. The collector kept running.",
       "url": "https://status.polymarket.com/"
+    },
+    {
+      "start": 1793525100,
+      "end": 1793526120,
+      "label": "Socket markets and live order books deployed",
+      "details": "Collector restarted to publish per-socket market lists for live browser order books. Ignore the band itself; it spans the restarts."
     }
   ],
   "started_at": null,

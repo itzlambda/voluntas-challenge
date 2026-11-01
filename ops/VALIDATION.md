@@ -9,6 +9,7 @@ cargo test --all-targets
 python3 -m unittest discover -s demo
 node demo/test_ui.cjs
 node demo/test_sockets.cjs
+node demo/test_books.cjs
 node demo/test_deployment.cjs
 ```
 
@@ -91,3 +92,27 @@ time ranges returned native Prometheus errors. Upstream URL overrides were
 rejected, and an administrative API path returned 404. These expression queries
 stored no synthetic samples. The Prometheus DNS record is absent, its Caddy
 route is removed, and the server still listens only on loopback.
+
+## Socket market view validation, 2026-11-01
+
+Local validation passed formatting, Clippy with warnings denied, 94 Rust
+library tests, and the 25 affected metrics, standby, and mock-exchange
+integration tests. Dashboard checks passed 43 Python tests, 11 book wire and
+lifecycle tests, 17 socket tests, 14 UI tests, and 14 deployment-notice tests.
+Two Caddy tests verify adapted route precedence and actual health/CORS behavior
+when the collector upstream returns 502.
+
+The isolated Chromium check exercises the reused history chart, synthetic
+markets and books, 45-market Gamma batches, snapshot waiting, exact quantities,
+updates, reconnect baseline resets, dialog cleanup, focus restoration, and
+refreshed assignments. It also checks long quantities on a 390 px viewport,
+stable table nodes and status announcements, hidden-tab release/resume,
+disabled streaming, and a missing book-view asset.
+
+A public Gamma lookup with 40 condition IDs, including a v2 market, returned
+all 40 rows with CORS `*` using explicit versions, `closed=any`, and a matching
+page limit. The shared `demo/fixtures/books.sbe` fixture is checked byte-for-byte
+against Rust's `with_message` encoder and independently decoded in JavaScript.
+These checks establish local behavior and metadata compatibility. Collector
+startup, live proxy configuration, and the deployed browser flow require
+verification during rollout.

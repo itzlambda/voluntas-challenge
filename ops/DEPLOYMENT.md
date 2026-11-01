@@ -75,7 +75,8 @@ Confirm that the aggregate target is up with a `1s` scrape interval and `900ms`
 timeout. Add the `collector_sockets` job from `ops/prometheus.yml` using the same
 collector target address, `/metrics/sockets`, a `15s` scrape interval, and a `3s`
 timeout. Confirm that this target is also up. Preserve the one-second job.
-Install `demo/socket_metrics.py`, `demo/sockets.js`, and `demo/socket-demo.js`
+Install `demo/socket_metrics.py`, `demo/sockets.js`, `demo/book-view.js`,
+and `demo/socket-demo.js`
 alongside the existing demo files when updating the dashboard.
 Confirm that coverage appears and history gains observations. Rates and
 percentiles require multiple scrapes and observations. Traffic rates use one

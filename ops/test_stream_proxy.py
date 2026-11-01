@@ -4,6 +4,11 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import socket
+import tempfile
+import time
+import urllib.error
+import urllib.request
 import unittest
 
 
@@ -35,6 +40,42 @@ class StreamProxyTests(unittest.TestCase):
         self.assertEqual(headers["Access-Control-Allow-Origin"], ["https://demo.example.com"])
         for path in ["/", "/metrics", "/metrics/sockets", "/readyz"]:
             self.assertEqual(handlers(route_for(path))[0]["upstreams"], [{"dial": "127.0.0.1:9100"}])
+
+    def test_cors_is_preserved_when_collector_is_unavailable(self):
+        with tempfile.TemporaryDirectory() as directory, socket.socket() as unavailable, socket.socket() as address:
+            unavailable.bind(("127.0.0.1", 0))
+            address.bind(("127.0.0.1", 0))
+            port = address.getsockname()[1]
+            address.close()
+            config = Path(directory) / "Caddyfile"
+            source = Path(__file__).with_name("voluntas-stream.caddy.example").read_text()
+            config.write_text("{\n admin off\n}\n" + source.replace("127.0.0.1:19090", f"127.0.0.1:{unavailable.getsockname()[1]}"))
+            process = subprocess.Popen(
+                ["caddy", "run", "--config", str(config), "--adapter", "caddyfile"],
+                env={**os.environ, "STREAM_HOST": f"http://127.0.0.1:{port}", "DEMO_ORIGIN": "https://demo.example.com"},
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            )
+            try:
+                base = f"http://127.0.0.1:{port}"
+                deadline = time.monotonic() + 5
+                while True:
+                    try:
+                        with urllib.request.urlopen(base + "/healthz", timeout=1) as response:
+                            self.assertEqual(response.status, 200)
+                            self.assertEqual(response.read(), b"ok")
+                        break
+                    except OSError:
+                        if time.monotonic() > deadline:
+                            raise
+                        time.sleep(.05)
+                request = urllib.request.Request(base + "/sockets/0/markets", headers={"Origin": "https://demo.example.com"})
+                with self.assertRaises(urllib.error.HTTPError) as caught:
+                    urllib.request.urlopen(request, timeout=2)
+                self.assertEqual(caught.exception.code, 502)
+                self.assertEqual(caught.exception.headers["Access-Control-Allow-Origin"], "https://demo.example.com")
+            finally:
+                process.terminate()
+                process.wait(timeout=5)
 
 
 if __name__ == "__main__":

@@ -434,7 +434,8 @@ own evidence and are not operational metrics.
 
 On `/live`, selecting a socket opens its traffic history and current market
 assignments. The browser requests the directory directly from the stream host,
-then batches condition IDs through Gamma to obtain questions, outcomes, quoted
+then batches condition IDs through Gamma with explicit v1/v2 versions and a
+page limit covering the batch to obtain questions, outcomes, quoted
 prices, icons, end dates, and outcome asset IDs. Refreshing or reopening the
 popup fetches assignments again. An unpublished socket shows an empty waiting
 state with a refresh button. Gamma failures keep the market IDs visible.
@@ -445,12 +446,16 @@ socket selected in the table. Closing the popup closes that subscription and
 cancels directory and metadata requests. The browser decodes schema 1 version 2
 SBE frames, including coalesced records, using exact fixed-point `BigInt`
 values. Each outcome ignores updates until its own replacement snapshot.
-Reconnects discard both baselines before resubscribing. Waiting for the first
+Reconnects discard both baselines before resubscribing. Hidden tabs release
+their subscriptions and start fresh on return. The view shows snapshot age and
+marks books delayed after 135 seconds without a snapshot. Waiting for the first
 snapshot can take up to 60 seconds. The view shows the best 20 levels per side.
 
 `/live?socket-demo=1` supplies synthetic markets and changing books entirely in
 the browser. These fixtures never request production assignments or Gamma.
-Run `node demo/test_books.cjs` for wire and reconnect checks. The optional
+Run `node demo/test_books.cjs` for wire, freshness, and reconnect checks.
+`demo/fixtures/books.sbe` is checked against the shared Rust `with_message`
+encoder by a unit test and decoded independently by the JavaScript tests. The optional
 Playwright check is `node demo/test_books_browser.cjs http://127.0.0.1:8000`
 against an isolated demo instance configured with
 `--stream-origin wss://stream.example.com`; it intercepts metadata and streams.

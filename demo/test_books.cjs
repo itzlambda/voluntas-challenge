@@ -8,6 +8,14 @@ const B = context.DemoBooks;
 const {record, frame} = require('./book-fixture.cjs');
 let passed = 0;
 function test(name, fn) { fn(); passed++; console.log(`ok ${name}`); }
+test('shared Rust encoder fixture decodes snapshots and deletion exactly', () => {
+  const bytes = fs.readFileSync(`${__dirname}/fixtures/books.sbe`);
+  const records = B.decodeFrame(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength));
+  assert.equal(records.length, 3); assert.equal(records[0].bids[0][1], 12345678901234567n);
+  const book = B.emptyBook(); B.apply(book, records[0]); B.apply(book, records[1]);
+  assert.equal(book.bids.size, 0); assert.equal(records[2].symbol, '456');
+  assert.equal(records[2].bids.length + records[2].asks.length, 0);
+});
 test('fixed point never rounds through Number', () => {
   assert.equal(B.fixed(12345678901234567n), '12345678901.234567'); assert.equal(B.fixed(1000000n), '1'); assert.equal(B.fixed(-1n), '-0.000001');
 });
@@ -66,5 +74,24 @@ test('policy rejection does not retry and stop cancels pending reconnect', () =>
   e.sockets[0].onclose({code: 1008}); assert.equal(feed.state.status, 'rejected'); assert.equal(e.timers.size, 0); feed.stop();
   const f = env(), another = B.createFeed(f, 'wss://stream.example.com', ['123'], () => {});
   f.sockets[0].onclose({code: 1013}); assert.equal(f.timers.size, 1); another.stop(); assert.equal(f.timers.size, 0);
+});
+test('snapshot freshness ages into stale even if updates continue', () => {
+  const book = B.emptyBook(); book.ready = true; book.snapshotAt = 1000;
+  const state = {status: 'live', books: new Map([['123', book]])};
+  assert.equal(B.feedStatus(state, 136000), 'live');
+  B.apply(book, {type: 'update', side: 0, price: 1n, quantity: 2n});
+  assert.equal(B.feedStatus(state, 136001), 'stale');
+  book.snapshotAt = 136001; assert.equal(B.feedStatus(state, 136001), 'live');
+  state.status = 'reconnecting'; assert.equal(B.feedStatus(state, 999999), 'reconnecting');
+});
+test('decode errors immediately clear all baselines and stop after two attempts', () => {
+  const e = env(), feed = B.createFeed(e, 'wss://stream.example.com', ['123'], () => {});
+  const first = e.sockets[0]; first.onopen(); first.onmessage({data: frame(record(1))});
+  const bad = record(1); bad.writeUInt16LE(99, 6);
+  first.onmessage({data: frame(bad)}); assert.equal(feed.state.books.get('123').ready, false);
+  first.onclose({code: 1000});
+  const reconnect = [...e.timers.values()][0]; e.timers.clear(); reconnect();
+  const second = e.sockets[1]; second.onopen(); second.onmessage({data: frame(bad)}); second.onclose({code: 1000});
+  assert.equal(feed.state.status, 'incompatible'); assert.equal(e.timers.size, 0); feed.stop();
 });
 console.log(`${passed} book tests passed`);

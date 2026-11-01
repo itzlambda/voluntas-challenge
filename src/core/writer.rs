@@ -217,3 +217,51 @@ pub(crate) fn with_message<R>(
         }
     }
 }
+
+#[cfg(test)]
+mod browser_fixture_tests {
+    use crate::Side;
+    use crate::core::writer::{reusable_update, with_message};
+    use crate::model::{OrderBookId, OutputRecord, Price, Qty};
+
+    #[test]
+    fn browser_fixture_matches_shared_sbe_encoding() {
+        let records = [
+            OutputRecord::Snapshot {
+                order_book: OrderBookId::from("123"),
+                bids: vec![(Price(450_001), Qty(12_345_678_901_234_567))],
+                asks: vec![(Price(550_000), Qty(2_500_000))],
+                received_at: chrono::DateTime::UNIX_EPOCH,
+                exchange_ts: chrono::DateTime::UNIX_EPOCH,
+            },
+            OutputRecord::LevelUpdate {
+                received_instant: None,
+                order_book: OrderBookId::from("123"),
+                side: Side::Buy,
+                price: Price(450_001),
+                qty: Qty(0),
+                received_at: chrono::DateTime::UNIX_EPOCH,
+                exchange_ts: chrono::DateTime::UNIX_EPOCH,
+            },
+            OutputRecord::Snapshot {
+                order_book: OrderBookId::from("456"),
+                bids: vec![],
+                asks: vec![],
+                received_at: chrono::DateTime::UNIX_EPOCH,
+                exchange_ts: chrono::DateTime::UNIX_EPOCH,
+            },
+        ];
+        let mut encoded = Vec::new();
+        for record in records {
+            let bytes = with_message(record, &mut reusable_update(), |message| {
+                let mut bytes = vec![0; message.encoded_length_with_header()?];
+                let written = message.encode(&mut bytes)?;
+                anyhow::ensure!(written == bytes.len(), "fixture encoded length mismatch");
+                Ok(bytes)
+            })
+            .unwrap();
+            encoded.extend(bytes);
+        }
+        assert_eq!(encoded, include_bytes!("../../demo/fixtures/books.sbe"));
+    }
+}

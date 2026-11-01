@@ -60,7 +60,7 @@
     return records;
   }
 
-  function emptyBook() { return {ready: false, bids: new Map(), asks: new Map()}; }
+  function emptyBook() { return {ready: false, snapshotAt: null, bids: new Map(), asks: new Map()}; }
   function apply(book, record) {
     if (record.type === 'snapshot') {
       book.bids = new Map(record.bids.filter(([, qty]) => qty !== 0n));
@@ -86,13 +86,13 @@
     let icon = null;
     try { const url = new URL(raw.icon); if (url.origin === ICON_ORIGIN) icon = url.href; } catch (_) { /* Optional image. */ }
     const end = typeof raw.endDate === 'string' && Number.isFinite(Date.parse(raw.endDate)) ? raw.endDate : null;
-    return {id: raw.conditionId, question: typeof raw.question === 'string' ? raw.question : raw.conditionId,
+    return {id: raw.conditionId.toLowerCase(), question: typeof raw.question === 'string' ? raw.question : raw.conditionId,
       outcomes, tokens, prices: prices.map(p => typeof p === 'string' && /^\d+(\.\d+)?$/.test(p) ? p : null), icon, end};
   }
 
   // Every new session discards its baselines. A late callback from an older session is ignored.
   function createFeed(env, url, tokens, changed) {
-    let socket = null, timer = null, stopped = false, failures = 0;
+    let socket = null, timer = null, stopped = false, failures = 0, decodeFailures = 0;
     const state = {status: 'connecting', books: new Map()};
     function reset() { state.books = new Map(tokens.map(token => [token, emptyBook()])); }
     function connect() {
@@ -110,19 +110,24 @@
           const records = decodeFrame(event.data);
           for (const record of records) {
             const book = state.books.get(record.symbol);
-            if (book) apply(book, record);
+            if (book) {
+              apply(book, record);
+              if (record.type === 'snapshot') book.snapshotAt = (env.Date || Date).now();
+            }
           }
           state.status = [...state.books.values()].every(book => book.ready) ? 'live' : 'waiting';
-          if (state.status === 'live') failures = 0;
+          if (state.status === 'live') { failures = 0; decodeFailures = 0; }
           changed(state);
         } catch (_) {
-          state.status = 'invalid'; changed(state);
-          current.close();
+          reset(); decodeFailures += 1;
+          state.status = decodeFailures >= 2 ? 'incompatible' : 'invalid'; changed(state);
+          current.onmessage = null; current.close();
         }
       };
       current.onclose = event => {
         if (stopped || socket !== current) return;
         reset();
+        if (decodeFailures >= 2) { state.status = 'incompatible'; changed(state); return; }
         if ([1008, 1003].includes(event.code)) { state.status = 'rejected'; changed(state); return; }
         state.status = 'reconnecting'; changed(state);
         timer = env.setTimeout(connect, Math.min(30000, 1000 * 2 ** Math.min(failures++, 5)));
@@ -132,58 +137,112 @@
     return {state, stop() { stopped = true; env.clearTimeout(timer); if (socket) { socket.onmessage = null; socket.close(); } }};
   }
 
+  function feedStatus(state, now) {
+    if (state.status !== 'live') return state.status;
+    return [...state.books.values()].some(book => book.snapshotAt === null || now - book.snapshotAt > 135000) ? 'stale' : 'live';
+  }
+
   function mount(doc, env, dialog, demo) {
     const list = dialog.querySelector('[data-market-list]'), note = dialog.querySelector('[data-market-status]');
     const detail = dialog.querySelector('[data-book-detail]'), title = dialog.querySelector('[data-book-title]');
     const bookStatus = dialog.querySelector('[data-book-status]'), outcomes = dialog.querySelector('[data-book-outcomes]');
     const retry = dialog.querySelector('[data-market-retry]');
-    let generation = 0, abort = null, feed = null, renderTimer = null, demoTimer = null, currentId = null, stream = null;
+    let generation = 0, abort = null, feed = null, renderTimer = null, demoTimer = null, freshnessTimer = null, selectedMarket = null, currentId = null, stream = null;
     const make = (tag, cls, text) => { const node = doc.createElement(tag); if (cls) node.className = cls; if (text !== undefined) node.textContent = text; return node; };
     function stopBook() {
       if (feed) feed.stop(); feed = null;
       env.clearTimeout(renderTimer); renderTimer = null;
       env.clearInterval(demoTimer); demoTimer = null;
+      env.clearInterval(freshnessTimer); freshnessTimer = null;
     }
-    function close() { ++generation; if (abort) abort.abort(); stopBook(); }
-    const request = (url, signal) => env.fetch(url, {signal: env.AbortSignal.any([signal, env.AbortSignal.timeout(15000)])});
+    function close() { ++generation; if (abort) abort.abort(); stopBook(); selectedMarket = null; }
+    function setText(node, text) { if (node.textContent !== text) node.textContent = text; }
+    async function request(url, signal) {
+      const controller = new env.AbortController();
+      const cancel = () => controller.abort();
+      if (signal.aborted) cancel(); else signal.addEventListener('abort', cancel, {once: true});
+      const timeout = env.setTimeout(cancel, 15000);
+      try {
+        const response = await env.fetch(url, {signal: controller.signal});
+        return {ok: response.ok, status: response.status, body: response.ok ? await response.json() : null};
+      } finally {
+        env.clearTimeout(timeout); signal.removeEventListener('abort', cancel);
+      }
+    }
     async function json(url, signal) {
       const response = await request(url, signal);
       if (!response.ok) throw new Error('Request failed');
-      return response.json();
+      return response.body;
+    }
+    function freshness(market, state) {
+      const now = env.Date.now();
+      const messages = {connecting: 'Connecting to live order books…', waiting: 'Waiting for a snapshot. This may take up to 60 seconds.',
+        live: demo ? 'Synthetic live order books' : 'Live order books', stale: 'Snapshots are delayed. Showing the last known orders.',
+        reconnecting: 'Connection interrupted. Reconnecting and waiting for fresh snapshots…',
+        rejected: 'Live viewing is unavailable for this market. Select it again to retry.', invalid: 'Book data could not be read. Reconnecting…',
+        incompatible: 'Book data is not compatible with this page. Reload the page before trying again.'};
+      setText(bookStatus, messages[feedStatus(state, now)]);
+      market.tokens.forEach((token, i) => {
+        const age = outcomes.children[i]?.querySelector('[data-snapshot-age]'), book = state.books.get(token);
+        if (age) setText(age, book?.snapshotAt === null || !book ? '' : `Last snapshot ${Math.max(0, Math.floor((now - book.snapshotAt) / 1000))}s ago`);
+      });
+    }
+    function renderLevels(body, levels) {
+      const key = levels.map(([p, q]) => `${p}:${q}`).join(',');
+      if (body.dataset.levels === key) return;
+      body.dataset.levels = key;
+      if (!levels.length) { const row = make('tr'), cell = make('td', 'muted', 'No orders'); cell.colSpan = 2; row.append(cell); body.replaceChildren(row); return; }
+      if (body.firstElementChild?.firstElementChild?.colSpan === 2) body.replaceChildren();
+      while (body.children.length > levels.length) body.lastElementChild.remove();
+      levels.forEach(([price, qty], i) => {
+        let row = body.children[i];
+        if (!row) { row = make('tr'); row.append(make('td'), make('td')); body.append(row); }
+        setText(row.children[0], fixed(price)); setText(row.children[1], fixed(qty));
+      });
     }
     function renderBooks(market, state) {
-      const messages = {connecting: 'Connecting to live order books…', waiting: 'Waiting for a snapshot. This may take up to 60 seconds.',
-        live: 'Live order books', reconnecting: 'Connection interrupted. Reconnecting and waiting for fresh snapshots…',
-        rejected: 'Live viewing is unavailable for this market. Select it again to retry.', invalid: 'Book data could not be read. Reconnecting…'};
-      bookStatus.textContent = messages[state.status];
-      outcomes.replaceChildren(...market.tokens.map((token, i) => {
-        const book = state.books.get(token), section = make('section', 'outcome-book');
-        section.append(make('h4', '', market.outcomes[i]));
-        if (!book || !book.ready) { section.append(make('p', 'muted', 'Waiting for a snapshot…')); return section; }
-        const sides = make('div', 'book-sides');
-        for (const side of ['bids', 'asks']) {
-          const table = make('table', `depth-table ${side}`);
-          table.append(make('caption', '', side === 'bids' ? 'Bids' : 'Asks'));
-          const head = make('thead'), row = make('tr');
-          for (const label of ['Price (USDC)', 'Shares']) { const th = make('th', '', label); th.scope = 'col'; row.append(th); }
-          head.append(row); table.append(head);
-          const body = make('tbody'), levels = sortedLevels(book, side).slice(0, 20);
-          for (const [price, qty] of levels) { const tr = make('tr'); tr.append(make('td', '', fixed(price)), make('td', '', fixed(qty))); body.append(tr); }
-          if (!levels.length) { const tr = make('tr'), td = make('td', 'muted', 'No orders'); td.colSpan = 2; tr.append(td); body.append(tr); }
-          table.append(body); sides.append(table);
+      market.tokens.forEach((token, i) => {
+        const book = state.books.get(token);
+        let section = outcomes.children[i];
+        if (!section) {
+          section = make('section', 'outcome-book');
+          section.append(make('h4', '', market.outcomes[i]));
+          const age = make('p', 'small muted'); age.dataset.snapshotAge = ''; age.setAttribute('aria-live', 'off');
+          section.append(age); outcomes.append(section);
         }
-        section.append(sides); return section;
-      }));
+        if (!book || !book.ready) {
+          section.querySelector('.book-sides')?.remove();
+          if (!section.querySelector('.book-waiting')) section.append(make('p', 'muted book-waiting', 'Waiting for a snapshot…'));
+          return;
+        }
+        section.querySelector('.book-waiting')?.remove();
+        let sides = section.querySelector('.book-sides');
+        if (!sides) {
+          sides = make('div', 'book-sides');
+          for (const side of ['bids', 'asks']) {
+            const table = make('table', `depth-table ${side}`);
+            table.append(make('caption', '', side === 'bids' ? 'Bids' : 'Asks'));
+            const head = make('thead'), row = make('tr');
+            for (const label of ['Price (USDC)', 'Shares']) { const th = make('th', '', label); th.scope = 'col'; row.append(th); }
+            head.append(row); table.append(head, make('tbody')); sides.append(table);
+          }
+          section.append(sides);
+        }
+        for (const side of ['bids', 'asks']) renderLevels(sides.querySelector(`.${side} tbody`), sortedLevels(book, side).slice(0, 20));
+      });
+      freshness(market, state);
     }
     function select(market) {
-      stopBook(); detail.hidden = false; title.textContent = market.question;
+      stopBook(); selectedMarket = market; detail.hidden = false; title.textContent = market.question;
+      outcomes.replaceChildren(); setText(bookStatus, 'Connecting to live order books…');
       detail.scrollIntoView({block: 'nearest'});
       if (demo) {
         const state = {status: 'live', books: new Map(market.tokens.map(token => [token, emptyBook()]))};
         let tick = 0;
         const update = () => {
           market.tokens.forEach((token, i) => apply(state.books.get(token), {type: 'snapshot', bids: [[450000n + BigInt(i * 50000), 10000000n + BigInt(tick) * 1000000n]], asks: [[550000n + BigInt(i * 50000), 15000000n]]}));
-          tick += 1; renderBooks(market, state); bookStatus.textContent = 'Synthetic live order books';
+          for (const book of state.books.values()) book.snapshotAt = env.Date.now();
+          tick += 1; renderBooks(market, state);
         };
         update(); demoTimer = env.setInterval(update, 1500); return;
       }
@@ -193,6 +252,7 @@
           if (mine !== generation || renderTimer !== null) return;
           renderTimer = env.setTimeout(() => { renderTimer = null; if (mine === generation) renderBooks(market, state); }, 100);
         });
+        freshnessTimer = env.setInterval(() => { if (feed) freshness(market, feed.state); }, 1000);
       } catch (_) { bookStatus.textContent = 'Unable to connect. Select the market again to retry.'; }
     }
     function fill(button, market) {
@@ -205,7 +265,7 @@
       button.append(copy); button.disabled = false; button.addEventListener('click', () => select(market));
     }
     async function open(id) {
-      close(); const mine = generation; currentId = id; abort = new AbortController();
+      close(); const mine = generation; currentId = id; abort = new env.AbortController();
       const signal = abort.signal;
       detail.hidden = true; list.replaceChildren(); retry.hidden = true; note.textContent = 'Loading markets…';
       try {
@@ -214,14 +274,16 @@
         else {
           const config = await json('/api/demo/config', signal);
           if (mine !== generation) return;
+          if (config.stream_origin === null) { note.textContent = 'Live order books are not enabled on this deployment.'; return; }
           if (typeof config.stream_origin !== 'string' || !/^wss:\/\/[A-Za-z0-9.-]+(?::\d{1,5})?$/.test(config.stream_origin)) throw new Error('Stream unavailable');
           stream = config.stream_origin;
           const response = await request(`${stream.replace('wss:', 'https:')}/sockets/${id}/markets`, signal);
           if (mine !== generation) return;
           if (response.status === 404) { note.textContent = 'No markets published for this socket yet.'; retry.hidden = false; return; }
           if (!response.ok) throw new Error('Directory unavailable');
-          const body = await response.json(); ids = body.markets;
+          const body = response.body; ids = body.markets;
           if (!Array.isArray(ids) || ids.length > 512 || !ids.every(value => typeof value === 'string' && /^0x[0-9a-fA-F]{64}$/.test(value))) throw new Error('Invalid directory');
+          ids = [...new Set(ids.map(id => id.toLowerCase()))];
         }
         if (mine !== generation) return;
         note.textContent = ids.length ? `${ids.length} markets${demo ? ' · Synthetic demo' : ''}. Select a market to watch its order books.` : 'No markets on this socket.';
@@ -235,7 +297,8 @@
             outcomes: ['Yes', 'No'], prices: ['0.45', '0.55'], tokens: [`${i + 1}1`, `${i + 1}2`], icon: null, end: null})); return;
         }
         for (let start = 0; start < ids.length; start += 40) {
-          const batch = ids.slice(start, start + 40), params = new URLSearchParams();
+          const batch = ids.slice(start, start + 40), params = new URLSearchParams({limit: String(Math.min(40, ids.length - start)), closed: 'any'});
+          params.append('version', 'v1'); params.append('version', 'v2');
           for (const id of batch) params.append('condition_ids', id);
           try {
             const rows = await json(`${GAMMA}/markets?${params}`, signal);
@@ -257,8 +320,13 @@
         note.textContent = 'Markets could not be loaded. Try again.'; retry.hidden = false;
       }
     }
+    doc.addEventListener('visibilitychange', () => {
+      if (!selectedMarket) return;
+      if (doc.visibilityState === 'hidden') { stopBook(); outcomes.replaceChildren(); setText(bookStatus, 'Live viewing is paused while this tab is hidden.'); }
+      else select(selectedMarket);
+    });
     retry.addEventListener('click', () => open(currentId));
     return {open, close};
   }
-  root.DemoBooks = {fixed, decodeFrame, emptyBook, apply, sortedLevels, metadata, createFeed, mount};
+  root.DemoBooks = {fixed, decodeFrame, emptyBook, apply, sortedLevels, metadata, createFeed, feedStatus, mount};
 })(typeof window !== 'undefined' ? window : globalThis);

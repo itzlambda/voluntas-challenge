@@ -462,3 +462,5 @@ main > .page-section:first-of-type { border-top: 0; margin-top: 0; padding-top: 
 .depth-table th, .depth-table td { text-align: right; padding: 4px; border-bottom: 1px solid var(--line); }
 @media (max-width: 700px) { .book-outcomes { grid-template-columns: minmax(0, 1fr); } .socket-dialog { padding: 14px; } }
 @media (prefers-reduced-motion: reduce) { .market-spinner { animation: none; } }
+
+@media (max-width: 480px) { .book-sides { grid-template-columns: minmax(0, 1fr); } }

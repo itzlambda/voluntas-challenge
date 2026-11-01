@@ -402,9 +402,17 @@
       readout: q('readout'), historyNote: q('history-note'), windows: [...panel.querySelectorAll('[data-socket-window]')],
     };
     const dialog = q('dialog');
-    const books = win.DemoBooks.mount(doc, win, dialog, demo);
+    const books = win.DemoBooks ? win.DemoBooks.mount(doc, win, dialog, demo) : {
+      open() { dialog.querySelector('[data-market-status]').textContent = 'Market viewing could not be loaded. Reload the page to retry.'; },
+      close() {},
+    };
     q('close').addEventListener('click', () => dialog.close());
-    dialog.addEventListener('close', () => { books.close(); controller.clear(); });
+    dialog.addEventListener('close', () => {
+      const id = controller.view().selected;
+      books.close(); controller.clear();
+      const trigger = el.rows.querySelector(`button[data-id="${id}"]`);
+      (trigger || el.search).focus();
+    });
     let plot = null;
     let history = null;
     el.demo.hidden = !demo;
@@ -516,6 +524,7 @@
           button.type = 'button';
           button.dataset.id = String(socket.id);
           button.setAttribute('aria-pressed', String(selected));
+          button.setAttribute('aria-haspopup', 'dialog');
           button.setAttribute('aria-label', `Socket ${socket.id}, view markets and order books`);
           const id = make('td');
           id.append(button);

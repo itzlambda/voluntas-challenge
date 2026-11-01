@@ -20,20 +20,32 @@ const id = `0x${'a'.repeat(64)}`;
     assert.equal(await page.locator('.depth-table').count(), 4);
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('dialog').evaluate(d => d.open), false);
+    assert.equal(await page.evaluate(() => document.activeElement.classList.contains('socket-id')), true, 'Escape restores focus');
     await page.setViewportSize({width: 390, height: 844});
     await page.locator('.socket-id').first().click();
     await page.locator('[data-market-list] button:enabled').first().click();
     assert.ok(await page.locator('dialog').evaluate(d => d.scrollWidth <= d.clientWidth + 1));
     await page.getByRole('button', {name: 'Close', exact: true}).click();
+    assert.equal(await page.evaluate(() => document.activeElement.classList.contains('socket-id')), true, 'Close restores focus');
 
     let connections = 0, directoryRequests = 0, closed = 0;
     const sockets = [];
+    const marketIds = [id, ...Array.from({length: 44}, (_, i) => `0x${(i + 1).toString(16).padStart(64, '0')}`)];
     await page.route('**/api/demo/config', route => route.fulfill({json: {stream_origin: 'wss://stream.example.com'}}));
     await page.route('https://stream.example.com/sockets/*/markets', route => {
       directoryRequests++;
-      return route.fulfill({headers: {'Access-Control-Allow-Origin': '*'}, json: {markets: [id]}});
+      return route.fulfill({headers: {'Access-Control-Allow-Origin': '*'}, json: {markets: marketIds}});
     });
-    await page.route('https://gamma-api.polymarket.com/markets?**', route => route.fulfill({headers: {'Access-Control-Allow-Origin': '*'}, json: [{conditionId: id, question: 'Live wire test market', outcomes: '["Yes","No"]', outcomePrices: '["0.45","0.55"]', clobTokenIds: '["123","456"]'}]}));
+    await page.route('https://gamma-api.polymarket.com/markets?**', route => {
+      const params = new URL(route.request().url()).searchParams, requested = params.getAll('condition_ids');
+      assert.equal(Number(params.get('limit')), requested.length, 'Gamma limit covers the entire batch');
+      assert.deepEqual(params.getAll('version'), ['v1', 'v2']);
+      assert.equal(params.get('closed'), 'any');
+      const rows = requested.slice(0, Number(params.get('limit') || 20)).map((conditionId, i) => ({conditionId,
+        question: conditionId === id ? 'Live wire test market' : `Other test market ${i}`,
+        outcomes: '["Yes","No"]', outcomePrices: '["0.45","0.55"]', clobTokenIds: '["123","456"]'}));
+      return route.fulfill({headers: {'Access-Control-Allow-Origin': '*'}, json: rows});
+    });
     await page.routeWebSocket('wss://stream.example.com/**', socket => {
       connections++; sockets.push(socket);
       socket.onClose(() => closed++);
@@ -46,6 +58,7 @@ const id = `0x${'a'.repeat(64)}`;
     await page.route('**/api/demo/sockets', route => route.fulfill({json: {schema_version: 1, status: 'live', retained: false, values_at: Date.now() / 1000, age_seconds: 0, sockets: [{id: 0, pool: 'primary', connected: true, markets: 1, state: 'connected', events_per_second: 2}]}}));
     await page.goto(`${base}/live`);
     await page.locator('.socket-id').first().click();
+    await page.waitForFunction(() => document.querySelectorAll('[data-market-list] button:enabled').length === 45);
     await page.getByRole('button', {name: /Live wire test market/}).click();
     await page.getByText('Waiting for a snapshot. This may take up to 60 seconds.', {exact: true}).waitFor();
     assert.equal(await page.locator('.depth-table').count(), 0);
@@ -53,6 +66,18 @@ const id = `0x${'a'.repeat(64)}`;
     await page.locator('[data-book-status]').filter({hasText: /^Live order books$/}).waitFor();
     assert.equal(await page.locator('.depth-table').count(), 4);
     assert.equal(await page.getByText('12345678901.234567', {exact: true}).count(), 2);
+    assert.ok(await page.locator('dialog').evaluate(d => d.scrollWidth <= d.clientWidth + 1), 'large exact quantities fit on mobile');
+    await page.evaluate(() => {
+      window.bookStatusMutations = 0;
+      window.bookStatusObserver = new MutationObserver(list => window.bookStatusMutations += list.length);
+      window.bookStatusObserver.observe(document.querySelector('[data-book-status]'), {childList: true, characterData: true, subtree: true});
+      window.firstBookTable = document.querySelector('.depth-table');
+    });
+    sockets[0].send(record(1));
+    await page.waitForTimeout(200);
+    assert.equal(await page.evaluate(() => window.bookStatusMutations), 0, 'unchanged live status is not reannounced');
+    assert.equal(await page.evaluate(() => window.firstBookTable === document.querySelector('.depth-table')), true, 'table nodes remain stable');
+    await page.evaluate(() => window.bookStatusObserver.disconnect());
     sockets[0].send(record(2, '123', {quantity: 0n}));
     await page.waitForFunction(() => document.querySelector('.depth-table.bids tbody').textContent === 'No orders');
     sockets[0].close({code: 1013, reason: 'test reconnect'});
@@ -67,6 +92,32 @@ const id = `0x${'a'.repeat(64)}`;
     await page.locator('.socket-id').first().click();
     await page.getByRole('button', {name: /Live wire test market/}).waitFor();
     assert.equal(directoryRequests, 2, 'reopening fetches current assignments');
+    await page.keyboard.press('Escape');
+    // Hidden tabs release the subscription and start fresh when visible again.
+    await page.locator('.socket-id').first().click();
+    await page.getByRole('button', {name: /Live wire test market/}).click();
+    await page.waitForFunction(() => document.querySelector('[data-book-status]').textContent.includes('Waiting for a snapshot'));
+    const beforeHidden = connections;
+    await page.evaluate(() => {
+      Object.defineProperty(document, 'visibilityState', {configurable: true, value: 'hidden'});
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    await page.getByText('Live viewing is paused while this tab is hidden.', {exact: true}).waitFor();
+    await page.evaluate(() => {
+      Object.defineProperty(document, 'visibilityState', {configurable: true, value: 'visible'});
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    await page.waitForFunction(() => document.querySelector('[data-book-status]').textContent.includes('Waiting for a snapshot'));
+    assert.equal(connections, beforeHidden + 1);
+    await page.keyboard.press('Escape');
+    await page.route('**/api/demo/config', route => route.fulfill({json: {stream_origin: null}}));
+    await page.locator('.socket-id').first().click();
+    await page.getByText('Live order books are not enabled on this deployment.', {exact: true}).waitFor();
+    await page.keyboard.press('Escape');
+    await page.route('**/book-view.js', route => route.abort());
+    await page.goto(`${base}/live`);
+    await page.locator('.socket-id').first().click();
+    await page.getByText('Market viewing could not be loaded. Reload the page to retry.', {exact: true}).waitFor();
     await page.keyboard.press('Escape');
     assert.deepEqual(errors, []);
     console.log('Browser checks passed: synthetic popup/history/books, mobile overflow, Gamma lookup, exact SBE snapshots/updates, waiting state, reconnect reset, close cleanup, and assignment refresh.');

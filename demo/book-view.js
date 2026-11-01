@@ -2,8 +2,8 @@
 // Browser order books use the same fixed-point SBE records as the file reader.
 (function (root) {
   const SCALE = 1000000n;
-  const MARKET_PAGE_SIZE = 20;
-  const volumeFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'});
+  const MARKET_PAGE_SIZE = 10;
+  const LADDER_DEPTH = 10;
   const GAMMA = 'https://gamma-api.polymarket.com';
   const ICON_ORIGIN = 'https://polymarket-upload.s3.us-east-2.amazonaws.com';
   const textDecoder = new TextDecoder('utf-8', {fatal: true});
@@ -77,24 +77,32 @@
     return [...book[side]].sort(([a], [b]) => a === b ? 0 : (a < b ? -1 : 1) * (side === 'bids' ? -1 : 1));
   }
 
+  // Display helpers stay in fixed point: cents and shares are exact decimal strings.
+  function cents(price) { return `${fixed(price * 100n)}¢`; }
+  function shares(quantity) {
+    const [whole, fraction] = fixed(quantity).split('.');
+    return whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (fraction ? `.${fraction}` : '');
+  }
+  // Midpoint as a whole-tenth percentage and the spread in cents, or null when a side is empty.
+  function midSpread(book) {
+    const bid = sortedLevels(book, 'bids')[0], ask = sortedLevels(book, 'asks')[0];
+    if (!bid || !ask) return null;
+    const tenths = ((bid[0] + ask[0]) * 500n + 500000n) / 1000000n;
+    return {chance: `${tenths / 10n}${tenths % 10n ? `.${tenths % 10n}` : ''}%`, spread: cents(ask[0] - bid[0])};
+  }
+  // Gamma's quoted price as a chance, the way Polymarket lists markets.
+  function chance(price) {
+    if (price === null || price === undefined) return '';
+    const value = Number(price);
+    if (!Number.isFinite(value)) return '';
+    if (value > 0 && value < 0.01) return '<1%';
+    if (value < 1 && value > 0.99) return '>99%';
+    return `${Math.round(value * 100)}%`;
+  }
+
   function array(value) {
     try { const result = typeof value === 'string' ? JSON.parse(value) : value; return Array.isArray(result) ? result : []; }
     catch (_) { return []; }
-  }
-  function volume24hr(value) {
-    if (typeof value !== 'number' && !(typeof value === 'string' && /^\d+(?:\.\d+)?$/.test(value))) return null;
-    const amount = Number(value);
-    return Number.isFinite(amount) && amount >= 0 ? amount : null;
-  }
-  function rankMarkets(entries) {
-    return entries.slice().sort((a, b) => {
-      const av = a.market?.volume24hr ?? null, bv = b.market?.volume24hr ?? null;
-      if (av !== null && bv === null) return -1;
-      if (av === null && bv !== null) return 1;
-      if (av !== bv) return bv - av;
-      if (Boolean(a.market) !== Boolean(b.market)) return a.market ? -1 : 1;
-      return a.id.localeCompare(b.id);
-    });
   }
   function marketPage(entries, requestedPage) {
     const pages = Math.max(1, Math.ceil(entries.length / MARKET_PAGE_SIZE));
@@ -110,7 +118,7 @@
     try { const url = new URL(raw.icon); if (url.origin === ICON_ORIGIN) icon = url.href; } catch (_) { /* Optional image. */ }
     const end = typeof raw.endDate === 'string' && Number.isFinite(Date.parse(raw.endDate)) ? raw.endDate : null;
     return {id: raw.conditionId.toLowerCase(), question: typeof raw.question === 'string' ? raw.question : raw.conditionId,
-      outcomes, tokens, volume24hr: volume24hr(raw.volume24hr), prices: prices.map(p => typeof p === 'string' && /^\d+(\.\d+)?$/.test(p) ? p : null), icon, end};
+      outcomes, tokens, prices: prices.map(p => typeof p === 'string' && /^\d+(\.\d+)?$/.test(p) ? p : null), icon, end};
   }
 
   // Every new session discards its baselines. A late callback from an older session is ignored.
@@ -167,35 +175,31 @@
 
   function mount(doc, env, dialog, demo) {
     const list = dialog.querySelector('[data-market-list]'), note = dialog.querySelector('[data-market-status]');
-    const detail = dialog.querySelector('[data-book-detail]'), title = dialog.querySelector('[data-book-title]');
-    const bookStatus = dialog.querySelector('[data-book-status]'), outcomes = dialog.querySelector('[data-book-outcomes]');
-    const retry = dialog.querySelector('[data-market-retry]');
-    let generation = 0, abort = null, feed = null, renderTimer = null, demoTimer = null, freshnessTimer = null, selectedMarket = null, currentId = null, stream = null;
+    const retry = dialog.querySelector('[data-market-retry]'), empty = dialog.querySelector('[data-book-empty]');
+    const body = dialog.querySelector('[data-book-body]'), icon = dialog.querySelector('[data-book-icon]');
+    const title = dialog.querySelector('[data-book-title]'), toggle = dialog.querySelector('[data-book-outcomes]');
+    const bookStatus = dialog.querySelector('[data-book-status]'), ladder = dialog.querySelector('[data-book-ladder]');
+    const meta = dialog.querySelector('[data-book-meta]');
     const make = (tag, cls, text) => { const node = doc.createElement(tag); if (cls) node.className = cls; if (text !== undefined) node.textContent = text; return node; };
-    let marketEntries = [], page = 0, loading = false;
+    let generation = 0, abort = null, feed = null, renderTimer = null, demoTimer = null, freshnessTimer = null;
+    let selectedMarket = null, side = 0, view = null, currentId = null, stream = null;
+    let ids = [], page = 0, buttons = new Map(), details = new Map(), pending = new Set();
     const pager = make('div', 'pager'), previous = make('button', 'control', 'Previous'), next = make('button', 'control', 'Next');
     const pageText = make('p', 'small muted');
     previous.type = next.type = 'button';
     previous.dataset.marketPrevious = ''; next.dataset.marketNext = ''; pageText.dataset.marketPage = '';
     pageText.setAttribute('aria-live', 'polite');
     pager.append(previous, pageText, next); list.after(pager); pager.hidden = true;
-    function renderMarketPage() {
-      const slice = marketPage(marketEntries, page); page = slice.page;
-      list.replaceChildren(...slice.items.map(entry => entry.button)); list.scrollTop = 0;
-      pager.hidden = slice.total <= MARKET_PAGE_SIZE;
-      previous.disabled = loading || page === 0; next.disabled = loading || page === slice.pages - 1;
-      pageText.textContent = slice.total ? `${slice.start + 1} to ${slice.start + slice.items.length} of ${slice.total} markets` : '';
-    }
-    previous.addEventListener('click', () => { page -= 1; renderMarketPage(); });
-    next.addEventListener('click', () => { page += 1; renderMarketPage(); });
+
+    function setText(node, text) { if (node.textContent !== text) node.textContent = text; }
     function stopBook() {
-      if (feed) feed.stop(); feed = null;
+      if (feed) feed.stop(); feed = null; view = null;
       env.clearTimeout(renderTimer); renderTimer = null;
       env.clearInterval(demoTimer); demoTimer = null;
       env.clearInterval(freshnessTimer); freshnessTimer = null;
     }
-    function close() { ++generation; if (abort) abort.abort(); stopBook(); selectedMarket = null; }
-    function setText(node, text) { if (node.textContent !== text) node.textContent = text; }
+    function showEmpty() { body.hidden = true; empty.hidden = false; }
+    function close() { ++generation; if (abort) abort.abort(); stopBook(); selectedMarket = null; showEmpty(); }
     async function request(url, signal) {
       const controller = new env.AbortController();
       const cancel = () => controller.abort();
@@ -213,175 +217,220 @@
       if (!response.ok) throw new Error('Request failed');
       return response.body;
     }
-    function freshness(market, state) {
+
+    // Market rows. Details load one page at a time and are kept while the popup stays on this socket.
+    function row(id) {
+      let button = buttons.get(id);
+      if (button) return button;
+      button = make('button', 'market-row'); button.type = 'button'; button.dataset.id = id;
+      button.addEventListener('click', () => { const market = details.get(id); if (market) select(market); });
+      buttons.set(id, button); paint(id); return button;
+    }
+    function paint(id) {
+      const button = buttons.get(id);
+      if (!button) return;
+      const market = details.get(id);
+      button.setAttribute('aria-pressed', String(selectedMarket?.id === id));
+      if (market) {
+        const picture = market.icon ? make('img') : make('span', 'icon-blank');
+        if (market.icon) { picture.src = market.icon; picture.alt = ''; picture.loading = 'lazy'; picture.referrerPolicy = 'no-referrer'; }
+        const quote = chance(market.prices[0]);
+        button.replaceChildren(picture, make('span', 'market-q', market.question), make('span', 'market-price', quote ? `${market.outcomes[0]} ${quote}` : ''));
+        button.title = market.question; button.disabled = false; button.removeAttribute('aria-busy');
+      } else if (details.has(id)) {
+        button.replaceChildren(make('span', 'icon-blank'), make('span', 'market-q id', id), make('span', 'market-price', 'Details unavailable'));
+        button.disabled = true; button.removeAttribute('aria-busy');
+      } else {
+        const spinner = make('span', 'market-spinner'); spinner.setAttribute('aria-hidden', 'true');
+        button.replaceChildren(spinner, make('span', 'market-q id', id));
+        button.disabled = true; button.setAttribute('aria-busy', 'true');
+      }
+    }
+    function renderPage() {
+      const slice = marketPage(ids, page); page = slice.page;
+      list.replaceChildren(...slice.items.map(row));
+      pager.hidden = slice.total <= MARKET_PAGE_SIZE;
+      previous.disabled = page === 0; next.disabled = page === slice.pages - 1;
+      setText(pageText, slice.total ? `${slice.start + 1} to ${slice.start + slice.items.length} of ${slice.total}` : '');
+      loadDetails(slice.items);
+    }
+    previous.addEventListener('click', () => { page -= 1; renderPage(); });
+    next.addEventListener('click', () => { page += 1; renderPage(); });
+    function syntheticMarket(id) {
+      const n = ids.indexOf(id);
+      const questions = ['Will this sample market settle Yes?', 'Sample team A vs. sample team B', 'Will the sample index close higher this week?', 'Another market on this socket'];
+      const yes = 0.15 + ((n * 37) % 70) / 100;
+      return {id, question: `${questions[n % questions.length]}${n >= questions.length ? ` (${n + 1})` : ''}`, outcomes: n % 4 === 1 ? ['Team A', 'Team B'] : ['Yes', 'No'],
+        prices: [yes.toFixed(2), (1 - yes).toFixed(2)], tokens: [`${n + 1}1`, `${n + 1}2`], icon: null, end: null};
+    }
+    async function loadDetails(items) {
+      const missing = items.filter(id => !details.has(id) && !pending.has(id));
+      if (!missing.length) return;
+      const mine = generation, signal = abort.signal;
+      missing.forEach(id => pending.add(id));
+      let found = new Map();
+      try {
+        if (demo) {
+          await new Promise(resolve => env.setTimeout(resolve, 400));
+          found = new Map(missing.map(id => [id, syntheticMarket(id)]));
+        } else {
+          const params = new URLSearchParams({limit: String(missing.length), closed: 'any'});
+          params.append('version', 'v1'); params.append('version', 'v2');
+          for (const id of missing) params.append('condition_ids', id);
+          const rows = await json(`${GAMMA}/markets?${params}`, signal);
+          if (!Array.isArray(rows)) throw new Error('Invalid metadata');
+          found = new Map(rows.map(metadata).filter(Boolean).map(market => [market.id, market]));
+        }
+      } catch (_) { /* Rows fall back to their IDs; Refresh retries. */ }
+      if (mine !== generation) return;
+      for (const id of missing) { pending.delete(id); details.set(id, found.get(id) || null); paint(id); }
+      list.removeAttribute('aria-busy');
+    }
+    async function open(id) {
+      close(); const mine = generation; currentId = id; abort = new env.AbortController();
+      ids = []; page = 0; buttons = new Map(); details = new Map(); pending = new Set();
+      renderPage(); retry.hidden = true; list.setAttribute('aria-busy', 'true'); note.textContent = 'Loading markets…';
+      try {
+        let assigned;
+        if (demo) assigned = Array.from({length: 23}, (_, n) => `0x${(id * 100 + n + 1).toString(16).padStart(64, '0')}`);
+        else {
+          const config = await json('/api/demo/config', abort.signal);
+          if (mine !== generation) return;
+          if (config.stream_origin === null) { note.textContent = 'Live order books are not enabled on this deployment.'; list.removeAttribute('aria-busy'); return; }
+          if (typeof config.stream_origin !== 'string' || !/^wss:\/\/[A-Za-z0-9.-]+(?::\d{1,5})?$/.test(config.stream_origin)) throw new Error('Stream unavailable');
+          stream = config.stream_origin;
+          const response = await request(`${stream.replace('wss:', 'https:')}/sockets/${id}/markets`, abort.signal);
+          if (mine !== generation) return;
+          if (response.status === 404) { note.textContent = 'No markets published for this socket yet.'; retry.hidden = false; list.removeAttribute('aria-busy'); return; }
+          if (!response.ok) throw new Error('Directory unavailable');
+          assigned = response.body.markets;
+          if (!Array.isArray(assigned) || assigned.length > 512 || !assigned.every(value => typeof value === 'string' && /^0x[0-9a-fA-F]{64}$/.test(value))) throw new Error('Invalid directory');
+          assigned = [...new Set(assigned.map(value => value.toLowerCase()))];
+        }
+        if (mine !== generation) return;
+        ids = assigned; retry.hidden = false;
+        note.textContent = ids.length ? `${ids.length} markets${demo ? ' · synthetic demo' : ''}. Select one to watch its live order book.` : 'No markets on this socket.';
+        if (!ids.length) list.removeAttribute('aria-busy');
+        renderPage();
+      } catch (_) {
+        if (mine !== generation) return;
+        note.textContent = 'Markets could not be loaded. Try again.'; retry.hidden = false; list.removeAttribute('aria-busy');
+      }
+    }
+
+    // The order book: one outcome at a time, asks above the midpoint and bids below.
+    function freshness() {
+      if (!selectedMarket || !view) return;
       const now = env.Date.now();
-      const messages = {connecting: 'Connecting to live order books…', waiting: 'Waiting for a snapshot. This may take up to 60 seconds.',
-        live: demo ? 'Synthetic live order books' : 'Live order books', stale: 'Snapshots are delayed. Showing the last known orders.',
-        reconnecting: 'Connection interrupted. Reconnecting and waiting for fresh snapshots…',
+      const status = feedStatus(view, now);
+      const messages = {connecting: 'Connecting…', waiting: 'Waiting for the first snapshot. This can take up to 60 seconds.',
+        live: demo ? 'Live (synthetic)' : 'Live', stale: 'Snapshots are delayed. Showing the last known orders.',
+        reconnecting: 'Connection interrupted. Reconnecting…',
         rejected: 'Live viewing is unavailable for this market. Select it again to retry.', invalid: 'Book data could not be read. Reconnecting…',
         incompatible: 'Book data is not compatible with this page. Reload the page before trying again.'};
-      setText(bookStatus, messages[feedStatus(state, now)]);
-      market.tokens.forEach((token, i) => {
-        const age = outcomes.children[i]?.querySelector('[data-snapshot-age]'), book = state.books.get(token);
-        if (age) setText(age, book?.snapshotAt === null || !book ? '' : `Last snapshot ${Math.max(0, Math.floor((now - book.snapshotAt) / 1000))}s ago`);
+      setText(bookStatus, messages[status]); bookStatus.classList.toggle('live', status === 'live');
+      const book = view.books.get(selectedMarket.tokens[side]);
+      const age = book?.snapshotAt === null || !book ? '' : `Last snapshot ${Math.max(0, Math.floor((now - book.snapshotAt) / 1000))}s ago`;
+      const end = selectedMarket.end ? `Ends ${new Date(selectedMarket.end).toLocaleDateString()}` : '';
+      setText(meta, [end, age].filter(Boolean).join(' · '));
+    }
+    function levelRows(group, levels, kind, max) {
+      if (!levels.length) {
+        if (group.dataset.empty !== '1') { group.replaceChildren(make('div', 'ladder-row none', kind === 'ask' ? 'No asks' : 'No bids')); group.dataset.empty = '1'; }
+        return;
+      }
+      if (group.dataset.empty === '1') { group.replaceChildren(); delete group.dataset.empty; }
+      while (group.children.length > levels.length) group.lastElementChild.remove();
+      levels.forEach(([price, quantity], i) => {
+        let line = group.children[i];
+        const fresh = !line;
+        if (fresh) { line = make('div', `ladder-row ${kind}`); line.setAttribute('role', 'row'); for (let c = 0; c < 2; c++) { const cell = make('span'); cell.setAttribute('role', 'cell'); line.append(cell); } group.append(line); }
+        const priceText = cents(price), sizeText = shares(quantity);
+        const changed = !fresh && line.children[0].textContent === priceText && line.children[1].textContent !== sizeText;
+        setText(line.children[0], priceText); setText(line.children[1], sizeText);
+        line.style.setProperty('--depth', `${Number(quantity * 1000n / max) / 10}%`);
+        if (changed) { line.classList.remove('flash'); void line.offsetWidth; line.classList.add('flash'); }
       });
     }
-    function renderLevels(body, levels) {
-      const key = levels.map(([p, q]) => `${p}:${q}`).join(',');
-      if (body.dataset.levels === key) return;
-      body.dataset.levels = key;
-      if (!levels.length) { const row = make('tr'), cell = make('td', 'muted', 'No orders'); cell.colSpan = 2; row.append(cell); body.replaceChildren(row); return; }
-      if (body.firstElementChild?.firstElementChild?.colSpan === 2) body.replaceChildren();
-      while (body.children.length > levels.length) body.lastElementChild.remove();
-      levels.forEach(([price, qty], i) => {
-        let row = body.children[i];
-        if (!row) { row = make('tr'); row.append(make('td'), make('td')); body.append(row); }
-        setText(row.children[0], fixed(price)); setText(row.children[1], fixed(qty));
-      });
+    function renderBook() {
+      if (!selectedMarket || !view) return;
+      const book = view.books.get(selectedMarket.tokens[side]);
+      if (!book || !book.ready) {
+        if (!ladder.querySelector('.ladder-wait')) {
+          const wait = make('div', 'ladder-wait'), spinner = make('span', 'market-spinner'); spinner.setAttribute('aria-hidden', 'true');
+          wait.append(spinner, 'Waiting for the first snapshot…'); ladder.replaceChildren(wait);
+        }
+        freshness(); return;
+      }
+      if (!ladder.querySelector('[data-asks]')) {
+        const head = make('div', 'ladder-row head'); head.setAttribute('aria-hidden', 'true'); head.append(make('span', '', 'Price'), make('span', '', 'Shares'));
+        const asks = make('div'), mid = make('div', 'ladder-mid'), bids = make('div');
+        asks.dataset.asks = ''; bids.dataset.bids = ''; mid.dataset.mid = '';
+        asks.setAttribute('role', 'table'); bids.setAttribute('role', 'table');
+        asks.setAttribute('aria-label', `${selectedMarket.outcomes[side]} asks`); bids.setAttribute('aria-label', `${selectedMarket.outcomes[side]} bids`);
+        ladder.replaceChildren(head, asks, mid, bids);
+      }
+      const asks = sortedLevels(book, 'asks').slice(0, LADDER_DEPTH), bids = sortedLevels(book, 'bids').slice(0, LADDER_DEPTH);
+      const max = [...asks, ...bids].reduce((most, [, quantity]) => quantity > most ? quantity : most, 1n);
+      levelRows(ladder.querySelector('[data-asks]'), asks.reverse(), 'ask', max);
+      levelRows(ladder.querySelector('[data-bids]'), bids, 'bid', max);
+      const quote = midSpread(book);
+      setText(ladder.querySelector('[data-mid]'), quote ? `${quote.chance} chance · spread ${quote.spread}` : 'No spread while a side is empty');
+      freshness();
     }
-    function renderBooks(market, state) {
-      market.tokens.forEach((token, i) => {
-        const book = state.books.get(token);
-        let section = outcomes.children[i];
-        if (!section) {
-          section = make('section', 'outcome-book');
-          section.append(make('h4', '', market.outcomes[i]));
-          const age = make('p', 'small muted'); age.dataset.snapshotAge = ''; age.setAttribute('aria-live', 'off');
-          section.append(age); outcomes.append(section);
-        }
-        if (!book || !book.ready) {
-          section.querySelector('.book-sides')?.remove();
-          if (!section.querySelector('.book-waiting')) section.append(make('p', 'muted book-waiting', 'Waiting for a snapshot…'));
-          return;
-        }
-        section.querySelector('.book-waiting')?.remove();
-        let sides = section.querySelector('.book-sides');
-        if (!sides) {
-          sides = make('div', 'book-sides');
-          for (const side of ['bids', 'asks']) {
-            const table = make('table', `depth-table ${side}`);
-            table.append(make('caption', '', side === 'bids' ? 'Bids' : 'Asks'));
-            const head = make('thead'), row = make('tr');
-            for (const label of ['Price (USDC)', 'Shares']) { const th = make('th', '', label); th.scope = 'col'; row.append(th); }
-            head.append(row); table.append(head, make('tbody')); sides.append(table);
-          }
-          section.append(sides);
-        }
-        for (const side of ['bids', 'asks']) renderLevels(sides.querySelector(`.${side} tbody`), sortedLevels(book, side).slice(0, 20));
-      });
-      freshness(market, state);
+    function chooseSide(index) {
+      side = index;
+      for (const [i, button] of [...toggle.children].entries()) button.setAttribute('aria-pressed', String(i === side));
+      ladder.replaceChildren(); renderBook();
     }
     function select(market) {
-      stopBook(); selectedMarket = market; detail.hidden = false; title.textContent = market.question;
-      outcomes.replaceChildren(); setText(bookStatus, 'Connecting to live order books…');
-      detail.scrollIntoView({block: 'nearest'});
+      stopBook(); const previous = selectedMarket; selectedMarket = market; side = 0;
+      if (previous) paint(previous.id); paint(market.id);
+      empty.hidden = true; body.hidden = false;
+      icon.replaceChildren(); if (market.icon) { const img = make('img'); img.src = market.icon; img.alt = ''; img.referrerPolicy = 'no-referrer'; icon.append(img); }
+      title.textContent = market.question;
+      toggle.replaceChildren(...market.outcomes.map((outcome, i) => {
+        const button = make('button', '', outcome); button.type = 'button'; button.setAttribute('aria-pressed', String(i === 0));
+        button.addEventListener('click', () => chooseSide(i)); return button;
+      }));
+      ladder.replaceChildren(); setText(meta, ''); setText(bookStatus, 'Connecting…'); bookStatus.classList.remove('live');
+      body.scrollIntoView({block: 'nearest'});
       if (demo) {
-        const state = {status: 'live', books: new Map(market.tokens.map(token => [token, emptyBook()]))};
+        view = {status: 'live', books: new Map(market.tokens.map(token => [token, emptyBook()]))};
         let tick = 0;
         const update = () => {
-          market.tokens.forEach((token, i) => apply(state.books.get(token), {type: 'snapshot', bids: [[450000n + BigInt(i * 50000), 10000000n + BigInt(tick) * 1000000n]], asks: [[550000n + BigInt(i * 50000), 15000000n]]}));
-          for (const book of state.books.values()) book.snapshotAt = env.Date.now();
-          tick += 1; renderBooks(market, state);
+          const mid = BigInt(Math.round(Number(market.prices[0]) * 100)) * 10000n;
+          market.tokens.forEach((token, i) => {
+            const centre = i === 0 ? mid : 1000000n - mid, level = n => 2000000n + BigInt(((n * 7919 + tick * (n + 3) * 131) % 4800) * 1000000);
+            apply(view.books.get(token), {type: 'snapshot',
+              bids: Array.from({length: 8}, (_, n) => [centre - 10000n * BigInt(n + 1), level(n)]).filter(([p]) => p > 0n),
+              asks: Array.from({length: 8}, (_, n) => [centre + 10000n * BigInt(n + 1), level(n + 8)]).filter(([p]) => p < 1000000n)});
+            view.books.get(token).snapshotAt = env.Date.now();
+          });
+          tick += 1; renderBook();
         };
         update(); demoTimer = env.setInterval(update, 1500); return;
       }
       const mine = generation;
       try {
         feed = createFeed(env, stream, market.tokens, state => {
+          view = state;
           if (mine !== generation || renderTimer !== null) return;
-          renderTimer = env.setTimeout(() => { renderTimer = null; if (mine === generation) renderBooks(market, state); }, 100);
+          renderTimer = env.setTimeout(() => { renderTimer = null; if (mine === generation) renderBook(); }, 100);
         });
-        freshnessTimer = env.setInterval(() => { if (feed) freshness(market, feed.state); }, 1000);
+        view = feed.state;
+        freshnessTimer = env.setInterval(freshness, 1000);
       } catch (_) { bookStatus.textContent = 'Unable to connect. Select the market again to retry.'; }
-    }
-    function fill(button, market) {
-      button.replaceChildren(); button.removeAttribute('aria-busy');
-      if (market.icon) { const img = make('img'); img.src = market.icon; img.alt = ''; img.loading = 'lazy'; img.referrerPolicy = 'no-referrer'; button.append(img); }
-      const copy = make('span', 'market-copy'); copy.append(make('strong', '', market.question));
-      const prices = market.outcomes.map((outcome, i) => `${outcome}${market.prices[i] ? ` ${market.prices[i]} USDC` : ''}`).join(' · ');
-      copy.append(make('span', 'small muted', prices));
-      copy.append(make('span', 'small muted market-volume', market.volume24hr === null ? '24h volume unavailable' : `24h volume ${volumeFormat.format(market.volume24hr)}`));
-      if (market.end) copy.append(make('span', 'small muted', `Ends ${new Date(market.end).toLocaleDateString()}`));
-      button.append(copy); button.disabled = false; button.addEventListener('click', () => select(market));
-    }
-    async function open(id) {
-      close(); const mine = generation; currentId = id; abort = new env.AbortController();
-      const signal = abort.signal;
-      detail.hidden = true; marketEntries = []; page = 0; loading = true; renderMarketPage();
-      list.setAttribute('aria-busy', 'true'); retry.hidden = true; note.textContent = 'Loading markets…';
-      try {
-        let ids;
-        if (demo) ids = [1, 2, 3].map(n => `0x${(id * 10 + n).toString(16).padStart(64, '0')}`);
-        else {
-          const config = await json('/api/demo/config', signal);
-          if (mine !== generation) return;
-          if (config.stream_origin === null) { note.textContent = 'Live order books are not enabled on this deployment.'; return; }
-          if (typeof config.stream_origin !== 'string' || !/^wss:\/\/[A-Za-z0-9.-]+(?::\d{1,5})?$/.test(config.stream_origin)) throw new Error('Stream unavailable');
-          stream = config.stream_origin;
-          const response = await request(`${stream.replace('wss:', 'https:')}/sockets/${id}/markets`, signal);
-          if (mine !== generation) return;
-          if (response.status === 404) { note.textContent = 'No markets published for this socket yet.'; retry.hidden = false; return; }
-          if (!response.ok) throw new Error('Directory unavailable');
-          const body = response.body; ids = body.markets;
-          if (!Array.isArray(ids) || ids.length > 512 || !ids.every(value => typeof value === 'string' && /^0x[0-9a-fA-F]{64}$/.test(value))) throw new Error('Invalid directory');
-          ids = [...new Set(ids.map(id => id.toLowerCase()))];
-        }
-        if (mine !== generation) return;
-        note.textContent = ids.length ? `Loading details and 24h volume for ${ids.length} markets…` : 'No markets on this socket.';
-        const buttons = new Map(ids.map(id => {
-          const button = make('button', 'market-row'); button.type = 'button'; button.disabled = true; button.setAttribute('aria-busy', 'true');
-          button.append(make('span', 'market-spinner'), make('span', 'market-copy mono', id)); return [id, button];
-        }));
-        marketEntries = ids.map(id => ({id, button: buttons.get(id), market: null}));
-        const entriesById = new Map(marketEntries.map(entry => [entry.id, entry]));
-        renderMarketPage();
-        if (demo) {
-          ids.forEach((id, i) => {
-            const market = {id, question: ['Will this sample market settle Yes?', 'A second sample market', 'Another market on this socket'][i],
-              outcomes: ['Yes', 'No'], prices: ['0.45', '0.55'], tokens: [`${i + 1}1`, `${i + 1}2`], volume24hr: [12000, 88000, 0][i], icon: null, end: null};
-            entriesById.get(id).market = market; fill(buttons.get(id), market);
-          }); return;
-        }
-        for (let start = 0; start < ids.length; start += 40) {
-          const batch = ids.slice(start, start + 40), params = new URLSearchParams({limit: String(Math.min(40, ids.length - start)), closed: 'any'});
-          params.append('version', 'v1'); params.append('version', 'v2');
-          for (const id of batch) params.append('condition_ids', id);
-          try {
-            const rows = await json(`${GAMMA}/markets?${params}`, signal);
-            if (mine !== generation) return;
-            if (!Array.isArray(rows)) throw new Error('Invalid metadata');
-            const found = new Map(rows.map(metadata).filter(Boolean).map(market => [market.id, market]));
-            for (const id of batch) {
-              const market = found.get(id), button = buttons.get(id);
-              if (market) { entriesById.get(id).market = market; fill(button, market); button.disabled = true; }
-              else { button.removeAttribute('aria-busy'); button.textContent = `${id} — Details unavailable`; }
-            }
-          } catch (error) {
-            if (mine !== generation) return;
-            for (const id of batch) { const button = buttons.get(id); button.removeAttribute('aria-busy'); button.textContent = `${id} — Details unavailable`; }
-          }
-        }
-        note.textContent = ids.length ? `${ids.length} markets, highest 24h volume first. Select a market to watch its order books.` : 'No markets on this socket.';
-        retry.hidden = false;
-      } catch (_) {
-        if (mine !== generation) return;
-        note.textContent = 'Markets could not be loaded. Try again.'; retry.hidden = false;
-      } finally {
-        if (mine === generation) {
-          loading = false; marketEntries = rankMarkets(marketEntries);
-          for (const entry of marketEntries) if (entry.market) entry.button.disabled = false;
-          renderMarketPage(); list.removeAttribute('aria-busy');
-          if (demo && marketEntries.length) note.textContent = `${marketEntries.length} markets · Synthetic demo. Highest 24h volume first.`;
-        }
-      }
     }
     doc.addEventListener('visibilitychange', () => {
       if (!selectedMarket) return;
-      if (doc.visibilityState === 'hidden') { stopBook(); outcomes.replaceChildren(); setText(bookStatus, 'Live viewing is paused while this tab is hidden.'); }
-      else select(selectedMarket);
+      if (doc.visibilityState === 'hidden') {
+        stopBook(); ladder.replaceChildren(); setText(meta, ''); bookStatus.classList.remove('live');
+        setText(bookStatus, 'Live viewing is paused while this tab is hidden.');
+      } else select(selectedMarket);
     });
     retry.addEventListener('click', () => open(currentId));
     return {open, close};
   }
-  root.DemoBooks = {fixed, decodeFrame, emptyBook, apply, sortedLevels, metadata, volume24hr, rankMarkets, marketPage, MARKET_PAGE_SIZE, createFeed, feedStatus, mount};
+  root.DemoBooks = {fixed, cents, shares, midSpread, chance, decodeFrame, emptyBook, apply, sortedLevels, metadata, marketPage, MARKET_PAGE_SIZE, createFeed, feedStatus, mount};
 })(typeof window !== 'undefined' ? window : globalThis);

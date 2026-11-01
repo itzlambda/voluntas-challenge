@@ -426,7 +426,6 @@ main > .page-section:first-of-type { border-top: 0; margin-top: 0; padding-top: 
 .socket-history { min-width: 0; }
 .history-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 4px; }
 .history-head .range button { min-height: 30px; padding: 4px 12px; }
-.socket-history .plot { min-height: 220px; margin-top: 8px; }
 .socket-readout { min-height: 1.5em; color: var(--text); }
 @media (max-width: 1100px) {
   .socket-body { grid-template-columns: minmax(0, 1fr); }
@@ -439,28 +438,59 @@ main > .page-section:first-of-type { border-top: 0; margin-top: 0; padding-top: 
   .socket-controls .control { margin-left: 0; }
 }
 
-.socket-dialog { width: min(1060px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); box-sizing: border-box; padding: 22px; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); overflow: auto; }
+.socket-dialog { width: min(1060px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); box-sizing: border-box; padding: 18px; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: auto; }
 .socket-dialog::backdrop { background: #000b; }
-.socket-dialog-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; }
-.socket-dialog-head h2 { margin: 0; }
-.socket-markets, .book-detail { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
-.market-list { max-height: 340px; overflow: auto; }
-.market-row { display: flex; width: 100%; gap: 12px; align-items: center; text-align: left; padding: 12px 8px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--text); font: inherit; cursor: pointer; }
-.market-row:hover:not(:disabled), .market-row:focus-visible { background: var(--panel); }
+.socket-dialog-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+.socket-dialog-head h2 { margin: 0 0 2px; font-size: 18px; }
+.socket-dialog-head p { margin: 0; }
+.dialog-close { font: inherit; font-size: 22px; line-height: 1; color: var(--muted); background: none; border: 1px solid transparent; border-radius: var(--radius); padding: 4px 10px; cursor: pointer; }
+.dialog-close:hover { color: var(--strong); border-color: var(--line); }
+.dialog-box { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; min-width: 0; }
+.dialog-box h3 { font-size: 14px; }
+.socket-history .plot { min-height: 160px; margin-top: 4px; }
+.socket-history .chart-note { margin-bottom: 0; }
+.socket-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; margin-top: 14px; align-items: start; }
+.box-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 30px; }
+.box-head .control { min-height: 28px; padding: 2px 10px; font-size: 13px; }
+.socket-markets [data-market-status] { margin: 4px 0 8px; }
+.market-row { display: flex; width: 100%; gap: 8px; align-items: center; min-height: 40px; text-align: left; padding: 7px 8px; border: 0; border-radius: var(--radius); background: none; color: var(--text); font: inherit; font-size: 13px; cursor: pointer; }
+.market-row:hover:not(:disabled), .market-row:focus-visible { background: #2a2f33; }
+.market-row[aria-pressed="true"] { background: #21352d; box-shadow: inset 0 0 0 1px var(--green); }
 .market-row:disabled { cursor: default; }
-.market-row img { width: 40px; height: 40px; object-fit: cover; border-radius: var(--radius); flex: none; }
-.market-copy { display: grid; gap: 3px; min-width: 0; overflow-wrap: anywhere; }
-.market-spinner { width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--green); border-radius: 50%; animation: market-spin 1s linear infinite; flex: none; }
+.market-row img, .market-row .icon-blank, .book-icon img { width: 22px; height: 22px; object-fit: cover; border-radius: 4px; flex: none; }
+.market-row .icon-blank { background: var(--line); }
+.market-q { flex: 1; min-width: 0; color: var(--strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.market-q.id { font: 12px var(--mono); color: var(--muted); }
+.market-price { flex: 0 1 auto; max-width: 45%; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.market-spinner { width: 12px; height: 12px; margin: 0 5px; border: 2px solid var(--line); border-top-color: var(--muted); border-radius: 50%; animation: market-spin .8s linear infinite; flex: none; }
 @keyframes market-spin { to { transform: rotate(360deg); } }
-.book-outcomes, .book-sides { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-.outcome-book h4 { color: var(--strong); margin: 12px 0; }
-.depth-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13px; }
-.depth-table caption { text-align: left; margin-bottom: 6px; }
-.depth-table.bids caption { color: var(--green); }
-.depth-table.asks caption { color: var(--blue); }
-.depth-table th { font-size: 11px; font-weight: 400; color: var(--muted); white-space: nowrap; }
-.depth-table th, .depth-table td { text-align: right; padding: 4px; border-bottom: 1px solid var(--line); }
-@media (max-width: 700px) { .book-outcomes { grid-template-columns: minmax(0, 1fr); } .socket-dialog { padding: 14px; } }
-@media (prefers-reduced-motion: reduce) { .market-spinner { animation: none; } }
-
-@media (max-width: 480px) { .book-sides { grid-template-columns: minmax(0, 1fr); } }
+.socket-markets .pager { margin-top: 6px; }
+.socket-markets .pager .control { min-height: 28px; padding: 2px 10px; font-size: 13px; }
+.book-empty { margin: 6px 0; }
+.book-head { display: flex; align-items: center; gap: 8px; min-height: 26px; margin-bottom: 8px; }
+.book-head h3 { flex: 1; min-width: 0; }
+.book-icon:empty { display: none; }
+.outcome-toggle { display: inline-flex; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin-bottom: 6px; }
+.outcome-toggle button { font: inherit; font-size: 13px; background: none; color: var(--muted); border: 0; padding: 4px 14px; cursor: pointer; }
+.outcome-toggle button[aria-pressed="true"] { background: var(--line); color: var(--strong); }
+.book-status { margin: 2px 0 6px; color: var(--muted); }
+.book-status.live { display: inline-flex; align-items: center; gap: 6px; color: var(--green); }
+.book-status.live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: live-pulse 1.6s infinite; }
+@keyframes live-pulse { 50% { opacity: .35; } }
+.ladder { font: 12.5px var(--mono); font-variant-numeric: tabular-nums; }
+.ladder-row { display: grid; grid-template-columns: 1fr 1fr; position: relative; padding: 2px 6px; }
+.ladder-row > span { position: relative; z-index: 1; }
+.ladder-row > span:last-child { text-align: right; overflow-wrap: anywhere; }
+.ladder-row::before { content: ""; position: absolute; top: 1px; bottom: 1px; right: 0; width: var(--depth, 0%); opacity: .18; border-radius: 1px; }
+.ladder-row.ask > span:first-child { color: var(--miss); }
+.ladder-row.ask::before { background: var(--miss); }
+.ladder-row.bid > span:first-child { color: var(--green); }
+.ladder-row.bid::before { background: var(--green); }
+.ladder-row.head { font-family: var(--sans); font-size: 11.5px; color: var(--muted); }
+.ladder-row.none { grid-template-columns: 1fr; color: var(--muted); font-family: var(--sans); }
+.ladder-mid { text-align: center; font: 12px var(--sans); color: var(--text); padding: 5px 0; margin: 3px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); }
+.ladder-wait { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 28px 0; color: var(--muted); font: 13px var(--sans); }
+.ladder-row.flash { animation: level-flash .6s; }
+@keyframes level-flash { from { background: #5ba9e733; } to { background: transparent; } }
+@media (max-width: 760px) { .socket-columns { grid-template-columns: minmax(0, 1fr); } .socket-dialog { padding: 12px; } }
+@media (prefers-reduced-motion: reduce) { .market-spinner, .book-status.live::before, .ladder-row.flash { animation: none; } }

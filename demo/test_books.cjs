@@ -94,28 +94,30 @@ test('decode errors immediately clear all baselines and stop after two attempts'
   const second = e.sockets[1]; second.onopen(); second.onmessage({data: frame(bad)}); second.onclose({code: 1000});
   assert.equal(feed.state.status, 'incompatible'); assert.equal(e.timers.size, 0); feed.stop();
 });
-test('24-hour volume parsing preserves zero and rejects missing or invalid values', () => {
-  for (const value of [null, undefined, '', 'NaN', Infinity, -1, {}, true]) assert.equal(B.volume24hr(value), null);
-  assert.equal(B.volume24hr(0), 0); assert.equal(B.volume24hr('1200.50'), 1200.5);
-  const raw = {conditionId: `0x${'a'.repeat(64)}`, outcomes: '["Yes","No"]', clobTokenIds: '["123","456"]', volume24hr: 42, volumeNum: 999999};
-  assert.equal(B.metadata(raw).volume24hr, 42);
-  delete raw.volume24hr; assert.equal(B.metadata(raw).volume24hr, null, 'lifetime volume is not recent activity');
-});
-test('market ranking is global, descending, deterministic, and puts unknowns last', () => {
-  const entries = [
-    {id: 'z', market: {volume24hr: 0}}, {id: 'b', market: {volume24hr: 50}},
-    {id: 'a', market: {volume24hr: 50}}, {id: 'q', market: {volume24hr: null}},
-    {id: 'c', market: null}, {id: 'top', market: {volume24hr: 1000}},
-  ];
-  assert.equal(B.rankMarkets(entries).map(e => e.id).join(), 'top,a,b,z,q,c');
-  assert.equal(entries[0].id, 'z', 'input order is preserved');
-});
 test('market pagination has no omissions and clamps first, last, and empty pages', () => {
-  const entries = Array.from({length: 45}, (_, id) => ({id}));
+  const entries = Array.from({length: 23}, (_, id) => id);
   const first = B.marketPage(entries, -1), second = B.marketPage(entries, 1), last = B.marketPage(entries, 999);
-  assert.equal(first.items.length, 20); assert.equal(second.items.length, 20); assert.equal(last.items.length, 5);
+  assert.equal(B.MARKET_PAGE_SIZE, 10);
+  assert.equal(first.items.length, 10); assert.equal(second.items.length, 10); assert.equal(last.items.length, 3);
   assert.equal(last.page, 2); assert.equal(last.pages, 3);
-  assert.equal([...first.items, ...second.items, ...last.items].map(e => e.id).join(), entries.map(e => e.id).join());
+  assert.equal([...first.items, ...second.items, ...last.items].join(), entries.join());
   assert.equal(B.marketPage([], 4).page, 0); assert.equal(B.marketPage([], 4).items.length, 0);
+});
+test('ladder prices show exact cents and grouped exact shares', () => {
+  assert.equal(B.cents(945000n), '94.5¢'); assert.equal(B.cents(10000n), '1¢'); assert.equal(B.cents(1000n), '0.1¢');
+  assert.equal(B.shares(12345678901234567n), '12,345,678,901.234567'); assert.equal(B.shares(2500000n), '2.5'); assert.equal(B.shares(999000000n), '999');
+});
+test('midpoint chance and spread come from the best levels, without floats', () => {
+  const book = B.emptyBook();
+  book.bids = new Map([[940000n, 1n], [930000n, 1n]]); book.asks = new Map([[950000n, 1n], [960000n, 1n]]);
+  assert.deepEqual({...B.midSpread(book)}, {chance: '94.5%', spread: '1¢'});
+  book.asks = new Map([[941000n, 1n]]); assert.deepEqual({...B.midSpread(book)}, {chance: '94.1%', spread: '0.1¢'});
+  book.asks = new Map([[960000n, 1n]]); assert.equal(B.midSpread(book).chance, '95%');
+  book.asks = new Map(); assert.equal(B.midSpread(book), null);
+});
+test('quoted chance rounds like Polymarket and marks the extremes', () => {
+  assert.equal(B.chance('0.62'), '62%'); assert.equal(B.chance('0.945'), '95%'); assert.equal(B.chance('0.004'), '<1%');
+  assert.equal(B.chance('0.996'), '>99%'); assert.equal(B.chance('0'), '0%'); assert.equal(B.chance('1'), '100%');
+  assert.equal(B.chance(null), ''); assert.equal(B.chance('x'), '');
 });
 console.log(`${passed} book tests passed`);

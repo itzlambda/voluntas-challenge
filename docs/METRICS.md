@@ -433,15 +433,16 @@ own evidence and are not operational metrics.
 ## Browser order books
 
 On `/live`, selecting a socket opens its traffic history and current market
-assignments. The browser requests the directory directly from the stream host,
-then batches condition IDs through Gamma with explicit v1/v2 versions and a
-page limit covering the batch to obtain questions, outcomes, quoted
-prices, icons, end dates, and outcome asset IDs. Refreshing or reopening the
-popup fetches assignments again. After all metadata batches finish, markets
-are sorted by Gamma 24-hour trading volume, highest first, in pages of 20.
-The list shows that volume and puts unavailable volume or details last.
-Changing pages leaves the selected live book running. An unpublished socket shows an empty waiting
-state with a refresh button. Gamma failures keep the market IDs visible.
+assignments. The browser requests the directory directly from the stream host
+and lists the assigned condition IDs in pages of 10, in directory order. Each
+row starts as its ID with a spinner. Only the visible page is looked up in
+Gamma, in one batch with explicit v1/v2 versions and a page limit covering
+the batch, to obtain questions, outcomes, quoted prices, icons, end dates,
+and outcome asset IDs. Pages already looked up are not requested again while
+the popup stays open. Refreshing or reopening the popup fetches assignments
+again. Changing pages leaves the selected live book running. An unpublished
+socket shows an empty waiting state with a refresh button. Gamma failures
+keep the market IDs visible.
 
 Selecting a market opens one WebSocket subscription for its two outcomes.
 The book follows the market's current publisher, which can differ from the
@@ -450,9 +451,15 @@ cancels directory and metadata requests. The browser decodes schema 1 version 2
 SBE frames, including coalesced records, using exact fixed-point `BigInt`
 values. Each outcome ignores updates until its own replacement snapshot.
 Reconnects discard both baselines before resubscribing. Hidden tabs release
-their subscriptions and start fresh on return. The view shows snapshot age and
-marks books delayed after 135 seconds without a snapshot. Waiting for the first
-snapshot can take up to 60 seconds. The view shows the best 20 levels per side.
+their subscriptions and start fresh on return.
+
+The book shows one outcome at a time, with a toggle between outcomes. Asks sit
+above the midpoint and bids below, the best 10 levels per side, with prices
+in cents and exact share quantities. Depth bars scale to the largest visible
+level. The midpoint line shows the chance and spread computed from the best
+bid and ask. The view shows snapshot age and marks books delayed after 135
+seconds without a snapshot. Waiting for the first snapshot can take up to
+60 seconds.
 
 `/live?socket-demo=1` supplies synthetic markets and changing books entirely in
 the browser. These fixtures never request production assignments or Gamma.

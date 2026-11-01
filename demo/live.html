@@ -235,34 +235,41 @@
         </div>
       </div>
       <dialog class="socket-dialog" data-socket-dialog aria-labelledby="socket-dialog-title">
-        <div class="socket-dialog-head"><h2 id="socket-dialog-title">Socket details</h2><button type="button" class="control" data-socket-close>Close</button></div>
-      <div class="socket-history">
-        <div class="history-head">
-          <h3 data-socket-title>No socket selected</h3>
-          <div class="range" role="group" aria-label="History window">
-            <button type="button" data-socket-window="15m" aria-pressed="false">15m</button>
-            <button type="button" data-socket-window="1h" aria-pressed="true">1h</button>
-            <button type="button" data-socket-window="6h" aria-pressed="false">6h</button>
-            <button type="button" data-socket-window="24h" aria-pressed="false">24h</button>
-          </div>
+        <div class="socket-dialog-head">
+          <div><h2 id="socket-dialog-title" data-socket-title>No socket selected</h2><p class="small muted" data-socket-meta>Select a socket in the list to load its events per second.</p></div>
+          <button type="button" class="dialog-close" data-socket-close aria-label="Close">&times;</button>
         </div>
-        <p class="small muted" data-socket-meta>Select a socket in the list to load its events per second.</p>
-        <div class="plot" data-socket-plot role="img" aria-label="No socket selected"></div>
-        <p class="small socket-readout" data-socket-readout aria-hidden="true"></p>
-        <p class="chart-note" data-socket-history-note></p>
-      </div>
-      <section class="socket-markets" aria-labelledby="socket-market-title">
-        <div class="history-head"><h3 id="socket-market-title">Markets on this socket</h3><button type="button" class="control" data-market-retry hidden>Refresh markets</button></div>
-        <p class="small muted" data-market-status role="status"></p>
-        <div class="market-list" data-market-list></div>
-      </section>
-      <section class="book-detail" data-book-detail aria-labelledby="book-title" hidden>
-        <h3 id="book-title" data-book-title></h3>
-        <p class="small muted">Live books follow the market's current publishing connection.</p>
-        <p class="small" data-book-status role="status"></p>
-        <div class="book-outcomes" data-book-outcomes></div>
-        <p class="small muted">Showing the best 20 price levels on each side.</p>
-      </section>
+        <div class="dialog-box socket-history">
+          <div class="history-head">
+            <h3>Events per second</h3>
+            <div class="range" role="group" aria-label="History window">
+              <button type="button" data-socket-window="15m" aria-pressed="false">15m</button>
+              <button type="button" data-socket-window="1h" aria-pressed="true">1h</button>
+              <button type="button" data-socket-window="6h" aria-pressed="false">6h</button>
+              <button type="button" data-socket-window="24h" aria-pressed="false">24h</button>
+            </div>
+          </div>
+          <div class="plot" data-socket-plot role="img" aria-label="No socket selected"></div>
+          <p class="small socket-readout" data-socket-readout aria-hidden="true"></p>
+          <p class="chart-note" data-socket-history-note></p>
+        </div>
+        <div class="socket-columns">
+          <section class="dialog-box socket-markets" aria-labelledby="socket-market-title">
+            <div class="box-head"><h3 id="socket-market-title">Markets</h3><button type="button" class="control" data-market-retry hidden>Refresh</button></div>
+            <p class="small muted" data-market-status role="status"></p>
+            <div class="market-list" data-market-list></div>
+          </section>
+          <section class="dialog-box book-detail" data-book-detail aria-label="Order book">
+            <p class="small muted book-empty" data-book-empty>Select a market to watch its live order book.</p>
+            <div data-book-body hidden>
+              <div class="book-head"><span class="book-icon" data-book-icon></span><h3 data-book-title></h3></div>
+              <div class="outcome-toggle" role="group" aria-label="Outcome" data-book-outcomes></div>
+              <p class="small book-status" data-book-status role="status"></p>
+              <div class="ladder" data-book-ladder></div>
+              <p class="small muted" data-book-meta></p>
+            </div>
+          </section>
+        </div>
       </dialog>
     </div>
   </section>

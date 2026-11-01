@@ -5,6 +5,7 @@
   const S = root.DemoStatus;
   const isNum = S.isNumber;
   const PAGE_SIZE = 25;
+  const PLOT_HEIGHT = 160;
   const WINDOWS = ['15m', '1h', '6h', '24h'];
   const DEFAULT_WINDOW = '1h';
   // Socket samples arrive every 15 s, so history never refreshes faster than that.
@@ -598,7 +599,7 @@
 
     function plotOptions() {
       return {
-        width: Math.max(240, el.plot.clientWidth), height: 220,
+        width: Math.max(240, el.plot.clientWidth), height: PLOT_HEIGHT,
         legend: {show: false},
         cursor: {drag: {x: false, y: false}, points: {size: 5}},
         scales: {
@@ -723,7 +724,7 @@
     // Ages keep counting between polls.
     win.setInterval(() => { if (doc.visibilityState !== 'hidden') renderStatus(); }, 1000);
     if (win.ResizeObserver) {
-      new win.ResizeObserver(() => { if (plot) plot.setSize({width: Math.max(240, el.plot.clientWidth), height: 220}); }).observe(el.plot);
+      new win.ResizeObserver(() => { if (plot) plot.setSize({width: Math.max(240, el.plot.clientWidth), height: PLOT_HEIGHT}); }).observe(el.plot);
     }
     render();
   }

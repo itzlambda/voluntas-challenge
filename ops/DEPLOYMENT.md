@@ -167,3 +167,31 @@ To remove the routes, remove only the Voluntas import from `/etc/caddy/Caddyfile
 validate Caddy, and reload it. Preserve unrelated sites. The pre-install copy is
 `/etc/caddy/Caddyfile.before-voluntas`. To retire the deployment, delete only its
 demo DNS record through the deployment profile and revoke only the TCP 19090 security-group rule for the presentation host. Preserve SSH access rules.
+
+## Expose socket assignments on the stream host
+
+Install `ops/voluntas-stream.caddy.example` on the collector host, preserving
+unrelated sites. Set both `STREAM_HOST` and `DEMO_ORIGIN` in the Caddy service
+environment. `DEMO_ORIGIN` is the complete website origin, such as
+`https://collector-demo.example.com`, without a trailing slash. Validate the
+complete configuration before reloading Caddy.
+
+Check these routes with plain GET requests after the collector is ready:
+
+```sh
+curl -fsS https://stream.example.com/healthz
+curl -sS -D - -H 'Origin: https://collector-demo.example.com' https://stream.example.com/sockets/0/markets
+```
+
+Require JSON and `Access-Control-Allow-Origin` equal to the website origin.
+Check the same header on errors, including a 502 in an isolated proxy test.
+Do not interrupt production solely to induce that error. Confirm `/metrics`
+and `/metrics/sockets` do not reach the collector HTTP listener publicly.
+The eight-connection upstream limit protects collector capacity; it does not
+bound the number of requests queued by Caddy.
+
+The website must run with `--stream-origin wss://stream.example.com`. Its CSP
+must allow that WebSocket origin, the matching HTTPS origin for socket lists,
+and Gamma for metadata. A socket can appear in telemetry before its assignment
+batch is published. Treat a directory 404 as an empty or not-yet-published list
+and allow retry. Refetch on reopening a socket or reconnecting after restart.

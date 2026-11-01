@@ -321,7 +321,24 @@ exchange connections, and a bind failure exits nonzero. The
   keep-alive.
 
 Unexpected loss of the publisher or HTTP task triggers fatal shutdown;
-individual failed requests do not. Keep this endpoint and Prometheus private.
+individual failed requests do not. Keep the metrics and readiness routes and
+Prometheus private. Only the socket directory is proxied publicly.
+
+### Socket market directory
+
+`GET /sockets/{id}/markets` on the collector HTTP listener returns
+`{"markets":["0x…"]}` with sorted condition IDs assigned to that socket.
+Opened empty sockets return `200` with an empty list; unknown or invalid IDs
+return `404`, including before initial placement or while a growth batch is still being
+registered with workers. The directory describes
+assignments, not connection health or the current publisher. It remains at its
+last published value during shutdown. The manager publishes immutable lists
+after worker controls and before subscription commands; HTTP requests never
+wait on workers or the manager. Unchanged socket lists share their storage.
+
+The stream host proxies only `/sockets/*` to this listener with the demo's
+CORS origin. Its upstream connection cap reserves collector HTTP capacity
+for scrapes. The metrics routes remain private.
 
 ## Demo reader
 
@@ -409,18 +426,3 @@ per-connection maxima, and PONG round-trip times are outside this contract.
 Add a family only for an operational question the existing set and stderr
 incidents cannot answer. SBE correctness checks and lab benchmarks keep their
 own evidence and are not operational metrics.
-
-### Socket market directory
-
-`GET /sockets/{id}/markets` on the collector HTTP listener returns
-`{"markets":["0x…"]}` with sorted condition IDs assigned to that socket.
-Opened empty sockets return `200` with an empty list; unknown or invalid IDs
-return `404`, including before initial placement. The directory describes
-assignments, not connection health or the current publisher. It remains at its
-last published value during shutdown. The manager publishes immutable lists
-after worker controls and before subscription commands; HTTP requests never
-wait on workers or the manager. Unchanged socket lists share their storage.
-
-The stream host proxies only `/sockets/*` to this listener with the demo's
-CORS origin. Its upstream connection cap reserves collector HTTP capacity
-for scrapes. The metrics routes remain private.

@@ -97,10 +97,11 @@ test('decode errors immediately clear all baselines and stop after two attempts'
 test('market pagination has no omissions and clamps first, last, and empty pages', () => {
   const entries = Array.from({length: 23}, (_, id) => id);
   const first = B.marketPage(entries, -1), second = B.marketPage(entries, 1), last = B.marketPage(entries, 999);
-  assert.equal(B.MARKET_PAGE_SIZE, 10);
-  assert.equal(first.items.length, 10); assert.equal(second.items.length, 10); assert.equal(last.items.length, 3);
-  assert.equal(last.page, 2); assert.equal(last.pages, 3);
-  assert.equal([...first.items, ...second.items, ...last.items].join(), entries.join());
+  assert.equal(B.MARKET_PAGE_SIZE, 5);
+  assert.equal(first.items.length, 5); assert.equal(second.items.length, 5); assert.equal(last.items.length, 3);
+  assert.equal(last.page, 4); assert.equal(last.pages, 5);
+  const all = Array.from({length: last.pages}, (_, page) => B.marketPage(entries, page).items).flat();
+  assert.equal(all.join(), entries.join());
   assert.equal(B.marketPage([], 4).page, 0); assert.equal(B.marketPage([], 4).items.length, 0);
 });
 test('ladder prices show exact cents and grouped exact shares', () => {

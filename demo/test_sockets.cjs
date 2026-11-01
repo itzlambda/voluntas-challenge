@@ -190,7 +190,7 @@ function spread(count, center, width, seed = 1) {
     assert.deepEqual([...K.gaps([1, null, null, 2, null])].map(r => [...r]), [[1, 2], [4, 4]]);
   });
 
-  await test('a bar filters the list, which pages in 25 rows', () => {
+  await test('a bar filters the list, which pages in 5 rows', () => {
     const sockets = K.parseFleet(fleet([...Array(200).keys()].map(id => socket(id, id < 60 ? 10 + id / 100 : 20 + id / 10)))).sockets;
     const layout = {edges: [0, 5, 10, 15, 20, 25, 30, 35, 40]};
     const filter = {kind: 'bin', key: K.binOf(10.3, layout)};
@@ -198,10 +198,10 @@ function spread(count, center, width, seed = 1) {
     assert.equal(rows.length, 60);
     assert.ok(rows.every(s => s.rate >= 10 && s.rate < 15));
     assert.equal(rows[0].id, 59, 'busiest first');
-    const pages = [0, 1, 2, 9].map(page => K.paginate(rows, page));
-    assert.deepEqual(pages.map(p => p.items.length), [25, 25, 10, 10], 'the last page is clamped');
-    assert.equal(pages[3].page, 2);
-    assert.equal(pages[1].start, 25);
+    const pages = [0, 1, 11, 99].map(page => K.paginate(rows.slice(0, 58), page));
+    assert.deepEqual(pages.map(p => p.items.length), [5, 5, 3, 3], 'the last page is clamped');
+    assert.equal(pages[3].page, 11);
+    assert.equal(pages[1].start, 5);
     assert.equal(K.selectRows(sockets, layout, {filter, sort: 'quietest'})[0].id, 0);
     assert.deepEqual([...K.selectRows(sockets, layout, {query: '#19', sort: 'id'}).map(s => s.id)], [19, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199]);
     assert.equal(K.selectRows(sockets, layout, {query: 'abc'}).length, 0, 'non-numeric searches match nothing');
@@ -337,7 +337,7 @@ function spread(count, center, width, seed = 1) {
     c.setPage(3);
     assert.equal(c.view().page.page, 3);
     c.setPage(99);
-    assert.equal(c.view().page.page, 4, 'clamped to the last page');
+    assert.equal(c.view().page.page, 23, 'clamped to the last page');
     c.setSort('quietest');
     assert.equal(c.view().page.page, 0);
     assert.equal(c.view().page.items[0].id, 0);
@@ -408,7 +408,7 @@ function spread(count, center, width, seed = 1) {
     assert.ok(h.events_per_second.every(v => v === null), 'a socket without markets has no rate, not zero');
   });
 
-  await test('synthetic demo drives the controller end to end: bar, 25 rows, one history', async () => {
+  await test('synthetic demo drives the controller end to end: bar, 5 rows, one history', async () => {
     let fixture;
     const env = fakeEnv(url => fixture.fetch(url).then(json));
     fixture = F.create({now: () => env.Date.now()});
@@ -417,10 +417,10 @@ function spread(count, center, width, seed = 1) {
     await settle();
     let v = c.view();
     const busiest = v.hist.bins.filter(bin => bin.kind === 'regular').sort((a, b) => b.count - a.count)[0];
-    assert.ok(busiest.count > 25);
+    assert.ok(busiest.count > 5);
     c.setFilter({kind: 'bin', key: busiest.key});
     v = c.view();
-    assert.equal(v.page.items.length, 25);
+    assert.equal(v.page.items.length, 5);
     assert.equal(v.page.total, busiest.count);
     c.select(v.page.items[0].id);
     await settle();

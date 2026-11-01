@@ -2,7 +2,7 @@
 // Browser order books use the same fixed-point SBE records as the file reader.
 (function (root) {
   const SCALE = 1000000n;
-  const MARKET_PAGE_SIZE = 10;
+  const MARKET_PAGE_SIZE = 5;
   const LADDER_DEPTH = 10;
   const GAMMA = 'https://gamma-api.polymarket.com';
   const ICON_ORIGIN = 'https://polymarket-upload.s3.us-east-2.amazonaws.com';

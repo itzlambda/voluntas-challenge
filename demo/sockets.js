@@ -4,7 +4,7 @@
 (function (root) {
   const S = root.DemoStatus;
   const isNum = S.isNumber;
-  const PAGE_SIZE = 25;
+  const PAGE_SIZE = 5;
   const PLOT_HEIGHT = 160;
   const WINDOWS = ['15m', '1h', '6h', '24h'];
   const DEFAULT_WINDOW = '1h';

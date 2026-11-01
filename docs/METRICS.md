@@ -235,7 +235,7 @@ The separate endpoint adds about 6,001 series for 2,000 socket slots, without
 per-market labels or per-socket histogram buckets.
 
 The Live page uses one-minute rates with at least four samples. Clicking a
-histogram bucket filters a 25-row socket list. Selecting a socket loads only
+histogram bucket filters a socket list shown 5 rows per page. Selecting a socket loads only
 its history, with a maximum of 1,000 points. Available windows are 15 minutes,
 one hour, six hours, and 24 hours. The first minute after process start is a
 history gap. Rates include reconnect snapshot bursts.
@@ -434,7 +434,7 @@ own evidence and are not operational metrics.
 
 On `/live`, selecting a socket opens its traffic history and current market
 assignments. The browser requests the directory directly from the stream host
-and lists the assigned condition IDs in pages of 10, in directory order. Each
+and lists the assigned condition IDs in pages of 5, in directory order. Each
 row starts as its ID with a spinner. Only the visible page is looked up in
 Gamma, in one batch with explicit v1/v2 versions and a page limit covering
 the batch, to obtain questions, outcomes, quoted prices, icons, end dates,

@@ -51,6 +51,7 @@ const id = `0x${'a'.repeat(64)}`;
 
     let connections = 0, directoryRequests = 0, closed = 0;
     const sockets = [], gammaBatches = [];
+    let gammaMode = 'ok';
     const marketIds = [id, ...Array.from({length: 44}, (_, i) => `0x${(i + 1).toString(16).padStart(64, '0')}`)];
     await page.route('**/api/demo/config', route => route.fulfill({json: {stream_origin: 'wss://stream.example.com'}}));
     await page.route('https://stream.example.com/sockets/*/markets', route => {
@@ -58,6 +59,8 @@ const id = `0x${'a'.repeat(64)}`;
       return route.fulfill({headers: {'Access-Control-Allow-Origin': '*'}, json: {markets: marketIds}});
     });
     await page.route('https://gamma-api.polymarket.com/markets?**', route => {
+      if (gammaMode === 'dns') return route.abort('namenotresolved');
+      if (gammaMode === 'error') return route.fulfill({status: 500, headers: {'Access-Control-Allow-Origin': '*'}, body: 'upstream'});
       const params = new URL(route.request().url()).searchParams, requested = params.getAll('condition_ids');
       gammaBatches.push(requested);
       assert.equal(Number(params.get('limit')), requested.length, 'Gamma limit covers the entire batch');
@@ -160,6 +163,23 @@ const id = `0x${'a'.repeat(64)}`;
     await page.waitForFunction(() => document.querySelector('[data-book-status]').textContent.includes('Waiting for the first snapshot'));
     assert.equal(connections, beforeHidden + 1);
     await page.keyboard.press('Escape');
+    // An unresolvable Polymarket host gets its own explanation; other failures do not blame the region.
+    gammaMode = 'dns';
+    await page.locator('.socket-id').first().click();
+    const problem = page.locator('[data-market-status].lookup-problem');
+    await problem.waitFor();
+    assert.equal(await problem.innerText(), 'Could not reach Polymarket to load market details. Polymarket may be blocked in your region or on your network.');
+    assert.match(await page.locator('[data-market-list] button').first().innerText(), /Details unavailable/);
+    assert.equal(await page.locator('[data-market-list] button:enabled').count(), 0);
+    gammaMode = 'error';
+    await page.locator('[data-market-retry]').click();
+    await page.getByText('Polymarket did not send market details. Try Refresh.', {exact: true}).waitFor();
+    gammaMode = 'ok';
+    await page.locator('[data-market-retry]').click();
+    await page.getByRole('button', {name: /Live wire test market/}).waitFor();
+    assert.equal(await page.locator('[data-market-status].lookup-problem').count(), 0, 'a successful lookup clears the warning');
+    assert.equal(await page.locator('[data-market-status]').innerText(), '45 markets. Select one to watch its live order book.');
+    await page.keyboard.press('Escape');
     await page.route('**/api/demo/config', route => route.fulfill({json: {stream_origin: null}}));
     await page.locator('.socket-id').first().click();
     await page.getByText('Live order books are not enabled on this deployment.', {exact: true}).waitFor();
@@ -170,6 +190,6 @@ const id = `0x${'a'.repeat(64)}`;
     await page.getByText('Market viewing could not be loaded. Reload the page to retry.', {exact: true}).waitFor();
     await page.keyboard.press('Escape');
     assert.deepEqual(errors, []);
-    console.log('Browser checks passed: synthetic popup/history/ladder/outcome toggle, page-by-page Gamma lookup, mobile overflow, exact SBE snapshots/updates, waiting state, reconnect reset, close cleanup, and assignment refresh.');
+    console.log('Browser checks passed: synthetic popup/history/ladder/outcome toggle, page-by-page Gamma lookup, unreachable-Polymarket message, mobile overflow, exact SBE snapshots/updates, waiting state, reconnect reset, close cleanup, and assignment refresh.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

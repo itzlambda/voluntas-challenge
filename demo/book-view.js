@@ -183,7 +183,7 @@
     const make = (tag, cls, text) => { const node = doc.createElement(tag); if (cls) node.className = cls; if (text !== undefined) node.textContent = text; return node; };
     let generation = 0, abort = null, feed = null, renderTimer = null, demoTimer = null, freshnessTimer = null;
     let selectedMarket = null, side = 0, view = null, currentId = null, stream = null;
-    let ids = [], page = 0, buttons = new Map(), details = new Map(), pending = new Set();
+    let ids = [], page = 0, buttons = new Map(), details = new Map(), pending = new Set(), lookupProblem = null;
     const pager = make('div', 'pager'), previous = make('button', 'control', 'Previous'), next = make('button', 'control', 'Next');
     const pageText = make('p', 'small muted');
     previous.type = next.type = 'button';
@@ -206,7 +206,10 @@
       if (signal.aborted) cancel(); else signal.addEventListener('abort', cancel, {once: true});
       const timeout = env.setTimeout(cancel, 15000);
       try {
-        const response = await env.fetch(url, {signal: controller.signal});
+        let response;
+        // Browsers hide why a request failed; only a timeout is told apart from an unreachable host.
+        try { response = await env.fetch(url, {signal: controller.signal}); }
+        catch (error) { error.kind = controller.signal.aborted && !signal.aborted ? 'timeout' : 'unreachable'; throw error; }
         return {ok: response.ok, status: response.status, body: response.ok ? await response.json() : null};
       } finally {
         env.clearTimeout(timeout); signal.removeEventListener('abort', cancel);
@@ -263,12 +266,21 @@
       return {id, question: `${questions[n % questions.length]}${n >= questions.length ? ` (${n + 1})` : ''}`, outcomes: n % 4 === 1 ? ['Team A', 'Team B'] : ['Yes', 'No'],
         prices: [yes.toFixed(2), (1 - yes).toFixed(2)], tokens: [`${n + 1}1`, `${n + 1}2`], icon: null, end: null};
     }
+    const LOOKUP_PROBLEMS = {
+      unreachable: 'Could not reach Polymarket to load market details. Polymarket may be blocked in your region or on your network.',
+      timeout: 'Polymarket took too long to send market details. Try Refresh.',
+      failed: 'Polymarket did not send market details. Try Refresh.'};
+    function summary() {
+      note.classList.toggle('lookup-problem', Boolean(lookupProblem));
+      if (lookupProblem) return LOOKUP_PROBLEMS[lookupProblem];
+      return ids.length ? `${ids.length} markets${demo ? ' · synthetic demo' : ''}. Select one to watch its live order book.` : 'No markets on this socket.';
+    }
     async function loadDetails(items) {
       const missing = items.filter(id => !details.has(id) && !pending.has(id));
       if (!missing.length) return;
       const mine = generation, signal = abort.signal;
       missing.forEach(id => pending.add(id));
-      let found = new Map();
+      let found = new Map(), problem = null;
       try {
         if (demo) {
           await new Promise(resolve => env.setTimeout(resolve, 400));
@@ -281,15 +293,16 @@
           if (!Array.isArray(rows)) throw new Error('Invalid metadata');
           found = new Map(rows.map(metadata).filter(Boolean).map(market => [market.id, market]));
         }
-      } catch (_) { /* Rows fall back to their IDs; Refresh retries. */ }
+      } catch (error) { problem = error.kind || 'failed'; /* Rows fall back to their IDs; Refresh retries. */ }
       if (mine !== generation) return;
+      lookupProblem = problem; setText(note, summary());
       for (const id of missing) { pending.delete(id); details.set(id, found.get(id) || null); paint(id); }
       list.removeAttribute('aria-busy');
     }
     async function open(id) {
       close(); const mine = generation; currentId = id; abort = new env.AbortController();
-      ids = []; page = 0; buttons = new Map(); details = new Map(); pending = new Set();
-      renderPage(); retry.hidden = true; list.setAttribute('aria-busy', 'true'); note.textContent = 'Loading markets…';
+      ids = []; page = 0; buttons = new Map(); details = new Map(); pending = new Set(); lookupProblem = null;
+      note.classList.remove('lookup-problem'); renderPage(); retry.hidden = true; list.setAttribute('aria-busy', 'true'); note.textContent = 'Loading markets…';
       try {
         let assigned;
         if (demo) assigned = Array.from({length: 23}, (_, n) => `0x${(id * 100 + n + 1).toString(16).padStart(64, '0')}`);
@@ -309,7 +322,7 @@
         }
         if (mine !== generation) return;
         ids = assigned; retry.hidden = false;
-        note.textContent = ids.length ? `${ids.length} markets${demo ? ' · synthetic demo' : ''}. Select one to watch its live order book.` : 'No markets on this socket.';
+        note.textContent = summary();
         if (!ids.length) list.removeAttribute('aria-busy');
         renderPage();
       } catch (_) {

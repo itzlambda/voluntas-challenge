@@ -442,7 +442,10 @@ and outcome asset IDs. Pages already looked up are not requested again while
 the popup stays open. Refreshing or reopening the popup fetches assignments
 again. Changing pages leaves the selected live book running. An unpublished
 socket shows an empty waiting state with a refresh button. Gamma failures
-keep the market IDs visible.
+keep the market IDs visible. Browsers do not say why a request failed, so a
+lookup that cannot reach Gamma at all reports that Polymarket may be blocked
+in the visitor's region or network. Some countries block its hostnames at the
+DNS level. Timeouts and error responses get a separate retry message.
 
 Selecting a market opens one WebSocket subscription for its two outcomes.
 The book follows the market's current publisher, which can differ from the

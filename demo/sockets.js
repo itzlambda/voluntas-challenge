@@ -407,6 +407,16 @@
       close() {},
     };
     q('close').addEventListener('click', () => dialog.close());
+    let pressedOutside = false;
+    function outsideDialog(event) {
+      const box = dialog.getBoundingClientRect();
+      return event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom;
+    }
+    dialog.addEventListener('pointerdown', event => { pressedOutside = event.target === dialog && outsideDialog(event); });
+    dialog.addEventListener('click', event => {
+      if (pressedOutside && event.target === dialog && outsideDialog(event)) dialog.close();
+      pressedOutside = false;
+    });
     dialog.addEventListener('close', () => {
       const id = controller.view().selected;
       books.close(); controller.clear();

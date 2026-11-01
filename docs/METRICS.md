@@ -437,7 +437,10 @@ assignments. The browser requests the directory directly from the stream host,
 then batches condition IDs through Gamma with explicit v1/v2 versions and a
 page limit covering the batch to obtain questions, outcomes, quoted
 prices, icons, end dates, and outcome asset IDs. Refreshing or reopening the
-popup fetches assignments again. An unpublished socket shows an empty waiting
+popup fetches assignments again. After all metadata batches finish, markets
+are sorted by Gamma 24-hour trading volume, highest first, in pages of 20.
+The list shows that volume and puts unavailable volume or details last.
+Changing pages leaves the selected live book running. An unpublished socket shows an empty waiting
 state with a refresh button. Gamma failures keep the market IDs visible.
 
 Selecting a market opens one WebSocket subscription for its two outcomes.

@@ -30,7 +30,7 @@ const id = `0x${'a'.repeat(64)}`;
 
     let connections = 0, directoryRequests = 0, closed = 0;
     const sockets = [];
-    const marketIds = [id, ...Array.from({length: 44}, (_, i) => `0x${(i + 1).toString(16).padStart(64, '0')}`)];
+    const marketIds = [...Array.from({length: 44}, (_, i) => `0x${(i + 1).toString(16).padStart(64, '0')}`), id];
     await page.route('**/api/demo/config', route => route.fulfill({json: {stream_origin: 'wss://stream.example.com'}}));
     await page.route('https://stream.example.com/sockets/*/markets', route => {
       directoryRequests++;
@@ -43,7 +43,7 @@ const id = `0x${'a'.repeat(64)}`;
       assert.equal(params.get('closed'), 'any');
       const rows = requested.slice(0, Number(params.get('limit') || 20)).map((conditionId, i) => ({conditionId,
         question: conditionId === id ? 'Live wire test market' : `Other test market ${i}`,
-        outcomes: '["Yes","No"]', outcomePrices: '["0.45","0.55"]', clobTokenIds: '["123","456"]'}));
+        outcomes: '["Yes","No"]', outcomePrices: '["0.45","0.55"]', clobTokenIds: '["123","456"]', volume24hr: marketIds.indexOf(conditionId) * 100}));
       return route.fulfill({headers: {'Access-Control-Allow-Origin': '*'}, json: rows});
     });
     await page.routeWebSocket('wss://stream.example.com/**', socket => {
@@ -58,13 +58,28 @@ const id = `0x${'a'.repeat(64)}`;
     await page.route('**/api/demo/sockets', route => route.fulfill({json: {schema_version: 1, status: 'live', retained: false, values_at: Date.now() / 1000, age_seconds: 0, sockets: [{id: 0, pool: 'primary', connected: true, markets: 1, state: 'connected', events_per_second: 2}]}}));
     await page.goto(`${base}/live`);
     await page.locator('.socket-id').first().click();
-    await page.waitForFunction(() => document.querySelectorAll('[data-market-list] button:enabled').length === 45);
+    await page.waitForFunction(() => document.querySelectorAll('[data-market-list] button:enabled').length === 20 && !document.querySelector('[data-market-list]').hasAttribute('aria-busy'));
+    assert.match(await page.locator('[data-market-list] button').first().innerText(), /Live wire test market/);
+    assert.equal(await page.locator('.market-volume').first().innerText(), '24h volume $4,400.00', 'highest volume from the last batch comes first');
+    assert.equal(await page.locator('[data-market-page]').innerText(), '1 to 20 of 45 markets');
+    await page.locator('[data-market-next]').click();
+    assert.equal(await page.locator('[data-market-page]').innerText(), '21 to 40 of 45 markets');
+    assert.equal(await page.locator('.market-volume').first().innerText(), '24h volume $2,400.00');
+    await page.locator('[data-market-next]').click();
+    assert.equal(await page.locator('[data-market-list] button').count(), 5);
+    assert.equal(await page.locator('[data-market-next]').isDisabled(), true);
+    await page.locator('[data-market-previous]').click(); await page.locator('[data-market-previous]').click();
+    assert.equal(await page.locator('[data-market-previous]').isDisabled(), true);
     await page.getByRole('button', {name: /Live wire test market/}).click();
     await page.getByText('Waiting for a snapshot. This may take up to 60 seconds.', {exact: true}).waitFor();
     assert.equal(await page.locator('.depth-table').count(), 0);
     sockets[0].send(Buffer.concat([record(1), record(1, '456')]));
     await page.locator('[data-book-status]').filter({hasText: /^Live order books$/}).waitFor();
     assert.equal(await page.locator('.depth-table').count(), 4);
+    await page.locator('[data-market-next]').click();
+    assert.equal(connections, 1, 'paging leaves the selected stream running');
+    assert.equal(await page.locator('[data-book-title]').innerText(), 'Live wire test market');
+    await page.locator('[data-market-previous]').click();
     assert.equal(await page.getByText('12345678901.234567', {exact: true}).count(), 2);
     assert.ok(await page.locator('dialog').evaluate(d => d.scrollWidth <= d.clientWidth + 1), 'large exact quantities fit on mobile');
     await page.evaluate(() => {

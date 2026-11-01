@@ -519,7 +519,13 @@ async fn serve_client(
                         close(&mut sink, &mut source, CloseFrame { code: CloseCode::Unsupported, reason: "text requests only".into() }).await;
                         return Ok(());
                     }
-                    Some(Ok(Message::Close(_))) | None => return Ok(()),
+                    Some(Ok(Message::Close(_))) => {
+                        // Reading Close queues tungstenite's reply; flush it
+                        // before dropping the split socket.
+                        let _ = tokio::time::timeout(Duration::from_secs(1), sink.flush()).await;
+                        return Ok(());
+                    }
+                    None => return Ok(()),
                     // Browsers vanish without a close handshake routinely.
                     Some(Err(WsError::Protocol(ProtocolError::ResetWithoutClosingHandshake))) => return Ok(()),
                     Some(Err(error)) => return Err(error).context("read request"),
@@ -587,9 +593,9 @@ async fn close(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::Side;
     use crate::core::metrics::{Component, Metrics};
+    use crate::core::stream::*;
     use crate::model::{Price, Qty};
     use crate::util::dtos::challenge_orderbook::{
         AnyMessage, PriceLevelUpdateDomain, SnapshotDomain,
@@ -712,6 +718,27 @@ mod tests {
                 return;
             }
         }
+    }
+
+    #[tokio::test]
+    async fn replies_to_client_initiated_close_before_dropping_connection() {
+        let (stream, records) = start(settings(64, 16));
+        let mut client = connect(stream.address, &[]).await;
+        client
+            .send(Message::Close(Some(CloseFrame {
+                code: CloseCode::Normal,
+                reason: "finished viewing".into(),
+            })))
+            .await
+            .unwrap();
+        assert_eq!(
+            tokio::time::timeout(Duration::from_secs(1), close_code(&mut client))
+                .await
+                .unwrap(),
+            Some(CloseCode::Normal),
+        );
+        drop(records);
+        stream.done.await.unwrap().unwrap();
     }
 
     #[tokio::test]

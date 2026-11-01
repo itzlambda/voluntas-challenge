@@ -156,7 +156,8 @@ live, not for archiving.
   invalid request, 1003 for a binary request, 1001 at shutdown. After sending
   a close frame the server waits up to 1 second for the client's reply. A
   client that disconnects without a close handshake is normal for browsers
-  and is not logged.
+  and is not logged. Client-initiated close frames flush the
+  automatic reply before the socket is dropped.
 - **Telemetry.** stderr events `stream_available` (endpoint at startup),
   `stream_client_kicked` (client, reason, book count), `stream_client_error`,
   and `stream_accept_failed`. There are no per-client Prometheus metrics yet.

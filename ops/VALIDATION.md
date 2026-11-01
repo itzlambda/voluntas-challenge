@@ -116,3 +116,35 @@ against Rust's `with_message` encoder and independently decoded in JavaScript.
 These checks establish local behavior and metadata compatibility. Collector
 startup, live proxy configuration, and the deployed browser flow require
 verification during rollout.
+
+### WebSocket close regression
+
+The live browser check exposed a missing reply flush when a client initiated
+WebSocket close. The focused regression
+`replies_to_client_initiated_close_before_dropping_connection` failed with
+`Connection reset without closing handshake` before the fix and passed after
+it. Formatting, Clippy, all 95 library tests, and all six mock-exchange
+integration tests passed with the correction. The public Chromium close check
+then returned code 1000 with a clean handshake and no WebSocket errors.
+The native Node WebSocket client also closed cleanly without the earlier probe
+error.
+
+### Production rollout
+
+The collector release `fd09a0b` and frontend release `90105fa` were activated
+on 2026-11-01. Rollback copies of the prior collector and complete website
+were retained. The deployment banner covered both collector restarts and was
+cleared after validation.
+
+The final collector passed readiness with no automatic restarts. Both
+Prometheus scrape jobs were healthy. All 2,034 order-book sockets were connected,
+and market coverage remained above 99.99% across three consecutive checks.
+The public directory returned sorted assignments with the website's CORS
+origin, while metrics routes remained private.
+
+The final public-site Chromium run loaded real socket history and market
+metadata, received both outcome snapshots, and rendered all four bid/ask
+tables. After an intentional disconnect it received fresh snapshots again.
+Mobile layout, focus restoration, subscription cleanup, and clean close
+handshakes passed. It recorded zero page errors, WebSocket errors, and CSP
+violations. This was an end-to-end behavior check, not a performance benchmark.

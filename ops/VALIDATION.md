@@ -10,6 +10,7 @@ python3 -m unittest discover -s demo
 node demo/test_ui.cjs
 node demo/test_sockets.cjs
 node demo/test_books.cjs
+node demo/test_markets.cjs
 node demo/test_deployment.cjs
 ```
 

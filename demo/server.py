@@ -477,7 +477,7 @@ class Reader:
 
 ROOT = Path(__file__).parent
 # Pages accept any query string; assets and APIs match exactly.
-PAGES = {"/": "index.html", "/live": "live.html"}
+PAGES = {"/": "index.html", "/live": "live.html", "/sockets": "sockets.html", "/markets": "markets.html"}
 ASSETS = {"/book-view.js": ("book-view.js", "text/javascript; charset=utf-8"),
           "/deployment.js": ("deployment.js", "text/javascript; charset=utf-8"),
           "/deployment.json": ("deployment.json", "application/json"),
@@ -489,6 +489,7 @@ ASSETS = {"/book-view.js": ("book-view.js", "text/javascript; charset=utf-8"),
           "/diagram.js": ("diagram.js", "text/javascript; charset=utf-8"),
           "/overview.js": ("overview.js", "text/javascript; charset=utf-8"),
           "/sockets.js": ("sockets.js", "text/javascript; charset=utf-8"),
+          "/markets.js": ("markets.js", "text/javascript; charset=utf-8"),
           "/socket-demo.js": ("socket-demo.js", "text/javascript; charset=utf-8"),
           "/charts.js": ("charts.js", "text/javascript; charset=utf-8")}
 CSP = ("default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; "

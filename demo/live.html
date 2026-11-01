@@ -11,8 +11,6 @@
 <script src="/status.js" defer></script>
 <script src="/deployment.js" defer></script>
 <script src="/charts.js" defer></script>
-<script src="/book-view.js" defer></script>
-<script src="/sockets.js" defer></script>
 <script src="/chart-help.js" defer></script>
 </head>
 <body>
@@ -23,6 +21,8 @@
   <nav class="site-nav" aria-label="Pages">
     <a href="/">Overview</a>
     <a href="/live" aria-current="page">Live</a>
+    <a href="/sockets">Sockets</a>
+    <a href="/markets">Markets</a>
   </nav>
   <p class="status" id="status" role="status"><span class="status-dot" aria-hidden="true"></span><span class="status-text">Connecting</span></p>
 </header>
@@ -191,87 +191,9 @@
       <p class="chart-note" data-note></p>
     </section>
   </div>
-  <section class="panel socket-panel" id="sockets" aria-labelledby="h-sockets">
-    <div class="chart-head">
-      <h2 id="h-sockets"><button class="chart-help" type="button" aria-describedby="help-sockets" aria-expanded="false">Traffic per order-book socket</button></h2>
-      <div class="chart-tooltip" id="help-sockets" role="tooltip" popover="auto">
-        <p>Decoded market-data events per second on each upstream order-book socket, primary and replica, over a one-minute rate. Full books count, so a reconnect's burst of full books raises the rate for about a minute. Heartbeats and control messages do not count. There are no per-market rates.</p>
-        <p>The distribution includes connected sockets with markets and a rate. Exactly zero has its own bar. Sockets that are disconnected, have no markets, are warming up or have no current rate are counted separately and never shown as zero.</p>
-        <p>Bins are fitted to the rates when the page loads and stay fixed between refreshes so bars stay comparable. Rates far outside the fitted range go to the end bars. Use Fit range to refit.</p>
-        <p>Socket telemetry is scraped every 15 seconds. A rate needs four samples, so it appears about a minute after a new socket task starts or the collector restarts. Reconnects keep the counter, and is shown only while the socket keeps publishing fresh telemetry. History loads for the selected socket only; gaps mean no rate, and dashed lines mark collector restarts, after which the same ID may carry different markets.</p>
-      </div>
-      <p class="socket-status" data-socket-status aria-live="polite">Loading sockets</p>
-    </div>
-    <p class="socket-demo-note" data-socket-demo hidden>Synthetic demo data, generated in this browser from a fixed seed. These are not collector measurements; the rest of the page still shows live values. <a href="/live">Show real socket telemetry</a></p>
-    <div class="socket-states" data-socket-states role="group" aria-label="Socket counts by state. Select one to list those sockets."></div>
-    <div class="socket-dist">
-      <div class="histogram" data-socket-histogram role="group" aria-label="Sockets by events per second. Select a bar to list its sockets; arrow keys move between bars."></div>
-      <div class="histogram-foot">
-        <p class="small muted">Events per second, one-minute rate. Bar labels are lower bounds.</p>
-        <p class="small muted" data-socket-fit-note aria-live="polite"></p>
-        <button type="button" class="control" data-socket-fit>Fit range</button>
-      </div>
-    </div>
-    <div class="socket-body">
-      <div class="socket-list">
-        <div class="socket-controls">
-          <label>Socket ID <input type="search" inputmode="numeric" autocomplete="off" spellcheck="false" data-socket-search></label>
-          <label>Pool <select data-socket-pool><option value="">Both</option><option value="primary">Primary</option><option value="replica">Replica</option></select></label>
-          <label>Sort <select data-socket-sort><option value="busiest">Busiest first</option><option value="quietest">Quietest first</option><option value="id">By ID</option></select></label>
-          <button type="button" class="control" data-socket-pause aria-pressed="false">Pause updates</button>
-        </div>
-        <p class="small muted socket-filter" data-socket-filter aria-live="polite"></p>
-        <div class="table-wrap">
-          <table class="socket-table">
-            <caption class="visually-hidden">Order-book sockets. Select a socket ID to view its history, markets, and live order books.</caption>
-            <thead><tr><th scope="col">Socket</th><th scope="col">Pool</th><th scope="col">Status</th><th scope="col" class="num">Markets</th><th scope="col" class="num">Events/s</th></tr></thead>
-            <tbody data-socket-rows></tbody>
-          </table>
-        </div>
-        <div class="pager">
-          <button type="button" class="control" data-socket-prev>Previous</button>
-          <p class="small muted" data-socket-page aria-live="polite"></p>
-          <button type="button" class="control" data-socket-next>Next</button>
-        </div>
-      </div>
-      <dialog class="socket-dialog" data-socket-dialog aria-labelledby="socket-dialog-title">
-        <div class="socket-dialog-head">
-          <div><h2 id="socket-dialog-title" data-socket-title>No socket selected</h2><p class="small muted" data-socket-meta>Select a socket in the list to load its events per second.</p></div>
-          <button type="button" class="dialog-close" data-socket-close aria-label="Close">&times;</button>
-        </div>
-        <div class="dialog-box socket-history">
-          <div class="history-head">
-            <h3>Events per second</h3>
-            <div class="range" role="group" aria-label="History window">
-              <button type="button" data-socket-window="15m" aria-pressed="false">15m</button>
-              <button type="button" data-socket-window="1h" aria-pressed="true">1h</button>
-              <button type="button" data-socket-window="6h" aria-pressed="false">6h</button>
-              <button type="button" data-socket-window="24h" aria-pressed="false">24h</button>
-            </div>
-          </div>
-          <div class="plot" data-socket-plot role="img" aria-label="No socket selected"></div>
-          <p class="small socket-readout" data-socket-readout aria-hidden="true"></p>
-          <p class="chart-note" data-socket-history-note></p>
-        </div>
-        <div class="socket-columns">
-          <section class="dialog-box socket-markets" aria-labelledby="socket-market-title">
-            <div class="box-head"><h3 id="socket-market-title">Markets</h3><button type="button" class="control" data-market-retry hidden>Refresh</button></div>
-            <p class="small muted" data-market-status role="status"></p>
-            <div class="market-list" data-market-list></div>
-          </section>
-          <section class="dialog-box book-detail" data-book-detail aria-label="Order book">
-            <p class="small muted book-empty" data-book-empty>Select a market to watch its live order book.</p>
-            <div data-book-body hidden>
-              <div class="book-head"><span class="book-icon" data-book-icon></span><h3 data-book-title></h3></div>
-              <div class="outcome-toggle" role="group" aria-label="Outcome" data-book-outcomes></div>
-              <p class="small book-status" data-book-status role="status"></p>
-              <div class="ladder" data-book-ladder></div>
-              <p class="small muted" data-book-meta></p>
-            </div>
-          </section>
-        </div>
-      </dialog>
-    </div>
+  <section class="panel page-link" aria-labelledby="h-socket-link">
+    <h2 id="h-socket-link">Per-socket traffic</h2>
+    <p class="small muted">Events per second on each order-book socket, the markets each socket carries, and their live order books are on the <a href="/sockets">Sockets page</a>.</p>
   </section>
 </main>
 <footer class="site-footer">

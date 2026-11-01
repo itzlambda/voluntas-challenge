@@ -431,7 +431,8 @@ function spread(count, center, width, seed = 1) {
   });
 
   await test('page markup: separate panel, external scripts, demo fixture only on request', () => {
-    const raw = fs.readFileSync(path.join(DEMO, 'live.html'), 'utf8');
+    const raw = fs.readFileSync(path.join(DEMO, 'sockets.html'), 'utf8');
+    assert.doesNotMatch(fs.readFileSync(path.join(DEMO, 'live.html'), 'utf8'), /socket-panel|sockets\.js/, 'the Live page only links to the Sockets page');
     const panel = raw.match(/<section class="panel socket-panel"[\s\S]*?<\/section>/)[0];
     assert.doesNotMatch(panel, /data-chart|data-plot|data-range=/, 'the generic chart loop does not pick up the panel');
     assert.deepEqual([...panel.matchAll(/data-socket-window="([^"]+)" aria-pressed="(\w+)"/g)].map(m => `${m[1]}:${m[2]}`), ['15m:false', '1h:true', '6h:false', '24h:false']);

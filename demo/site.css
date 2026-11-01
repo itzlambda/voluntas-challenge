@@ -495,3 +495,26 @@ main > .page-section:first-of-type { border-top: 0; margin-top: 0; padding-top: 
 @keyframes level-flash { from { background: #5ba9e733; } to { background: transparent; } }
 @media (max-width: 760px) { .socket-columns { grid-template-columns: minmax(0, 1fr); } .socket-dialog { padding: 12px; } }
 @media (prefers-reduced-motion: reduce) { .market-spinner, .book-status.live::before, .ladder-row.flash { animation: none; } }
+
+/* Sockets and Markets pages */
+.page-head { margin: 4px 0 var(--gap); }
+.page-head h1 { font-size: 24px; }
+.page-link { margin-top: var(--gap); padding: 14px 18px; }
+.page-link h2 { font-size: 16px; }
+.page-link p { margin: 6px 0 0; }
+.markets-page .dialog-box { background: var(--panel); }
+.markets-page .dialog-box h2 { font-size: 14px; }
+.market-search { display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--grey-dark); border-radius: var(--radius); padding: 0 6px 0 12px; margin-bottom: 14px; }
+.market-search:focus-within { border-color: var(--muted); }
+.market-search-icon { color: var(--muted); }
+.market-search input { flex: 1; min-width: 0; font: inherit; font-size: 15px; color: var(--strong); background: none; border: 0; padding: 10px 0; outline: none; }
+.market-search input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.market-search .dialog-close { font-size: 18px; padding: 2px 8px; }
+.market-group + .market-group { margin-top: 6px; }
+.market-group-title { margin: 8px 8px 2px; font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.market-more { font: inherit; font-size: 12.5px; color: var(--text); background: none; border: 0; padding: 6px 8px; cursor: pointer; text-decoration: underline dotted var(--muted); text-underline-offset: 3px; }
+.market-rank { width: 16px; flex: none; text-align: right; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.market-price.stacked { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.35; }
+.market-price.stacked > span:first-child { color: var(--text); }
+.market-volume:empty { display: none; }
+.book-event { margin: -4px 0 8px 30px; }

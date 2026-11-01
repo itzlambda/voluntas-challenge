@@ -117,8 +117,11 @@
     let icon = null;
     try { const url = new URL(raw.icon); if (url.origin === ICON_ORIGIN) icon = url.href; } catch (_) { /* Optional image. */ }
     const end = typeof raw.endDate === 'string' && Number.isFinite(Date.parse(raw.endDate)) ? raw.endDate : null;
+    const text = value => typeof value === 'string' && value.trim() ? value.trim() : null;
+    const volume = typeof raw.volume24hr === 'number' && Number.isFinite(raw.volume24hr) && raw.volume24hr >= 0 ? raw.volume24hr : null;
     return {id: raw.conditionId.toLowerCase(), question: typeof raw.question === 'string' ? raw.question : raw.conditionId,
-      outcomes, tokens, prices: prices.map(p => typeof p === 'string' && /^\d+(\.\d+)?$/.test(p) ? p : null), icon, end};
+      outcomes, tokens, prices: prices.map(p => typeof p === 'string' && /^\d+(\.\d+)?$/.test(p) ? p : null), icon, end,
+      label: text(raw.groupItemTitle), event: Array.isArray(raw.events) ? text(raw.events[0]?.title) : null, volume24hr: volume};
   }
 
   // Every new session discards its baselines. A late callback from an older session is ignored.
@@ -173,170 +176,65 @@
     return [...state.books.values()].some(book => book.snapshotAt === null || now - book.snapshotAt > 135000) ? 'stale' : 'live';
   }
 
-  function mount(doc, env, dialog, demo) {
-    const list = dialog.querySelector('[data-market-list]'), note = dialog.querySelector('[data-market-status]');
-    const retry = dialog.querySelector('[data-market-retry]'), empty = dialog.querySelector('[data-book-empty]');
-    const body = dialog.querySelector('[data-book-body]'), icon = dialog.querySelector('[data-book-icon]');
-    const title = dialog.querySelector('[data-book-title]'), toggle = dialog.querySelector('[data-book-outcomes]');
-    const bookStatus = dialog.querySelector('[data-book-status]'), ladder = dialog.querySelector('[data-book-ladder]');
-    const meta = dialog.querySelector('[data-book-meta]');
-    const make = (tag, cls, text) => { const node = doc.createElement(tag); if (cls) node.className = cls; if (text !== undefined) node.textContent = text; return node; };
-    let generation = 0, abort = null, feed = null, renderTimer = null, demoTimer = null, freshnessTimer = null;
-    let selectedMarket = null, side = 0, view = null, currentId = null, stream = null;
-    let ids = [], page = 0, buttons = new Map(), details = new Map(), pending = new Set(), lookupProblem = null;
-    const pager = make('div', 'pager'), previous = make('button', 'control', 'Previous'), next = make('button', 'control', 'Next');
-    const pageText = make('p', 'small muted');
-    previous.type = next.type = 'button';
-    previous.dataset.marketPrevious = ''; next.dataset.marketNext = ''; pageText.dataset.marketPage = '';
-    pageText.setAttribute('aria-live', 'polite');
-    pager.append(previous, pageText, next); list.after(pager); pager.hidden = true;
+  // Gamma's collected-market rule, matching the collector's discovery filter:
+  // original (v1) markets that are active, open, unarchived and accepting orders.
+  function collectable(raw) {
+    return Boolean(raw) && (raw.version === undefined || raw.version === null || raw.version === 'v1')
+      && raw.active === true && raw.closed !== true && raw.archived !== true && raw.acceptingOrders === true
+      && metadata(raw) !== null;
+  }
 
+  const LOOKUP_PROBLEMS = {
+    unreachable: 'Could not reach Polymarket to load market details. Polymarket may be blocked in your region or on your network.',
+    timeout: 'Polymarket took too long to send market details. Try again.',
+    failed: 'Polymarket did not send market details. Try again.'};
+
+  // One JSON request with a 15 s limit. Failures carry `kind`: browsers hide why a
+  // request failed, so only a timeout is told apart from an unreachable host.
+  async function fetchJson(env, url, signal) {
+    const controller = new env.AbortController();
+    const cancel = () => controller.abort();
+    if (signal.aborted) cancel(); else signal.addEventListener('abort', cancel, {once: true});
+    const timeout = env.setTimeout(cancel, 15000);
+    try {
+      let response;
+      try { response = await env.fetch(url, {signal: controller.signal}); }
+      catch (error) { error.kind = controller.signal.aborted && !signal.aborted ? 'timeout' : 'unreachable'; throw error; }
+      const result = {ok: response.ok, status: response.status, body: response.ok ? await response.json() : null};
+      if (!result.ok && result.status !== 404) { const error = new Error('Request failed'); error.kind = 'failed'; error.status = result.status; throw error; }
+      return result;
+    } finally {
+      env.clearTimeout(timeout); signal.removeEventListener('abort', cancel);
+    }
+  }
+
+  // The order book for one market: one outcome at a time, asks above the midpoint and bids below.
+  // `streamOrigin()` returns the stream WebSocket origin when a market is selected.
+  function bookPanel(doc, env, container, options) {
+    const demo = Boolean(options.demo);
+    const q = name => container.querySelector(`[data-book-${name}]`);
+    const empty = q('empty'), body = q('body'), icon = q('icon'), title = q('title'), event = q('event');
+    const toggle = q('outcomes'), bookStatus = q('status'), ladder = q('ladder'), meta = q('meta');
+    const make = (tag, cls, text) => { const node = doc.createElement(tag); if (cls) node.className = cls; if (text !== undefined) node.textContent = text; return node; };
+    let feed = null, renderTimer = null, demoTimer = null, freshnessTimer = null, generation = 0;
+    let selectedMarket = null, side = 0, view = null, waitingSince = null;
     function setText(node, text) { if (node.textContent !== text) node.textContent = text; }
-    function stopBook() {
+    function stop() {
+      ++generation;
       if (feed) feed.stop(); feed = null; view = null;
       env.clearTimeout(renderTimer); renderTimer = null;
       env.clearInterval(demoTimer); demoTimer = null;
       env.clearInterval(freshnessTimer); freshnessTimer = null;
     }
-    function showEmpty() { body.hidden = true; empty.hidden = false; }
-    function close() { ++generation; if (abort) abort.abort(); stopBook(); selectedMarket = null; showEmpty(); }
-    async function request(url, signal) {
-      const controller = new env.AbortController();
-      const cancel = () => controller.abort();
-      if (signal.aborted) cancel(); else signal.addEventListener('abort', cancel, {once: true});
-      const timeout = env.setTimeout(cancel, 15000);
-      try {
-        let response;
-        // Browsers hide why a request failed; only a timeout is told apart from an unreachable host.
-        try { response = await env.fetch(url, {signal: controller.signal}); }
-        catch (error) { error.kind = controller.signal.aborted && !signal.aborted ? 'timeout' : 'unreachable'; throw error; }
-        return {ok: response.ok, status: response.status, body: response.ok ? await response.json() : null};
-      } finally {
-        env.clearTimeout(timeout); signal.removeEventListener('abort', cancel);
-      }
-    }
-    async function json(url, signal) {
-      const response = await request(url, signal);
-      if (!response.ok) throw new Error('Request failed');
-      return response.body;
-    }
-
-    // Market rows. Details load one page at a time and are kept while the popup stays on this socket.
-    function row(id) {
-      let button = buttons.get(id);
-      if (button) return button;
-      button = make('button', 'market-row'); button.type = 'button'; button.dataset.id = id;
-      button.addEventListener('click', () => { const market = details.get(id); if (market) select(market); });
-      buttons.set(id, button); paint(id); return button;
-    }
-    function paint(id) {
-      const button = buttons.get(id);
-      if (!button) return;
-      const market = details.get(id);
-      button.setAttribute('aria-pressed', String(selectedMarket?.id === id));
-      if (market) {
-        const picture = market.icon ? make('img') : make('span', 'icon-blank');
-        if (market.icon) { picture.src = market.icon; picture.alt = ''; picture.loading = 'lazy'; picture.referrerPolicy = 'no-referrer'; }
-        const quote = chance(market.prices[0]);
-        button.replaceChildren(picture, make('span', 'market-q', market.question), make('span', 'market-price', quote ? `${market.outcomes[0]} ${quote}` : ''));
-        button.title = market.question; button.disabled = false; button.removeAttribute('aria-busy');
-      } else if (details.has(id)) {
-        button.replaceChildren(make('span', 'icon-blank'), make('span', 'market-q id', id), make('span', 'market-price', 'Details unavailable'));
-        button.disabled = true; button.removeAttribute('aria-busy');
-      } else {
-        const spinner = make('span', 'market-spinner'); spinner.setAttribute('aria-hidden', 'true');
-        button.replaceChildren(spinner, make('span', 'market-q id', id));
-        button.disabled = true; button.setAttribute('aria-busy', 'true');
-      }
-    }
-    function renderPage() {
-      const slice = marketPage(ids, page); page = slice.page;
-      list.replaceChildren(...slice.items.map(row));
-      pager.hidden = slice.total <= MARKET_PAGE_SIZE;
-      previous.disabled = page === 0; next.disabled = page === slice.pages - 1;
-      setText(pageText, slice.total ? `${slice.start + 1} to ${slice.start + slice.items.length} of ${slice.total}` : '');
-      loadDetails(slice.items);
-    }
-    previous.addEventListener('click', () => { page -= 1; renderPage(); });
-    next.addEventListener('click', () => { page += 1; renderPage(); });
-    function syntheticMarket(id) {
-      const n = ids.indexOf(id);
-      const questions = ['Will this sample market settle Yes?', 'Sample team A vs. sample team B', 'Will the sample index close higher this week?', 'Another market on this socket'];
-      const yes = 0.15 + ((n * 37) % 70) / 100;
-      return {id, question: `${questions[n % questions.length]}${n >= questions.length ? ` (${n + 1})` : ''}`, outcomes: n % 4 === 1 ? ['Team A', 'Team B'] : ['Yes', 'No'],
-        prices: [yes.toFixed(2), (1 - yes).toFixed(2)], tokens: [`${n + 1}1`, `${n + 1}2`], icon: null, end: null};
-    }
-    const LOOKUP_PROBLEMS = {
-      unreachable: 'Could not reach Polymarket to load market details. Polymarket may be blocked in your region or on your network.',
-      timeout: 'Polymarket took too long to send market details. Try Refresh.',
-      failed: 'Polymarket did not send market details. Try Refresh.'};
-    function summary() {
-      note.classList.toggle('lookup-problem', Boolean(lookupProblem));
-      if (lookupProblem) return LOOKUP_PROBLEMS[lookupProblem];
-      return ids.length ? `${ids.length} markets${demo ? ' · synthetic demo' : ''}. Select one to watch its live order book.` : 'No markets on this socket.';
-    }
-    async function loadDetails(items) {
-      const missing = items.filter(id => !details.has(id) && !pending.has(id));
-      if (!missing.length) return;
-      const mine = generation, signal = abort.signal;
-      missing.forEach(id => pending.add(id));
-      let found = new Map(), problem = null;
-      try {
-        if (demo) {
-          await new Promise(resolve => env.setTimeout(resolve, 400));
-          found = new Map(missing.map(id => [id, syntheticMarket(id)]));
-        } else {
-          const params = new URLSearchParams({limit: String(missing.length), closed: 'any'});
-          params.append('version', 'v1'); params.append('version', 'v2');
-          for (const id of missing) params.append('condition_ids', id);
-          const rows = await json(`${GAMMA}/markets?${params}`, signal);
-          if (!Array.isArray(rows)) throw new Error('Invalid metadata');
-          found = new Map(rows.map(metadata).filter(Boolean).map(market => [market.id, market]));
-        }
-      } catch (error) { problem = error.kind || 'failed'; /* Rows fall back to their IDs; Refresh retries. */ }
-      if (mine !== generation) return;
-      lookupProblem = problem; setText(note, summary());
-      for (const id of missing) { pending.delete(id); details.set(id, found.get(id) || null); paint(id); }
-      list.removeAttribute('aria-busy');
-    }
-    async function open(id) {
-      close(); const mine = generation; currentId = id; abort = new env.AbortController();
-      ids = []; page = 0; buttons = new Map(); details = new Map(); pending = new Set(); lookupProblem = null;
-      note.classList.remove('lookup-problem'); renderPage(); retry.hidden = true; list.setAttribute('aria-busy', 'true'); note.textContent = 'Loading markets…';
-      try {
-        let assigned;
-        if (demo) assigned = Array.from({length: 23}, (_, n) => `0x${(id * 100 + n + 1).toString(16).padStart(64, '0')}`);
-        else {
-          const config = await json('/api/demo/config', abort.signal);
-          if (mine !== generation) return;
-          if (config.stream_origin === null) { note.textContent = 'Live order books are not enabled on this deployment.'; list.removeAttribute('aria-busy'); return; }
-          if (typeof config.stream_origin !== 'string' || !/^wss:\/\/[A-Za-z0-9.-]+(?::\d{1,5})?$/.test(config.stream_origin)) throw new Error('Stream unavailable');
-          stream = config.stream_origin;
-          const response = await request(`${stream.replace('wss:', 'https:')}/sockets/${id}/markets`, abort.signal);
-          if (mine !== generation) return;
-          if (response.status === 404) { note.textContent = 'No markets published for this socket yet.'; retry.hidden = false; list.removeAttribute('aria-busy'); return; }
-          if (!response.ok) throw new Error('Directory unavailable');
-          assigned = response.body.markets;
-          if (!Array.isArray(assigned) || assigned.length > 512 || !assigned.every(value => typeof value === 'string' && /^0x[0-9a-fA-F]{64}$/.test(value))) throw new Error('Invalid directory');
-          assigned = [...new Set(assigned.map(value => value.toLowerCase()))];
-        }
-        if (mine !== generation) return;
-        ids = assigned; retry.hidden = false;
-        note.textContent = summary();
-        if (!ids.length) list.removeAttribute('aria-busy');
-        renderPage();
-      } catch (_) {
-        if (mine !== generation) return;
-        note.textContent = 'Markets could not be loaded. Try again.'; retry.hidden = false; list.removeAttribute('aria-busy');
-      }
-    }
-
-    // The order book: one outcome at a time, asks above the midpoint and bids below.
+    function clear() { stop(); selectedMarket = null; body.hidden = true; empty.hidden = false; }
     function freshness() {
       if (!selectedMarket || !view) return;
       const now = env.Date.now();
-      const status = feedStatus(view, now);
+      let status = feedStatus(view, now);
+      if (status === 'waiting') { if (waitingSince === null) waitingSince = now; } else waitingSince = null;
+      if (status === 'waiting' && now - waitingSince > 90000) status = 'missing';
       const messages = {connecting: 'Connecting…', waiting: 'Waiting for the first snapshot. This can take up to 60 seconds.',
+        missing: 'No book has arrived. The collector may not be collecting this market yet.',
         live: demo ? 'Live (synthetic)' : 'Live', stale: 'Snapshots are delayed. Showing the last known orders.',
         reconnecting: 'Connection interrupted. Reconnecting…',
         rejected: 'Live viewing is unavailable for this market. Select it again to retry.', invalid: 'Book data could not be read. Reconnecting…',
@@ -365,7 +263,7 @@
         if (changed) { line.classList.remove('flash'); void line.offsetWidth; line.classList.add('flash'); }
       });
     }
-    function renderBook() {
+    function render() {
       if (!selectedMarket || !view) return;
       const book = view.books.get(selectedMarket.tokens[side]);
       if (!book || !book.ready) {
@@ -394,25 +292,25 @@
     function chooseSide(index) {
       side = index;
       for (const [i, button] of [...toggle.children].entries()) button.setAttribute('aria-pressed', String(i === side));
-      ladder.replaceChildren(); renderBook();
+      ladder.replaceChildren(); render();
     }
     function select(market) {
-      stopBook(); const previous = selectedMarket; selectedMarket = market; side = 0;
-      if (previous) paint(previous.id); paint(market.id);
+      stop(); selectedMarket = market; side = 0; waitingSince = null;
       empty.hidden = true; body.hidden = false;
       icon.replaceChildren(); if (market.icon) { const img = make('img'); img.src = market.icon; img.alt = ''; img.referrerPolicy = 'no-referrer'; icon.append(img); }
       title.textContent = market.question;
+      if (event) { event.textContent = market.event && market.event !== market.question ? market.event : ''; event.hidden = !event.textContent; }
       toggle.replaceChildren(...market.outcomes.map((outcome, i) => {
         const button = make('button', '', outcome); button.type = 'button'; button.setAttribute('aria-pressed', String(i === 0));
         button.addEventListener('click', () => chooseSide(i)); return button;
       }));
       ladder.replaceChildren(); setText(meta, ''); setText(bookStatus, 'Connecting…'); bookStatus.classList.remove('live');
-      body.scrollIntoView({block: 'nearest'});
+      if (options.scroll !== false) body.scrollIntoView({block: 'nearest'});
       if (demo) {
         view = {status: 'live', books: new Map(market.tokens.map(token => [token, emptyBook()]))};
         let tick = 0;
         const update = () => {
-          const mid = BigInt(Math.round(Number(market.prices[0]) * 100)) * 10000n;
+          const mid = BigInt(Math.round(Number(market.prices[0] ?? 0.5) * 100)) * 10000n;
           market.tokens.forEach((token, i) => {
             const centre = i === 0 ? mid : 1000000n - mid, level = n => 2000000n + BigInt(((n * 7919 + tick * (n + 3) * 131) % 4800) * 1000000);
             apply(view.books.get(token), {type: 'snapshot',
@@ -420,16 +318,16 @@
               asks: Array.from({length: 8}, (_, n) => [centre + 10000n * BigInt(n + 1), level(n + 8)]).filter(([p]) => p < 1000000n)});
             view.books.get(token).snapshotAt = env.Date.now();
           });
-          tick += 1; renderBook();
+          tick += 1; render();
         };
         update(); demoTimer = env.setInterval(update, 1500); return;
       }
       const mine = generation;
       try {
-        feed = createFeed(env, stream, market.tokens, state => {
+        feed = createFeed(env, options.streamOrigin(), market.tokens, state => {
           view = state;
           if (mine !== generation || renderTimer !== null) return;
-          renderTimer = env.setTimeout(() => { renderTimer = null; if (mine === generation) renderBook(); }, 100);
+          renderTimer = env.setTimeout(() => { renderTimer = null; if (mine === generation) render(); }, 100);
         });
         view = feed.state;
         freshnessTimer = env.setInterval(freshness, 1000);
@@ -438,12 +336,156 @@
     doc.addEventListener('visibilitychange', () => {
       if (!selectedMarket) return;
       if (doc.visibilityState === 'hidden') {
-        stopBook(); ladder.replaceChildren(); setText(meta, ''); bookStatus.classList.remove('live');
+        stop(); ladder.replaceChildren(); setText(meta, ''); bookStatus.classList.remove('live');
         setText(bookStatus, 'Live viewing is paused while this tab is hidden.');
       } else select(selectedMarket);
     });
+    return {select, clear, selected: () => selectedMarket};
+  }
+
+  // Market rows shared by the socket popup and the Markets page.
+  function marketRow(doc, market, options = {}) {
+    const make = (tag, cls, text) => { const node = doc.createElement(tag); if (cls) node.className = cls; if (text !== undefined) node.textContent = text; return node; };
+    const picture = market.icon ? make('img') : make('span', 'icon-blank');
+    if (market.icon) { picture.src = market.icon; picture.alt = ''; picture.loading = 'lazy'; picture.referrerPolicy = 'no-referrer'; }
+    const quote = chance(market.prices[0]);
+    const price = make('span', 'market-price', quote ? `${market.outcomes[0]} ${quote}` : '');
+    const parts = [picture, make('span', 'market-q', options.label || market.question), price];
+    if (options.rank) parts.unshift(make('span', 'market-rank', String(options.rank)));
+    if (options.volume !== undefined) {
+      price.replaceChildren(make('span', '', quote ? `${market.outcomes[0]} ${quote}` : ''), make('span', 'market-volume', options.volume));
+      price.classList.add('stacked');
+    }
+    return parts;
+  }
+
+  function mount(doc, env, dialog, demo) {
+    const list = dialog.querySelector('[data-market-list]'), note = dialog.querySelector('[data-market-status]');
+    const retry = dialog.querySelector('[data-market-retry]');
+    const make = (tag, cls, text) => { const node = doc.createElement(tag); if (cls) node.className = cls; if (text !== undefined) node.textContent = text; return node; };
+    let generation = 0, abort = null, currentId = null, stream = null;
+    let ids = [], page = 0, buttons = new Map(), details = new Map(), pending = new Set(), lookupProblem = null;
+    const panel = bookPanel(doc, env, dialog.querySelector('[data-book-detail]'), {demo, streamOrigin: () => stream});
+    const pager = make('div', 'pager'), previous = make('button', 'control', 'Previous'), next = make('button', 'control', 'Next');
+    const pageText = make('p', 'small muted');
+    previous.type = next.type = 'button';
+    previous.dataset.marketPrevious = ''; next.dataset.marketNext = ''; pageText.dataset.marketPage = '';
+    pageText.setAttribute('aria-live', 'polite');
+    pager.append(previous, pageText, next); list.after(pager); pager.hidden = true;
+
+    function setText(node, text) { if (node.textContent !== text) node.textContent = text; }
+    function close() { ++generation; if (abort) abort.abort(); panel.clear(); }
+
+    // Market rows. Details load one page at a time and are kept while the popup stays on this socket.
+    function row(id) {
+      let button = buttons.get(id);
+      if (button) return button;
+      button = make('button', 'market-row'); button.type = 'button'; button.dataset.id = id;
+      button.addEventListener('click', () => { const market = details.get(id); if (market) select(market); });
+      buttons.set(id, button); paint(id); return button;
+    }
+    function paint(id) {
+      const button = buttons.get(id);
+      if (!button) return;
+      const market = details.get(id);
+      button.setAttribute('aria-pressed', String(panel.selected()?.id === id));
+      if (market) {
+        button.replaceChildren(...marketRow(doc, market));
+        button.title = market.question; button.disabled = false; button.removeAttribute('aria-busy');
+      } else if (details.has(id)) {
+        button.replaceChildren(make('span', 'icon-blank'), make('span', 'market-q id', id), make('span', 'market-price', 'Details unavailable'));
+        button.disabled = true; button.removeAttribute('aria-busy');
+      } else {
+        const spinner = make('span', 'market-spinner'); spinner.setAttribute('aria-hidden', 'true');
+        button.replaceChildren(spinner, make('span', 'market-q id', id));
+        button.disabled = true; button.setAttribute('aria-busy', 'true');
+      }
+    }
+    function select(market) {
+      const previousMarket = panel.selected();
+      panel.select(market);
+      if (previousMarket) paint(previousMarket.id);
+      paint(market.id);
+    }
+    function renderPage() {
+      const slice = marketPage(ids, page); page = slice.page;
+      list.replaceChildren(...slice.items.map(row));
+      pager.hidden = slice.total <= MARKET_PAGE_SIZE;
+      previous.disabled = page === 0; next.disabled = page === slice.pages - 1;
+      setText(pageText, slice.total ? `${slice.start + 1} to ${slice.start + slice.items.length} of ${slice.total}` : '');
+      loadDetails(slice.items);
+    }
+    previous.addEventListener('click', () => { page -= 1; renderPage(); });
+    next.addEventListener('click', () => { page += 1; renderPage(); });
+    function syntheticMarket(id) {
+      const n = ids.indexOf(id);
+      const questions = ['Will this sample market settle Yes?', 'Sample team A vs. sample team B', 'Will the sample index close higher this week?', 'Another market on this socket'];
+      const yes = 0.15 + ((n * 37) % 70) / 100;
+      return {id, question: `${questions[n % questions.length]}${n >= questions.length ? ` (${n + 1})` : ''}`, outcomes: n % 4 === 1 ? ['Team A', 'Team B'] : ['Yes', 'No'],
+        prices: [yes.toFixed(2), (1 - yes).toFixed(2)], tokens: [`${n + 1}1`, `${n + 1}2`], icon: null, end: null};
+    }
+    function summary() {
+      note.classList.toggle('lookup-problem', Boolean(lookupProblem));
+      if (lookupProblem) return LOOKUP_PROBLEMS[lookupProblem].replace('Try again.', 'Try Refresh.');
+      return ids.length ? `${ids.length} markets${demo ? ' · synthetic demo' : ''}. Select one to watch its live order book.` : 'No markets on this socket.';
+    }
+    async function loadDetails(items) {
+      const missing = items.filter(id => !details.has(id) && !pending.has(id));
+      if (!missing.length) return;
+      const mine = generation, signal = abort.signal;
+      missing.forEach(id => pending.add(id));
+      let found = new Map(), problem = null;
+      try {
+        if (demo) {
+          await new Promise(resolve => env.setTimeout(resolve, 400));
+          found = new Map(missing.map(id => [id, syntheticMarket(id)]));
+        } else {
+          const params = new URLSearchParams({limit: String(missing.length), closed: 'any'});
+          params.append('version', 'v1'); params.append('version', 'v2');
+          for (const id of missing) params.append('condition_ids', id);
+          const response = await fetchJson(env, `${GAMMA}/markets?${params}`, signal);
+          if (!Array.isArray(response.body)) { const error = new Error('Invalid metadata'); error.kind = 'failed'; throw error; }
+          found = new Map(response.body.map(metadata).filter(Boolean).map(market => [market.id, market]));
+        }
+      } catch (error) { problem = error.kind || 'failed'; /* Rows fall back to their IDs; Refresh retries. */ }
+      if (mine !== generation) return;
+      lookupProblem = problem; setText(note, summary());
+      for (const id of missing) { pending.delete(id); details.set(id, found.get(id) || null); paint(id); }
+      list.removeAttribute('aria-busy');
+    }
+    async function open(id) {
+      close(); const mine = generation; currentId = id; abort = new env.AbortController();
+      ids = []; page = 0; buttons = new Map(); details = new Map(); pending = new Set(); lookupProblem = null;
+      note.classList.remove('lookup-problem'); renderPage(); retry.hidden = true; list.setAttribute('aria-busy', 'true'); note.textContent = 'Loading markets…';
+      try {
+        let assigned;
+        if (demo) assigned = Array.from({length: 23}, (_, n) => `0x${(id * 100 + n + 1).toString(16).padStart(64, '0')}`);
+        else {
+          const config = (await fetchJson(env, '/api/demo/config', abort.signal)).body;
+          if (mine !== generation) return;
+          if (config.stream_origin === null) { note.textContent = 'Live order books are not enabled on this deployment.'; list.removeAttribute('aria-busy'); return; }
+          if (typeof config.stream_origin !== 'string' || !/^wss:\/\/[A-Za-z0-9.-]+(?::\d{1,5})?$/.test(config.stream_origin)) throw new Error('Stream unavailable');
+          stream = config.stream_origin;
+          const response = await fetchJson(env, `${stream.replace('wss:', 'https:')}/sockets/${id}/markets`, abort.signal);
+          if (mine !== generation) return;
+          if (response.status === 404) { note.textContent = 'No markets published for this socket yet.'; retry.hidden = false; list.removeAttribute('aria-busy'); return; }
+          assigned = response.body.markets;
+          if (!Array.isArray(assigned) || assigned.length > 512 || !assigned.every(value => typeof value === 'string' && /^0x[0-9a-fA-F]{64}$/.test(value))) throw new Error('Invalid directory');
+          assigned = [...new Set(assigned.map(value => value.toLowerCase()))];
+        }
+        if (mine !== generation) return;
+        ids = assigned; retry.hidden = false;
+        note.textContent = summary();
+        if (!ids.length) list.removeAttribute('aria-busy');
+        renderPage();
+      } catch (_) {
+        if (mine !== generation) return;
+        note.textContent = 'Markets could not be loaded. Try again.'; retry.hidden = false; list.removeAttribute('aria-busy');
+      }
+    }
     retry.addEventListener('click', () => open(currentId));
     return {open, close};
   }
-  root.DemoBooks = {fixed, cents, shares, midSpread, chance, decodeFrame, emptyBook, apply, sortedLevels, metadata, marketPage, MARKET_PAGE_SIZE, createFeed, feedStatus, mount};
+  root.DemoBooks = {GAMMA, fixed, cents, shares, midSpread, chance, decodeFrame, emptyBook, apply, sortedLevels, metadata, collectable, LOOKUP_PROBLEMS, fetchJson,
+    marketPage, MARKET_PAGE_SIZE, createFeed, feedStatus, bookPanel, marketRow, mount};
 })(typeof window !== 'undefined' ? window : globalThis);

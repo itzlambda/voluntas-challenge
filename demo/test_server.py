@@ -69,9 +69,9 @@ class Running:
 
 
 class StreamCspTests(unittest.TestCase):
-    def test_explicit_stream_origin_is_allowed_on_both_pages(self):
+    def test_explicit_stream_origin_is_allowed_on_every_page(self):
         with Running(stream_origin="wss://stream.example.com") as running:
-            for path in ["/", "/live"]:
+            for path in ["/", "/live", "/sockets", "/markets"]:
                 _, headers, _ = running.get(path)
                 self.assertIn("connect-src 'self' wss://stream.example.com https://stream.example.com https://gamma-api.polymarket.com;", headers["Content-Security-Policy"])
                 self.assertIn("script-src 'self';", headers["Content-Security-Policy"])

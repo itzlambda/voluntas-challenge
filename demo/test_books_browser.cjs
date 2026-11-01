@@ -10,12 +10,18 @@ const id = `0x${'a'.repeat(64)}`;
     const page = await browser.newPage();
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
-    await page.goto(`${base}/live?socket-demo=1`);
+    // Records whether a loading row was ever shown; synthetic details replace them after 400 ms.
+    await page.addInitScript(() => {
+      window.sawSpinner = false;
+      new MutationObserver(() => { if (document.querySelector('[data-market-list] .market-spinner')) window.sawSpinner = true; })
+        .observe(document, {childList: true, subtree: true});
+    });
+    await page.goto(`${base}/sockets?socket-demo=1`);
     await page.locator('.socket-id').first().click();
     assert.equal(await page.locator('dialog').evaluate(d => d.open), true);
     assert.equal(await page.locator('[data-socket-plot] .uplot').count(), 1);
-    assert.equal(await page.locator('.market-spinner').count() > 0, true, 'rows start as IDs with spinners');
     await page.locator('[data-market-list] button:enabled').first().waitFor();
+    assert.equal(await page.evaluate(() => window.sawSpinner), true, 'rows start as IDs with spinners');
     assert.equal(await page.locator('[data-market-list] button').count(), 5);
     assert.equal(await page.locator('[data-market-page]').innerText(), '1 to 5 of 23');
     assert.equal(await page.getByText('Select a market to watch its live order book.').isVisible(), true);
@@ -81,7 +87,7 @@ const id = `0x${'a'.repeat(64)}`;
       });
     });
     await page.route('**/api/demo/sockets', route => route.fulfill({json: {schema_version: 1, status: 'live', retained: false, values_at: Date.now() / 1000, age_seconds: 0, sockets: [{id: 0, pool: 'primary', connected: true, markets: 1, state: 'connected', events_per_second: 2}]}}));
-    await page.goto(`${base}/live`);
+    await page.goto(`${base}/sockets`);
     await page.locator('.socket-id').first().click();
     await page.waitForFunction(() => document.querySelectorAll('[data-market-list] button:enabled').length === 5);
     assert.deepEqual(gammaBatches, [marketIds.slice(0, 5)], 'only the visible page is looked up');
@@ -185,7 +191,7 @@ const id = `0x${'a'.repeat(64)}`;
     await page.getByText('Live order books are not enabled on this deployment.', {exact: true}).waitFor();
     await page.keyboard.press('Escape');
     await page.route('**/book-view.js', route => route.abort());
-    await page.goto(`${base}/live`);
+    await page.goto(`${base}/sockets`);
     await page.locator('.socket-id').first().click();
     await page.getByText('Market viewing could not be loaded. Reload the page to retry.', {exact: true}).waitFor();
     await page.keyboard.press('Escape');

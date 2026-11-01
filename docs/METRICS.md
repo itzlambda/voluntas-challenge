@@ -234,7 +234,7 @@ exporting live connection and market gauges. Aggregate metrics stay unchanged.
 The separate endpoint adds about 6,001 series for 2,000 socket slots, without
 per-market labels or per-socket histogram buckets.
 
-The Live page uses one-minute rates with at least four samples. Clicking a
+The Sockets page uses one-minute rates with at least four samples. Clicking a
 histogram bucket filters a socket list shown 5 rows per page. Selecting a socket loads only
 its history, with a maximum of 1,000 points. Available windows are 15 minutes,
 one hour, six hours, and 24 hours. The first minute after process start is a
@@ -353,7 +353,9 @@ browser streaming is disabled.
 Prometheus scrapes the collector every second with a 900 ms timeout and keeps
 metric history. `demo/server.py` reads Prometheus, never the collector
 directly, and supports one collector target under the `collector` job. It
-serves `/` and `/live` from an asset allowlist, plus:
+serves `/` (overview), `/live` (telemetry charts), `/sockets` (per-socket
+traffic, markets, and books), and `/markets` (top markets, search, and books)
+from an asset allowlist, plus:
 
 - `GET /api/demo/stats`: one fixed instant query set, cached for one second,
   returned as JSON with `schema_version: 1`. It includes coverage, connection
@@ -432,7 +434,7 @@ own evidence and are not operational metrics.
 
 ## Browser order books
 
-On `/live`, selecting a socket opens its traffic history and current market
+On `/sockets`, selecting a socket opens its traffic history and current market
 assignments. The browser requests the directory directly from the stream host
 and lists the assigned condition IDs in pages of 5, in directory order. Each
 row starts as its ID with a spinner. Only the visible page is looked up in
@@ -464,11 +466,26 @@ bid and ask. The view shows snapshot age and marks books delayed after 135
 seconds without a snapshot. Waiting for the first snapshot can take up to
 60 seconds.
 
-`/live?socket-demo=1` supplies synthetic markets and changing books entirely in
-the browser. These fixtures never request production assignments or Gamma.
-Run `node demo/test_books.cjs` for wire, freshness, and reconnect checks.
+`/markets` lists Gamma's top 10 markets by 24-hour volume, loaded once per
+visit, and searches Gamma's public search 300 ms after typing stops, from two
+characters. Both keep only markets the collector collects, using the
+discovery rule: v1, active, open, unarchived, accepting orders, and two
+distinct outcome asset IDs. Search results are grouped under their events in
+Gamma's order, show five markets per event with the rest behind a button, and
+report how many were hidden. Selecting a market opens the same book view and
+records it in the address as `?market=<condition ID>`, so the book can be
+shared or reloaded. A linked market that is closed, not collected, or unknown
+says so instead of waiting. If no snapshot arrives within 90 seconds, the book
+reports that the collector may not be collecting the market yet.
+
+`/sockets?socket-demo=1` supplies synthetic markets and changing books entirely
+in the browser. These fixtures never request production assignments or Gamma.
+Run `node demo/test_books.cjs` for wire, freshness, and reconnect checks, and
+`node demo/test_markets.cjs` for the Markets page filters and grouping.
 `demo/fixtures/books.sbe` is checked against the shared Rust `with_message`
 encoder by a unit test and decoded independently by the JavaScript tests. The optional
 Playwright check is `node demo/test_books_browser.cjs http://127.0.0.1:8000`
 against an isolated demo instance configured with
 `--stream-origin wss://stream.example.com`; it intercepts metadata and streams.
+`node demo/test_markets_browser.cjs http://127.0.0.1:8000` checks the Markets
+page against the same instance.

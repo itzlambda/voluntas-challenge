@@ -121,4 +121,20 @@ test('quoted chance rounds like Polymarket and marks the extremes', () => {
   assert.equal(B.chance('0.996'), '>99%'); assert.equal(B.chance('0'), '0%'); assert.equal(B.chance('1'), '100%');
   assert.equal(B.chance(null), ''); assert.equal(B.chance('x'), '');
 });
+test('collected markets follow the collector discovery rule', () => {
+  const raw = {conditionId: `0x${'b'.repeat(64)}`, outcomes: '["Yes","No"]', clobTokenIds: '["1","2"]', active: true, closed: false, archived: false, acceptingOrders: true};
+  assert.equal(B.collectable(raw), true);
+  assert.equal(B.collectable({...raw, version: 'v1'}), true);
+  for (const change of [{version: 'v2'}, {active: false}, {active: undefined}, {closed: true}, {archived: true}, {acceptingOrders: false}, {acceptingOrders: undefined}, {clobTokenIds: '["1"]'}]) {
+    assert.equal(B.collectable({...raw, ...change}), false, JSON.stringify(change));
+  }
+  assert.equal(B.collectable(null), false);
+});
+test('metadata carries the group label, event title, and 24-hour volume when present', () => {
+  const raw = {conditionId: `0x${'c'.repeat(64)}`, outcomes: '["Yes","No"]', clobTokenIds: '["1","2"]', groupItemTitle: ' 72,000 ', events: [{title: 'Bitcoin above ___?'}], volume24hr: 1234.5};
+  const parsed = B.metadata(raw);
+  assert.equal(parsed.label, '72,000'); assert.equal(parsed.event, 'Bitcoin above ___?'); assert.equal(parsed.volume24hr, 1234.5);
+  const bare = B.metadata({...raw, groupItemTitle: '', events: 'x', volume24hr: -1});
+  assert.equal(bare.label, null); assert.equal(bare.event, null); assert.equal(bare.volume24hr, null);
+});
 console.log(`${passed} book tests passed`);

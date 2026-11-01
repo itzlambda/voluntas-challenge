@@ -334,9 +334,9 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
   });
 
   await test('pages: copy rules, privacy, no inline scripts or styles', () => {
-    const pages = ['index.html', 'live.html'];
+    const pages = ['index.html', 'live.html', 'sockets.html', 'markets.html'];
     const visible = file => fs.readFileSync(path.join(DEMO, file), 'utf8').replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' ');
-    for (const file of [...pages, 'status.js', 'deployment.js', 'overview.js', 'charts.js', 'chart-help.js', 'diagram.js', 'site.css']) {
+    for (const file of [...pages, 'status.js', 'deployment.js', 'overview.js', 'charts.js', 'chart-help.js', 'diagram.js', 'markets.js', 'book-view.js', 'site.css']) {
       // SVG path data is coordinates, not addresses.
       const text = fs.readFileSync(path.join(DEMO, file), 'utf8').replace(/ d="[^"]*"/g, '');
       assert.doesNotMatch(text, /\/home\/|\/Users\/|\b(?:\d{1,3}\.){3}\d{1,3}\b|localhost|admin@/, `${file}: no paths, hosts or IPs`);
@@ -348,7 +348,8 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
       assert.doesNotMatch(raw, /\sstyle="/, `${file}: no inline styles under the CSP`);
       const text = visible(file);
       assert.doesNotMatch(text, / · | — |→|»/, `${file}: no dot joins, dash fragments or arrows`);
-      assert.match(raw, /<nav class="site-nav"[\s\S]*Overview[\s\S]*Live/);
+      assert.match(raw, /<nav class="site-nav"[\s\S]*Overview[\s\S]*Live[\s\S]*Sockets[\s\S]*Markets/);
+      assert.equal((raw.match(/aria-current="page"/g) || []).length, 1, `${file}: one current page`);
       assert.doesNotMatch(raw, /\/tradeoffs/, `${file}: Trade-offs is removed until its sources are rewritten`);
       const footer = raw.match(/<footer[\s\S]*?<\/footer>/)[0];
       for (const href of ['https://github.com/itzlambda/voluntas-challenge', 'https://x.com/itzlambda']) {

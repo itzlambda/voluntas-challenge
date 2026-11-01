@@ -396,7 +396,7 @@ main > .page-section:first-of-type { border-top: 0; margin-top: 0; padding-top: 
 .histogram-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin-top: 6px; }
 .histogram-foot .control { margin-left: auto; min-height: 30px; padding: 3px 12px; }
 .histogram-foot .attention { color: var(--strong); }
-.socket-body { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: var(--gap) 28px; margin-top: 14px; }
+.socket-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--gap) 28px; margin-top: 14px; }
 .socket-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 12px; }
 .socket-controls label { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--muted); }
 .socket-controls input, .socket-controls select { font: inherit; font-size: 14px; color: var(--strong); background: var(--bg); border: 1px solid var(--grey-dark); border-radius: var(--radius); padding: 4px 8px; min-height: 32px; }
@@ -438,3 +438,27 @@ main > .page-section:first-of-type { border-top: 0; margin-top: 0; padding-top: 
   .bar.zero { margin-right: 6px; }
   .socket-controls .control { margin-left: 0; }
 }
+
+.socket-dialog { width: min(1060px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); box-sizing: border-box; padding: 22px; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); overflow: auto; }
+.socket-dialog::backdrop { background: #000b; }
+.socket-dialog-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; }
+.socket-dialog-head h2 { margin: 0; }
+.socket-markets, .book-detail { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+.market-list { max-height: 340px; overflow: auto; }
+.market-row { display: flex; width: 100%; gap: 12px; align-items: center; text-align: left; padding: 12px 8px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--text); font: inherit; cursor: pointer; }
+.market-row:hover:not(:disabled), .market-row:focus-visible { background: var(--panel); }
+.market-row:disabled { cursor: default; }
+.market-row img { width: 40px; height: 40px; object-fit: cover; border-radius: var(--radius); flex: none; }
+.market-copy { display: grid; gap: 3px; min-width: 0; overflow-wrap: anywhere; }
+.market-spinner { width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--green); border-radius: 50%; animation: market-spin 1s linear infinite; flex: none; }
+@keyframes market-spin { to { transform: rotate(360deg); } }
+.book-outcomes, .book-sides { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.outcome-book h4 { color: var(--strong); margin: 12px 0; }
+.depth-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13px; }
+.depth-table caption { text-align: left; margin-bottom: 6px; }
+.depth-table.bids caption { color: var(--green); }
+.depth-table.asks caption { color: var(--blue); }
+.depth-table th { font-size: 11px; font-weight: 400; color: var(--muted); white-space: nowrap; }
+.depth-table th, .depth-table td { text-align: right; padding: 4px; border-bottom: 1px solid var(--line); }
+@media (max-width: 700px) { .book-outcomes { grid-template-columns: minmax(0, 1fr); } .socket-dialog { padding: 14px; } }
+@media (prefers-reduced-motion: reduce) { .market-spinner { animation: none; } }

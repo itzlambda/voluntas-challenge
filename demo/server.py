@@ -478,7 +478,8 @@ class Reader:
 ROOT = Path(__file__).parent
 # Pages accept any query string; assets and APIs match exactly.
 PAGES = {"/": "index.html", "/live": "live.html"}
-ASSETS = {"/deployment.js": ("deployment.js", "text/javascript; charset=utf-8"),
+ASSETS = {"/book-view.js": ("book-view.js", "text/javascript; charset=utf-8"),
+          "/deployment.js": ("deployment.js", "text/javascript; charset=utf-8"),
           "/deployment.json": ("deployment.json", "application/json"),
           "/chart-help.js": ("chart-help.js", "text/javascript; charset=utf-8"),
           "/vendor/uPlot.iife.min.js": ("vendor/uPlot.iife.min.js", "text/javascript; charset=utf-8"),
@@ -499,13 +500,16 @@ class Server(ThreadingHTTPServer):
 
     def __init__(self, address, reader, stream_origin=None):
         self.csp = CSP
+        self.stream_origin = stream_origin
         if stream_origin is not None:
             if not re.fullmatch(r"wss://[A-Za-z0-9.-]+(?::[0-9]{1,5})?", stream_origin):
                 raise ValueError("stream origin must be a wss:// hostname with an optional port")
             parsed = urllib.parse.urlsplit(stream_origin)
             if parsed.port is not None and not 1 <= parsed.port <= 65535:
                 raise ValueError("invalid stream port")
-            self.csp = CSP.replace("connect-src 'self';", "connect-src 'self' " + stream_origin + ";")
+            https_origin = "https://" + parsed.netloc
+            self.csp = CSP.replace("connect-src 'self';", "connect-src 'self' " + stream_origin + " " + https_origin + " https://gamma-api.polymarket.com;")
+            self.csp = self.csp.replace("img-src 'self' data:;", "img-src 'self' data: https://polymarket-upload.s3.us-east-2.amazonaws.com;")
         self.reader = reader
         self.slots = threading.BoundedSemaphore(16)
         super().__init__(address, Handler)
@@ -570,6 +574,9 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlsplit(self.path)
         if parsed.path == "/api/prometheus/query":
             self.prometheus_query(parsed.query)
+            return
+        if self.path == "/api/demo/config":
+            self.json_response(200, {"stream_origin": self.server.stream_origin})
             return
         if self.path == "/api/demo/sockets":
             self.json_response(200, self.server.reader.socket_reader.sockets())

@@ -381,6 +381,7 @@
         loadHistory();
         emit();
       },
+      clear() { st.selected = null; loadHistory(); emit(); },
       setWindow(window) {
         if (!WINDOWS.includes(window) || window === st.window) return;
         st.window = window;
@@ -400,6 +401,10 @@
       prev: q('prev'), next: q('next'), pageText: q('page'), title: q('title'), meta: q('meta'), plot: q('plot'),
       readout: q('readout'), historyNote: q('history-note'), windows: [...panel.querySelectorAll('[data-socket-window]')],
     };
+    const dialog = q('dialog');
+    const books = win.DemoBooks.mount(doc, win, dialog, demo);
+    q('close').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('close', () => { books.close(); controller.clear(); });
     let plot = null;
     let history = null;
     el.demo.hidden = !demo;
@@ -511,7 +516,7 @@
           button.type = 'button';
           button.dataset.id = String(socket.id);
           button.setAttribute('aria-pressed', String(selected));
-          button.setAttribute('aria-label', `Socket ${socket.id}, show history`);
+          button.setAttribute('aria-label', `Socket ${socket.id}, view markets and order books`);
           const id = make('td');
           id.append(button);
           const rate = rateText(socket.rate);
@@ -688,7 +693,10 @@
     el.next.addEventListener('click', () => controller.setPage(controller.view().page.page + 1));
     el.rows.addEventListener('click', event => {
       const row = event.target.closest('tr[data-row]');
-      if (row) controller.select(Number(row.dataset.row));
+      if (row) {
+        const id = Number(row.dataset.row);
+        dialog.showModal(); controller.select(id); books.open(id);
+      }
     });
     for (const button of el.windows) button.addEventListener('click', () => controller.setWindow(button.dataset.socketWindow));
 

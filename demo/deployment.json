@@ -35,5 +35,6 @@
       "details": "Polymarket halted trading, so market data was far below normal. The collector kept running.",
       "url": "https://status.polymarket.com/"
     }
-  ]
+  ],
+  "message": "Deploying socket market lists and live order books. Collection and charts may pause briefly while the collector restarts."
 }

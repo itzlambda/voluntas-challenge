@@ -86,6 +86,17 @@ function spread(count, center, width, seed = 1) {
     return counts;
   };
 
+  await test('closing selection stops history and clears the selected socket', async () => {
+    const ctx = load(['status.js', 'sockets.js']);
+    const env = fakeEnv(url => ({body: url.includes('socket-history') ? history(3, '1h') : fleet([socket(3, 4)])}));
+    const controller = ctx.DemoSockets.createController({env});
+    controller.start(); controller.select(3); await settle();
+    controller.clear();
+    assert.equal(controller.view().selected, null); assert.equal(controller.view().history, null);
+    const count = env.fetches.length; await env.advance(15000);
+    assert.ok(env.fetches.slice(count).every(url => !url.includes('socket-history')));
+  });
+
   await test('concentrated rates fit 8 to 15 round bins with nothing outside', () => {
     const rates = spread(2000, 15, 2);
     const layout = K.fitLayout(rates);

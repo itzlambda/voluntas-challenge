@@ -194,4 +194,5 @@ The website must run with `--stream-origin wss://stream.example.com`. Its CSP
 must allow that WebSocket origin, the matching HTTPS origin for socket lists,
 and Gamma for metadata. A socket can appear in telemetry before its assignment
 batch is published. Treat a directory 404 as an empty or not-yet-published list
-and allow retry. Refetch on reopening a socket or reconnecting after restart.
+and allow retry. Refetch when reopening a socket. Book stream reconnects
+require fresh snapshots for both outcomes.

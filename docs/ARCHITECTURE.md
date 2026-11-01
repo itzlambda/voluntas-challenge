@@ -145,8 +145,8 @@ live, not for archiving.
   client can never block the hub, the workers, or other clients. When a
   client's queue is full, the hub removes that client instead of skipping
   updates, which would silently corrupt its book. A slow consumer whose task
-  is waiting for its next message closes with code 1013. A task stuck mid-send on a stalled socket drops the
-  connection without a close frame, since a frame may be half written, so the
+  is waiting for its next message closes with code 1013. A task stuck mid-send
+  on a stalled socket drops the connection without a close frame, since a frame may be half written, so the
   browser sees 1006. Either way the client reconnects and resubscribes.
 - **No added latency.** A client's task sends a message as soon as it is
   queued, and coalesces into one frame only what queued during the previous

@@ -73,8 +73,16 @@ class StreamCspTests(unittest.TestCase):
         with Running(stream_origin="wss://stream.example.com") as running:
             for path in ["/", "/live"]:
                 _, headers, _ = running.get(path)
-                self.assertIn("connect-src 'self' wss://stream.example.com;", headers["Content-Security-Policy"])
+                self.assertIn("connect-src 'self' wss://stream.example.com https://stream.example.com https://gamma-api.polymarket.com;", headers["Content-Security-Policy"])
                 self.assertIn("script-src 'self';", headers["Content-Security-Policy"])
+
+    def test_browser_config_and_asset(self):
+        with Running(stream_origin="wss://stream.example.com") as running:
+            self.assertEqual(running.json("/api/demo/config"), {"stream_origin": "wss://stream.example.com"})
+            self.assertIn(b"decodeFrame", running.get("/book-view.js")[2])
+            self.assertIn("https://polymarket-upload.s3.us-east-2.amazonaws.com", running.get("/live")[1]["Content-Security-Policy"])
+        with Running() as running:
+            self.assertEqual(running.json("/api/demo/config"), {"stream_origin": None})
 
     def test_stream_origin_cannot_inject_policy_or_paths(self):
         for origin in ["ws://stream.example.com", "wss://stream.example.com/path", "wss://stream.example.com; script-src *", "wss://stream.example.com:65536"]:

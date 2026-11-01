@@ -11,6 +11,7 @@
 <script src="/status.js" defer></script>
 <script src="/deployment.js" defer></script>
 <script src="/charts.js" defer></script>
+<script src="/book-view.js" defer></script>
 <script src="/sockets.js" defer></script>
 <script src="/chart-help.js" defer></script>
 </head>
@@ -222,7 +223,7 @@
         <p class="small muted socket-filter" data-socket-filter aria-live="polite"></p>
         <div class="table-wrap">
           <table class="socket-table">
-            <caption class="visually-hidden">Order-book sockets. Select a socket ID to load its history.</caption>
+            <caption class="visually-hidden">Order-book sockets. Select a socket ID to view its history, markets, and live order books.</caption>
             <thead><tr><th scope="col">Socket</th><th scope="col">Pool</th><th scope="col">Status</th><th scope="col" class="num">Markets</th><th scope="col" class="num">Events/s</th></tr></thead>
             <tbody data-socket-rows></tbody>
           </table>
@@ -233,6 +234,8 @@
           <button type="button" class="control" data-socket-next>Next</button>
         </div>
       </div>
+      <dialog class="socket-dialog" data-socket-dialog aria-labelledby="socket-dialog-title">
+        <div class="socket-dialog-head"><h2 id="socket-dialog-title">Socket details</h2><button type="button" class="control" data-socket-close>Close</button></div>
       <div class="socket-history">
         <div class="history-head">
           <h3 data-socket-title>No socket selected</h3>
@@ -248,6 +251,19 @@
         <p class="small socket-readout" data-socket-readout aria-hidden="true"></p>
         <p class="chart-note" data-socket-history-note></p>
       </div>
+      <section class="socket-markets" aria-labelledby="socket-market-title">
+        <div class="history-head"><h3 id="socket-market-title">Markets on this socket</h3><button type="button" class="control" data-market-retry hidden>Refresh markets</button></div>
+        <p class="small muted" data-market-status role="status"></p>
+        <div class="market-list" data-market-list></div>
+      </section>
+      <section class="book-detail" data-book-detail aria-labelledby="book-title" hidden>
+        <h3 id="book-title" data-book-title></h3>
+        <p class="small muted">Live books follow the market's current publishing connection.</p>
+        <p class="small" data-book-status role="status"></p>
+        <div class="book-outcomes" data-book-outcomes></div>
+        <p class="small muted">Showing the best 20 price levels on each side.</p>
+      </section>
+      </dialog>
     </div>
   </section>
 </main>

@@ -346,7 +346,9 @@ The dashboard server accepts `--stream-origin wss://stream.example.com` to allow
 that exact endpoint in the HTML content security policy. Install the matching
 `ops/voluntas-demo-stream.conf.example` drop-in and set `STREAM_ORIGIN` in
 `/etc/voluntas/demo-stream.env` when enabling direct browser streaming. This does
-not subscribe the telemetry page to book data.
+not subscribe the telemetry page to book data until a visitor selects a market.
+`GET /api/demo/config` returns the configured `stream_origin`, or null when
+browser streaming is disabled.
 
 Prometheus scrapes the collector every second with a 900 ms timeout and keeps
 metric history. `demo/server.py` reads Prometheus, never the collector
@@ -426,3 +428,29 @@ per-connection maxima, and PONG round-trip times are outside this contract.
 Add a family only for an operational question the existing set and stderr
 incidents cannot answer. SBE correctness checks and lab benchmarks keep their
 own evidence and are not operational metrics.
+
+
+## Browser order books
+
+On `/live`, selecting a socket opens its traffic history and current market
+assignments. The browser requests the directory directly from the stream host,
+then batches condition IDs through Gamma to obtain questions, outcomes, quoted
+prices, icons, end dates, and outcome asset IDs. Refreshing or reopening the
+popup fetches assignments again. An unpublished socket shows an empty waiting
+state with a refresh button. Gamma failures keep the market IDs visible.
+
+Selecting a market opens one WebSocket subscription for its two outcomes.
+The book follows the market's current publisher, which can differ from the
+socket selected in the table. Closing the popup closes that subscription and
+cancels directory and metadata requests. The browser decodes schema 1 version 2
+SBE frames, including coalesced records, using exact fixed-point `BigInt`
+values. Each outcome ignores updates until its own replacement snapshot.
+Reconnects discard both baselines before resubscribing. Waiting for the first
+snapshot can take up to 60 seconds. The view shows the best 20 levels per side.
+
+`/live?socket-demo=1` supplies synthetic markets and changing books entirely in
+the browser. These fixtures never request production assignments or Gamma.
+Run `node demo/test_books.cjs` for wire and reconnect checks. The optional
+Playwright check is `node demo/test_books_browser.cjs http://127.0.0.1:8000`
+against an isolated demo instance configured with
+`--stream-origin wss://stream.example.com`; it intercepts metadata and streams.

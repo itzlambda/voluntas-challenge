@@ -17,6 +17,7 @@ use tokio::task::{JoinHandle, JoinSet};
 use tokio_util::sync::CancellationToken;
 
 use crate::core::metrics::{Metrics, STALE_AFTER, View};
+use crate::core::subscriptions::SocketMarkets;
 
 pub struct MetricsServer {
     pub address: SocketAddr,
@@ -31,6 +32,7 @@ impl MetricsServer {
         address: SocketAddr,
         metrics: Metrics,
         fatal: CancellationToken,
+        directory: watch::Receiver<SocketMarkets>,
     ) -> anyhow::Result<Self> {
         let listener = TcpListener::bind(address)
             .await
@@ -54,7 +56,7 @@ impl MetricsServer {
         let drain = draining.clone();
         let http = tokio::spawn(async move {
             let guard = fatal.drop_guard();
-            let result = serve(listener, views_rx, drain, stop.clone()).await;
+            let result = serve(listener, views_rx, directory, drain, stop.clone()).await;
             if stop.is_cancelled() {
                 guard.disarm();
             }
@@ -93,6 +95,7 @@ impl Drop for MetricsServer {
 async fn serve(
     listener: TcpListener,
     views: watch::Receiver<View>,
+    directory: watch::Receiver<SocketMarkets>,
     draining: CancellationToken,
     stop: CancellationToken,
 ) -> anyhow::Result<()> {
@@ -106,12 +109,16 @@ async fn serve(
             accepted = listener.accept() => {
                 let (socket, _) = accepted.context("accept metrics client")?;
                 let Ok(permit) = permits.clone().try_acquire_owned() else { continue; };
-                let views = views.clone(); let drain = draining.clone();
+                let views = views.clone(); let directory = directory.clone(); let drain = draining.clone();
                 clients.spawn(async move {
                     let _permit = permit;
                     let service = service_fn(move |request| {
                         let view = views.borrow().clone(); let shutting_down = drain.is_cancelled();
-                        async move { Ok::<_,Infallible>(respond(request, &view, shutting_down)) }
+                        let markets = request.uri().path().strip_prefix("/sockets/")
+                            .and_then(|rest| rest.strip_suffix("/markets"))
+                            .and_then(|id| id.parse::<u16>().ok())
+                            .and_then(|id| directory.borrow().get(usize::from(id)).cloned());
+                        async move { Ok::<_,Infallible>(respond(request, &view, shutting_down, markets.as_deref())) }
                     });
                     let mut builder = http1::Builder::new();
                     builder.keep_alive(false).max_buf_size(8192);
@@ -121,7 +128,13 @@ async fn serve(
         }
     }
 }
-fn respond(request: Request<Incoming>, view: &View, draining: bool) -> Response<Full<Bytes>> {
+fn respond(
+    request: Request<Incoming>,
+    view: &View,
+    draining: bool,
+    markets: Option<&[crate::model::MarketId]>,
+) -> Response<Full<Bytes>> {
+    let mut encoded = String::new();
     let mut response = Response::new(Full::new(Bytes::new()));
     let (status, body, content_type) = if request.method() != Method::GET {
         response
@@ -168,6 +181,24 @@ fn respond(request: Request<Incoming>, view: &View, draining: bool) -> Response<
                     "text/plain",
                 )
             }
+            _ if markets.is_some() => {
+                let ids: Vec<&str> = markets
+                    .into_iter()
+                    .flatten()
+                    .map(|market| market.0.as_ref())
+                    .collect();
+                match serde_json::to_string(&serde_json::json!({"markets": ids})) {
+                    Ok(body) => {
+                        encoded.push_str(&body);
+                        (StatusCode::OK, encoded.as_str(), "application/json")
+                    }
+                    Err(_) => (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        "encoding failed\n",
+                        "text/plain",
+                    ),
+                }
+            }
             _ => (StatusCode::NOT_FOUND, "not found\n", "text/plain"),
         }
     };
@@ -188,12 +219,92 @@ mod tests {
     use tokio_util::sync::CancellationToken;
 
     #[tokio::test]
+    async fn socket_directory_routes_and_updates() {
+        let _ = rustls::crypto::ring::default_provider().install_default();
+        use crate::core::subscriptions::SocketMarkets;
+        use crate::model::MarketId;
+        use std::sync::Arc;
+        let (tx, rx) = tokio::sync::watch::channel(SocketMarkets::default());
+        let mut server = MetricsServer::start(
+            "127.0.0.1:0".parse().unwrap(),
+            Metrics::default(),
+            CancellationToken::new(),
+            rx,
+        )
+        .await
+        .unwrap();
+        let client = reqwest::Client::new();
+        let base = format!("http://{}", server.address);
+        assert_eq!(
+            client
+                .get(format!("{base}/sockets/0/markets"))
+                .send()
+                .await
+                .unwrap()
+                .status(),
+            404
+        );
+        tx.send_replace(Arc::from([
+            Arc::from([MarketId::from("0xabc")]),
+            Arc::from([]),
+        ]));
+        for (path, status, expected) in [
+            (
+                "/sockets/0/markets",
+                200,
+                Some(serde_json::json!({"markets":["0xabc"]})),
+            ),
+            (
+                "/sockets/1/markets",
+                200,
+                Some(serde_json::json!({"markets":[]})),
+            ),
+            ("/sockets/2/markets", 404, None),
+            ("/sockets/no/markets", 404, None),
+            ("/sockets/65536/markets", 404, None),
+            ("/sockets/0/markets/extra", 404, None),
+        ] {
+            let response = client.get(format!("{base}{path}")).send().await.unwrap();
+            assert_eq!(response.status(), status);
+            if let Some(expected) = expected {
+                assert_eq!(response.headers()["content-type"], "application/json");
+                assert_eq!(
+                    serde_json::from_str::<serde_json::Value>(&response.text().await.unwrap())
+                        .unwrap(),
+                    expected
+                );
+            }
+        }
+        assert_eq!(
+            client
+                .post(format!("{base}/sockets/0/markets"))
+                .send()
+                .await
+                .unwrap()
+                .status(),
+            405
+        );
+        tx.send_replace(Arc::from([Arc::from([])]));
+        let response = client
+            .get(format!("{base}/sockets/0/markets"))
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(
+            serde_json::from_str::<serde_json::Value>(&response.text().await.unwrap()).unwrap(),
+            serde_json::json!({"markets":[]})
+        );
+        server.finish().await.unwrap();
+    }
+
+    #[tokio::test]
     async fn unexpected_http_task_loss_signals_service_failure() {
         let failure = CancellationToken::new();
         let mut server = MetricsServer::start(
             "127.0.0.1:0".parse().unwrap(),
             Metrics::default(),
             failure.clone(),
+            tokio::sync::watch::channel(Default::default()).1,
         )
         .await
         .unwrap();

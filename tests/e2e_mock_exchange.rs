@@ -664,7 +664,13 @@ impl Collector {
                 tx
             })
         };
-        let manager = SubscriptionManager::new(pipeline.workers().clone(), 2, spawn, None);
+        let manager = SubscriptionManager::new(
+            pipeline.workers().clone(),
+            2,
+            spawn,
+            None,
+            tokio::sync::watch::channel(Default::default()).0,
+        );
         let (manager_tx, manager_rx) = mpsc::channel(64);
         let manager = tokio::spawn(manager.run(manager_rx, cancel.clone()));
         let gamma = GammaClient::new(&exchange.gamma_url, 1000.0).unwrap();

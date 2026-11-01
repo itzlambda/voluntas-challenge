@@ -1,5 +1,16 @@
-# Install on the collector host. Set STREAM_HOST in the Caddy service environment.
+# Install on the collector host. Set STREAM_HOST and DEMO_ORIGIN in Caddy's environment.
 {$STREAM_HOST} {
 	respond /healthz "ok" 200
-	reverse_proxy 127.0.0.1:9100
+	handle /sockets/* {
+		header Access-Control-Allow-Origin {$DEMO_ORIGIN}
+		header Cache-Control "no-store"
+		reverse_proxy 127.0.0.1:19090 {
+			transport http {
+				max_conns_per_host 8
+			}
+		}
+	}
+	handle {
+		reverse_proxy 127.0.0.1:9100
+	}
 }

@@ -406,13 +406,23 @@ async fn http_readiness_routes_and_shutdown_work_without_a_reader() {
     socket.state.socket_markets = 2;
     socket.publish();
     let fatal = CancellationToken::new();
-    let mut server = MetricsServer::start("127.0.0.1:0".parse().unwrap(), metrics, fatal.clone())
-        .await
-        .unwrap();
+    let mut server = MetricsServer::start(
+        "127.0.0.1:0".parse().unwrap(),
+        metrics,
+        fatal.clone(),
+        tokio::sync::watch::channel(Default::default()).1,
+    )
+    .await
+    .unwrap();
     assert!(
-        MetricsServer::start(server.address, Metrics::default(), CancellationToken::new())
-            .await
-            .is_err()
+        MetricsServer::start(
+            server.address,
+            Metrics::default(),
+            CancellationToken::new(),
+            tokio::sync::watch::channel(Default::default()).1
+        )
+        .await
+        .is_err()
     );
     let base = format!("http://{}", server.address);
     let client = reqwest::Client::new();

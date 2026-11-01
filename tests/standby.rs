@@ -482,7 +482,13 @@ async fn distributed_replicas_fail_over_per_market_and_keep_recovered_sources_pr
         keep.lock().unwrap().push((id, receiver));
         sender
     });
-    let mut manager = SubscriptionManager::new(workers.clone(), 2, spawn, None);
+    let mut manager = SubscriptionManager::new(
+        workers.clone(),
+        2,
+        spawn,
+        None,
+        tokio::sync::watch::channel(Default::default()).0,
+    );
     let markets: Vec<_> = ["a", "b", "c"]
         .into_iter()
         .map(|id| MarketBooks {

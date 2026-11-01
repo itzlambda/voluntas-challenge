@@ -144,7 +144,7 @@ live, not for archiving.
   bounded queue (`--stream-client-queue`). The hub only uses `try_send`, so a
   client can never block the hub, the workers, or other clients. When a
   client's queue is full, the hub removes that client instead of skipping
-  updates, which would silently corrupt its book. An idle client task closes
+  updates, which would silently corrupt its book. A slow consumer whose task is waiting for its next message closes
   with code 1013. A task stuck mid-send on a stalled socket drops the
   connection without a close frame, since a frame may be half written, so the
   browser sees 1006. Either way the client reconnects and resubscribes.

@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use anyhow::Context;
 use serde_json::json;
-use tokio::sync::mpsc;
+use tokio::sync::{mpsc, watch};
 use tokio::time::timeout;
 use tokio_util::sync::CancellationToken;
 use tokio_util::task::TaskTracker;
@@ -18,7 +18,7 @@ use crate::core::metrics::{Component, Metrics};
 use crate::core::metrics_http::MetricsServer;
 use crate::core::pipeline::Pipeline;
 use crate::core::rate_limit::RateLimiter;
-use crate::core::subscriptions::{SpawnConnection, SubscriptionManager};
+use crate::core::subscriptions::{SocketMarkets, SpawnConnection, SubscriptionManager};
 use crate::core::telemetry;
 use crate::exchange::polymarket::config::Settings;
 use crate::exchange::polymarket::gamma::GammaClient;
@@ -46,8 +46,14 @@ async fn run_collector(settings: Settings) -> anyhow::Result<bool> {
     let fatal = CancellationToken::new();
     let metrics = Metrics::new(fatal.clone());
     // Bind before creating the output or opening exchange connections.
-    let mut server =
-        MetricsServer::start(config.metrics_bind, metrics.clone(), fatal.clone()).await?;
+    let (directory_tx, directory_rx) = watch::channel(SocketMarkets::default());
+    let mut server = MetricsServer::start(
+        config.metrics_bind,
+        metrics.clone(),
+        fatal.clone(),
+        directory_rx,
+    )
+    .await?;
     telemetry::emit(
         "metrics_available",
         json!({"endpoint":format!("http://{}/metrics",server.address),"history":"Prometheus HTTP API; operational statistics are not printed at shutdown"}),
@@ -103,6 +109,7 @@ async fn run_collector(settings: Settings) -> anyhow::Result<bool> {
         config.markets_per_connection,
         spawn,
         capture.clone(),
+        directory_tx,
     );
     drop(capture);
     let (manager_tx, manager_rx) = mpsc::channel(64);

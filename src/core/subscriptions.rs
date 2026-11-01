@@ -3,10 +3,11 @@
 //! unsubscribing.
 
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::sync::Arc;
 
 use anyhow::Context;
 use serde_json::json;
-use tokio::sync::mpsc;
+use tokio::sync::{mpsc, watch};
 use tokio_util::sync::CancellationToken;
 
 use crate::core::book_connection::ConnectionCommand;
@@ -17,6 +18,9 @@ use crate::core::telemetry;
 use crate::model::{
     ConnectionId, MarketBooks, MarketId, MarketSources, OrderBookId, WorkerMessage,
 };
+
+/// Immutable assigned market IDs, indexed by order-book connection ID.
+pub type SocketMarkets = Arc<[Arc<[MarketId]>]>;
 
 /// Input from discovery.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -92,6 +96,8 @@ pub struct SubscriptionManager {
     placement: HashMap<MarketId, Placement>,
     capture: Option<Capture>,
     totals: ManagerTotals,
+    lists: Vec<Arc<[MarketId]>>,
+    directory: watch::Sender<SocketMarkets>,
 }
 
 impl SubscriptionManager {
@@ -100,6 +106,7 @@ impl SubscriptionManager {
         markets_per_connection: usize,
         spawn: SpawnConnection,
         capture: Option<Capture>,
+        directory: watch::Sender<SocketMarkets>,
     ) -> Self {
         Self {
             workers,
@@ -110,6 +117,8 @@ impl SubscriptionManager {
             placement: HashMap::new(),
             capture,
             totals: ManagerTotals::default(),
+            lists: Vec::new(),
+            directory,
         }
     }
 
@@ -165,6 +174,7 @@ impl SubscriptionManager {
             let sources = MarketSources::mirrored(primaries[index], replicas[index])?;
             self.attach(books, sources, &mut per_connection).await?;
         }
+        self.publish(&per_connection, true);
         self.send_all(per_connection, ConnectionCommand::Subscribe);
         Ok(())
     }
@@ -174,8 +184,27 @@ impl SubscriptionManager {
         for market in markets {
             self.detach(&market, &mut per_connection).await?;
         }
+        self.publish(&per_connection, false);
         self.send_all(per_connection, ConnectionCommand::Unsubscribe);
         Ok(())
+    }
+
+    fn publish(&mut self, changed: &BTreeMap<u16, Vec<MarketBooks>>, added: bool) {
+        self.lists
+            .resize_with(self.connections.len(), || Arc::from([]));
+        for (&id, markets) in changed {
+            let slot = &mut self.lists[usize::from(id)];
+            let mut next = slot.to_vec();
+            if added {
+                next.extend(markets.iter().map(|books| books.market.clone()));
+                next.sort_unstable();
+            } else {
+                let gone: HashSet<&MarketId> = markets.iter().map(|books| &books.market).collect();
+                next.retain(|market| !gone.contains(market));
+            }
+            *slot = next.into();
+        }
+        self.directory.send_replace(self.lists.clone().into());
     }
 
     /// `AddMarket` to the market's worker, then queue the subscription.
@@ -377,10 +406,67 @@ mod tests {
             tx
         });
         (
-            SubscriptionManager::new(Workers::from(workers), capacity, spawn, None),
+            SubscriptionManager::new(
+                Workers::from(workers),
+                capacity,
+                spawn,
+                None,
+                watch::channel(SocketMarkets::default()).0,
+            ),
             inputs,
             log,
         )
+    }
+
+    #[tokio::test]
+    async fn directory_tracks_placement_removal_reuse_and_growth() {
+        let (mut manager, mut inputs, _) = manager(2);
+        let directory = manager.directory.subscribe();
+        assert!(directory.borrow().is_empty());
+        for batch in [
+            vec![market(1), market(2), market(3)],
+            vec![market(4)],
+            vec![market(5), market(6), market(7)],
+        ] {
+            manager.add(batch).await.unwrap();
+            drain(&mut inputs);
+            let view = directory.borrow().clone();
+            assert_eq!(view.len(), manager.connections());
+            for (id, list) in view.iter().enumerate() {
+                let mut expected: Vec<_> = manager
+                    .placement
+                    .iter()
+                    .filter(|(_, p)| p.sources.connections().contains(&ConnectionId(id as u16)))
+                    .map(|(market, _)| market.clone())
+                    .collect();
+                expected.sort_unstable();
+                assert_eq!(list.as_ref(), expected);
+            }
+        }
+        let before = directory.borrow().clone();
+        let touched = sources(&manager, 2);
+        manager
+            .remove(vec![market(2).market, market(2).market])
+            .await
+            .unwrap();
+        let after = directory.borrow().clone();
+        for (id, list) in after.iter().enumerate() {
+            if touched.contains(&ConnectionId(id as u16)) {
+                assert!(!list.contains(&market(2).market));
+            } else {
+                assert!(Arc::ptr_eq(list, &before[id]));
+            }
+        }
+        drain(&mut inputs);
+        manager.add(vec![market(8)]).await.unwrap();
+        for id in sources(&manager, 8) {
+            assert!(directory.borrow()[usize::from(id.0)].contains(&market(8).market));
+        }
+        manager
+            .remove((1..=8).map(|n| market(n).market).collect())
+            .await
+            .unwrap();
+        assert!(directory.borrow().iter().all(|list| list.is_empty()));
     }
 
     const PINNED_PRIMARY: u64 = 2_018_097_179_610_769_946;
@@ -679,7 +765,13 @@ mod tests {
             receivers.lock().unwrap().push(rx);
             tx
         });
-        let mut manager = SubscriptionManager::new(Workers::from(vec![worker]), 4, spawn, None);
+        let mut manager = SubscriptionManager::new(
+            Workers::from(vec![worker]),
+            4,
+            spawn,
+            None,
+            watch::channel(SocketMarkets::default()).0,
+        );
         let add = tokio::spawn(async move {
             manager.add(vec![market(1), market(2)]).await.unwrap();
             manager
@@ -757,7 +849,13 @@ mod tests {
             spawn_ids.lock().unwrap().push(id);
             spawn_tx.clone()
         });
-        let mut manager = SubscriptionManager::new(Workers::from(Vec::new()), 1, spawn, None);
+        let mut manager = SubscriptionManager::new(
+            Workers::from(Vec::new()),
+            1,
+            spawn,
+            None,
+            watch::channel(SocketMarkets::default()).0,
+        );
         manager.connections.resize_with(65_534, || Connection {
             commands: tx.clone(),
             markets: 1,
